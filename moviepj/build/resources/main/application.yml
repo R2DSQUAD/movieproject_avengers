@@ -1,0 +1,47 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1234
+<<<<<<< HEAD
+    url: jdbc:mysql://192.168.23.234/moviedb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+=======
+    url: jdbc:mysql://192.168.23.234:3306/moviedb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+>>>>>>> origin/dev
+
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+#  profiles:
+#    include: open  #application-open.yml
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+
+#file.itemImg.path: "E:/fullSaveFiles/item/"\
+
+
+
+
+
+
+
+
+

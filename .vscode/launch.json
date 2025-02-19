@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MoviepjApplication<moviepj>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "org.spring.moviepj.MoviepjApplication",
+            "projectName": "moviepj",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

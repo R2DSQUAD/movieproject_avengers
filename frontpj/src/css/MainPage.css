@@ -1,0 +1,97 @@
+.index {
+  box-sizing: border-box;
+  padding: 0 100px;
+}
+
+.index .index-con {
+
+}
+
+.index .index-con .title-con {
+  height: 300px;
+}
+
+.index .index-con .content{
+
+}
+
+.index .index-con .content .popular-movie{
+}
+
+.index .index-con .content .popular-movie > ul {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(1, auto);
+  grid-auto-rows: 500px;
+  gap: 2vw;
+  grid-auto-columns: 50px;
+  grid-auto-flow: column;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.index .index-con .content .popular-movie > ul > li{
+  display: inline-grid;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.7s;
+  transform-style: preserve-3d;
+}
+
+.index .index-con .content .popular-movie > ul > li > * {
+  backface-visibility: hidden;
+  grid-area: 1 / 1 / 1 / 1;
+}
+
+.index .index-con .content .popular-movie > ul > li:hover {
+  transform: perspective(800px) rotateY(180deg);
+}
+
+.index .index-con .content .popular-movie > ul > li .item-front span{
+  position: absolute;
+  bottom: 0%;
+  z-index: 2;
+  font-size: 50px;
+  font-weight: bold;
+  color: white;
+  font-style: italic;
+}
+
+.index .index-con .content .popular-movie > ul > li > div.item-back {
+  transform: perspective(800px) rotateY(180deg);
+}
+
+.index .index-con .content .popular-movie > ul > li > div {
+  width: 100%;
+  position: relative;
+}
+
+.index .index-con .content .popular-movie > ul > li > div > img {
+  display: flex;
+  box-sizing: border-box;
+  width: 200px;
+  height: 300px;
+  border-radius: 10px;
+  z-index: 1;
+  filter: brightness(80%);
+}
+
+.index .index-con .content .popular-movie > ul > li > div.item-back > img {
+  filter: brightness(20%);
+}
+
+.index .index-con .content .popular-movie > ul > li > div > .boxOfficeDetail {
+  position: absolute;
+  top: 0%;
+  z-index: 2;
+}
+
+.index .index-con .content .popular-movie > ul > li > div > .boxOfficeDetail > * {
+  z-index: 3;
+  filter: none;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
+

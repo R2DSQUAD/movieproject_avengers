@@ -1,0 +1,115 @@
+/* 헤더 전체 스타일 */
+.header {
+    transition: all 0.5s;
+    position: fixed;
+    /* 상단 고정 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    /* 헤더 높이 고정 */
+    padding: 0 30px;
+    border-bottom-left-radius: 20px;
+    /* 왼쪽 아래 둥글게 */
+    border-bottom-right-radius: 20px;
+    /* 오른쪽 아래 둥글게 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 99;
+    /* 다른 요소보다 위에 배치 */
+    box-sizing: border-box;
+}
+
+body.dark .header {
+    background-color: #374151;
+}
+
+body.light .header {
+    background-color: #e5e7eb;
+}
+
+/* 전체 페이지의 상단 패딩 추가 */
+body {
+    padding-top: 80px;
+    /* 헤더 높이만큼 밀어줌 */
+    margin: 0;
+    /* 혹시 기본 마진이 들어가 있는 경우 방지 */
+}
+
+/* 로고 스타일 */
+.logo .logo-con {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+.logo .logo-con #logo {
+    object-fit: cover;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    transition: all 0.5s;
+}
+
+body.dark .logo .logo-con #logo {
+    filter: invert(100%);
+}
+
+.logo .logo-con p {
+    box-sizing: border-box;
+    font-size: 24px;
+    transition: all 0.5s;
+}
+
+/* 네비게이션 바 */
+.header .nav {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
+    /* 공간이 부족할 경우 줄어들지 않도록 설정 */
+    box-sizing: border-box;
+}
+
+/* 네비게이션 링크 */
+.header .nav .nav-link {
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.nav-link:hover {
+    color: #ffcc00;
+}
+
+/* 바 */
+.header .bar {
+    justify-content: flex-end;
+    /* 네비게이션을 오른쪽으로 정렬 */
+    box-sizing: border-box;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.header .bar>* {
+    transition: all 0.5s;
+}
+
+.toggle-button>img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
+#darkMode {
+    filter: brightness(0) contrast(100);
+}
+
+#lightMode {
+    filter: brightness(0) contrast(100) invert(1);
+}
