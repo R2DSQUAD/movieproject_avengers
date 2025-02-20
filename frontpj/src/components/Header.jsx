@@ -30,6 +30,8 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
       <div className="bar">
         <input type="text" name="search" id="search" placeholder="search" />
         <Link to="">프로필</Link>
+        <Link to="/member/join"> 회원가입</Link>
+        <Link to="/member/login" > 로그인</Link>
         <div onClick={() => setIsDarkMode((prev) => !prev)} className="toggle-button">
           {isDarkMode ? (
             <img src="/image/light.svg" alt="lightMode" id="lightMode"></img>

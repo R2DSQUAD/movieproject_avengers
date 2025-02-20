@@ -36,7 +36,7 @@ public class MemberDto {
 
     private String address;
 
-    private int phoneNumber;
+    private String phoneNumber;
 
     private Role role;
 
