@@ -5,16 +5,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.spring.moviepj.entity.CartItemEntity;
 import org.spring.moviepj.entity.MovieEntity;
-import org.spring.moviepj.entity.ScreeningSeatEntity;
 import org.spring.moviepj.entity.TheaterEntity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,8 +36,7 @@ public class ScreeningDto {
 
     private LocalTime screeningEndTime;
 
-    private Long screeningSeatId;
-    private List<ScreeningSeatEntity> screeningSeatEntities;
+    private List<CartItemEntity> cartItemEntities;
 
     private LocalDateTime createTime;
 

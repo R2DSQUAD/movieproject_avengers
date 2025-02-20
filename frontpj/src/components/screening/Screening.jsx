@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import "../../css/Screening.css";
 
@@ -10,6 +10,7 @@ const Screening = () => {
     const [dates, setDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedScreening, setSelectedScreening] = useState(null);
+    const navigate = useNavigate();
 
     const getFormattedDate = (dateString) => {
         const date = new Date(dateString);
@@ -53,6 +54,11 @@ const Screening = () => {
 
         setFilteredScreenings(filtered);
     };
+
+
+    const handleSelectScreening = (screeningId) => {
+        navigate(`/seatSelection/${screeningId}`);
+    }
 
     return (
         <div className="screening-page">
@@ -107,7 +113,7 @@ const Screening = () => {
                                     <li key={screening.id}>
                                         <button
                                             className={selectedScreening === screening.id ? 'selected' : ''}
-                                            onClick={() => setSelectedScreening(screening.id)}
+                                            onClick={() => handleSelectScreening(screening.id)}
                                         >
                                             <span> {screening.theaterEntity.name}</span>
                                             <span> {getFormattedDate(screening.screeningDate)}</span>

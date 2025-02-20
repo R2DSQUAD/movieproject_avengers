@@ -34,14 +34,14 @@ public class CartItemEntity extends BasicTime {
     @JoinColumn(name = "cart_id", nullable = false)
     private CartEntity cartEntity;
 
+    @Column(nullable = false)
+    private String seatNumber;
+
+    @Column(nullable = false)
+    private int price;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "screeningSeat_id", nullable = false)
-    private ScreeningSeatEntity screeningSeatEntity;
-
-    @Column(nullable = false)
-    private int ticketCount; // 선택한 좌석 개수
-
-    @Column(nullable = false)
-    private int totalPrice;
+    @JoinColumn(name = "screening_id", nullable = false)
+    private ScreeningEntity screeningEntity;
 
 }
