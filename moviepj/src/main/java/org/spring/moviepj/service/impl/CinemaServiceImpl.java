@@ -1,23 +1,29 @@
 package org.spring.moviepj.service.impl;
 
-import java.io.IOException;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.spring.moviepj.entity.CinemaEntity; // CinemaEntity로 변경
-import org.spring.moviepj.repository.CinemaRepository; // CinemaRepository로 변경
+import org.spring.moviepj.entity.CinemaEntity;
+import org.spring.moviepj.repository.CinemaRepository;
 import org.spring.moviepj.service.CinemaService;
 import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
 public class CinemaServiceImpl implements CinemaService {
 
-    private final CinemaRepository cinemaRepository; // 레포지토리 이름 변경
+    private final CinemaRepository cinemaRepository;
+    private final String KAKAO_API_KEY = "8523756c5dd763794f96e865862528dc";
 
     @Override
     public void crawlTheaterSchedule() {
@@ -32,31 +38,31 @@ public class CinemaServiceImpl implements CinemaService {
                 String region = regionElement.select("button.sel-city").text().trim();
                 Elements theaterElements = regionElement.select("div.theater-list > ul > li");
                 for (Element theaterElement : theaterElements) {
-                    String cinemaName = theaterElement.select("a").text().trim(); // 변수명 변경
-                    String theaterUrl = theaterElement.select("a").attr("href").trim();
-                    String brchNo = theaterElement.attr("data-brch-no");
-                    if (brchNo == null || brchNo.isEmpty()) {
-                        brchNo = extractBrchNoFromUrl(theaterUrl);
-                    }
+                    String cinemaName = theaterElement.select("a").text().trim();
+                    double[] latLon = getLatLonFromKakaoMap("메가박스 " + cinemaName);
+                    double lat = latLon[0];
+                    double lon = latLon[1];
 
-                    // cinemaName 출력하여 값 확인
-                    System.out.println("Megabox Cinema Name: " + cinemaName);
+                    // 도로명주소 가져오기
+                    String address = getAddressFromKakaoMap("메가박스 " + cinemaName);
 
-                    // DB에서 해당 영화관 정보가 있는지 조회
-                    CinemaEntity existing = cinemaRepository.findByCinemaName(cinemaName); // 레포지토리와 엔티티 이름 변경
+                    CinemaEntity existing = cinemaRepository.findByCinemaName(cinemaName);
                     if (existing != null) {
-                        // 기존 정보가 있으면 업데이트
-                        System.out.println("Updating existing cinema: " + cinemaName);
                         existing.setRegion(region);
-                        cinemaRepository.save(existing); // 레포지토리와 엔티티 이름 변경
+                        existing.setLat(lat);
+                        existing.setLon(lon);
+                        existing.setAddress(address); // 도로명주소 저장
+                        cinemaRepository.save(existing);
                     } else {
-                        // 없으면 새롭게 추가
-                        System.out.println("Saving new cinema: " + cinemaName);
-                        CinemaEntity cinemaEntity = CinemaEntity.builder() // 엔티티 이름 변경
+                        CinemaEntity cinemaEntity = CinemaEntity.builder()
                                 .region(region)
-                                .cinemaName(cinemaName) // 필드 이름 변경
+                                .cinemaName(cinemaName)
+                                .lat(lat)
+                                .lon(lon)
+                                .address(address) // 도로명주소 저장
                                 .build();
-                        cinemaRepository.save(cinemaEntity); // 레포지토리와 엔티티 이름 변경
+
+                        cinemaRepository.save(cinemaEntity);
                     }
                 }
             }
@@ -66,11 +72,63 @@ public class CinemaServiceImpl implements CinemaService {
         }
     }
 
-    private String extractBrchNoFromUrl(String theaterUrl) {
-        // URL에서 "brchNo=" 뒤에 나오는 값을 추출
-        if (theaterUrl.contains("brchNo=")) {
-            return theaterUrl.split("brchNo=")[1]; // "brchNo=" 뒤의 값 추출
+    // 카카오맵 API에서 도로명주소를 가져오는 메서드
+    private String getAddressFromKakaoMap(String query) {
+        try {
+            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+            String apiUrl = "https://dapi.kakao.com/v2/local/search/keyword.json?query=" + encodedQuery;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(apiUrl))
+                    .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+                if (responseBody.contains("\"documents\":[]")) {
+                    return null; // 주소가 없으면 null 반환
+                }
+                String latString = responseBody.split("\"y\":\"")[1].split("\"")[0];
+                String lonString = responseBody.split("\"x\":\"")[1].split("\"")[0];
+                String address = responseBody.split("\"address_name\":\"")[1].split("\"")[0]; // 도로명주소 추출
+
+                return address; // 도로명주소 반환
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return "알 수 없음"; // brchNo 파라미터가 없으면 기본값 설정
+        return null; // 오류가 발생했을 경우 null 반환
+    }
+
+    // 카카오맵 API에서 위도와 경도를 가져오는 메서드
+    private double[] getLatLonFromKakaoMap(String query) {
+        try {
+            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+            String apiUrl = "https://dapi.kakao.com/v2/local/search/keyword.json?query=" + encodedQuery;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(apiUrl))
+                    .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+                if (responseBody.contains("\"documents\":[]")) {
+                    return new double[] { 0.0, 0.0 };
+                }
+                String latString = responseBody.split("\"y\":\"")[1].split("\"")[0];
+                String lonString = responseBody.split("\"x\":\"")[1].split("\"")[0];
+                return new double[] { Double.parseDouble(latString), Double.parseDouble(lonString) };
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new double[] { 0.0, 0.0 };
     }
 }

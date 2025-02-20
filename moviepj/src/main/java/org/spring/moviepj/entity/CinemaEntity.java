@@ -37,6 +37,10 @@ public class CinemaEntity {
     @Column(nullable = false, unique = true)
     private String cinemaName;
 
+    private double lat;
+    private double lon;
+    private String address;
+
     // TheaterEntity 1:N
     @OneToMany(mappedBy = "cinemaEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<TheaterEntity> theaterEntities;

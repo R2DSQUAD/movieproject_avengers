@@ -9,7 +9,7 @@ const MemberLoginPage = lazy(() => import("../pages/member/MemberLoginPage"));
 const ScreeningPage = lazy(() => import("../pages/screening/ScreeningPage"));
 const ScreeningSeatPage = lazy(() => import("../pages/screeningSeat/ScreeningSeatPage"));
 const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
-
+const MapPage = lazy(() => import("../pages/map/MapPage")); 
 const root = createBrowserRouter([
   {
     path: "/",
@@ -34,6 +34,15 @@ const root = createBrowserRouter([
             <MoviePage />
           </Suspense>
         ),
+      },
+      {
+        path: "/movie/map",
+        element: (
+          <Suspense fallback={Loading}>
+            <MapPage />
+          </Suspense>
+        ),
+
       },
       {
         path: "movie/detail/:movieId",

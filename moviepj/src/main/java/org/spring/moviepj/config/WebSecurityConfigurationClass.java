@@ -34,16 +34,16 @@ public class WebSecurityConfigurationClass {
         return new CustomLoginSuccessHandler(jwtTokenProvider());
     }
 
-        private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     public WebSecurityConfigurationClass(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        AuthenticationManagerBuilder authenticationManagerBuilder = http
+                .getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
@@ -52,11 +52,10 @@ public class WebSecurityConfigurationClass {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
 
-       
         http.authorizeHttpRequests()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/api/**").permitAll()
                 .requestMatchers("/member/login").permitAll()
-                
+
                 .anyRequest().authenticated();
         http.cors().configurationSource(request -> {
             CorsConfiguration corsConfig = new CorsConfiguration();
@@ -65,13 +64,13 @@ public class WebSecurityConfigurationClass {
             corsConfig.setAllowCredentials(true);
             return corsConfig;
         });
-        
+
         http.formLogin()
                 .loginPage("/member/login")
                 .usernameParameter("userEmail")
                 .passwordParameter("userPw")
                 .loginProcessingUrl("/member/login")
-                .successHandler(customLoginSuccessHandler());  
+                .successHandler(customLoginSuccessHandler());
 
         return http.build();
     }
