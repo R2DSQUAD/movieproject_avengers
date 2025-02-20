@@ -1,0 +1,21 @@
+.movieDetail {
+  
+}
+
+.movieDetail .movieDetail-con {
+  display: flex;
+}
+
+.movieDetail .movieDetail-con .leftBar {
+  display: flex;
+}
+
+.movieDetail .movieDetail-con .leftBar .leftBar-con{
+  display: flex;
+  flex-direction: column;
+}
+
+.movieDetail .movieDetail-con .leftBar .leftBar-con img{
+  display: block;
+  width: 250px;
+}

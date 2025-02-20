@@ -12,7 +12,6 @@ const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
 const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
-
 const root = createBrowserRouter([
   {
     path: "/",
@@ -48,7 +47,7 @@ const root = createBrowserRouter([
 
       },
       {
-        path: "movie/detail/:movieId",
+        path: "movie/detail?/:movieCd",
         element: (
           <Suspense fallback={Loading}>
             <MovieDetail />
