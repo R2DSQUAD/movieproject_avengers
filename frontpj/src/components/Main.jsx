@@ -1,30 +1,35 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
+// import LiteYouTubeEmbed from 'react-lite-youtube-embed';
+// import 'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'
 
 const Main = () => {
   const [boxOfficeList, setBoxOfficeList] = useState([]);
-  const [RandomBoxOfficeList, setRandomBoxOfficeList] = useState([]);
+  const [randomBoxOfficeList, setRandomBoxOfficeList] = useState([]);
+  const [filteredTrailers, setFilteredTrailers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8090/api/boxOfficeList`
+        // 박스오피스 데이터 가져오기
+        const boxOfficeResponse = await axios.get(
+          "http://localhost:8090/api/boxOfficeList"
         );
-        setBoxOfficeList(response.data);
-        console.log(response.data);
+        const boxOfficeData = boxOfficeResponse.data;
+        setBoxOfficeList(boxOfficeData);
+        console.log("BoxOffice Data:", boxOfficeData);
 
-        const randomIndex = Math.floor(Math.random() * response.data.length);
-        setRandomBoxOfficeList(response.data[randomIndex]);
+        // 랜덤 인덱스 선택 후 랜덤 박스오피스 데이터 저장
+        const randomIndex = Math.floor(Math.random() * boxOfficeData.length);
+        const selectedBoxOffice = boxOfficeData[randomIndex];
+        setRandomBoxOfficeList(selectedBoxOffice);       
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
     fetchData();
-
-    return () => {};
   }, []);
 
   return (
@@ -32,14 +37,16 @@ const Main = () => {
       <div className="index-con">
         <div className="title">
           <img
-            src={RandomBoxOfficeList.backdrop_path}
-            alt={RandomBoxOfficeList.movieNm}
+            src={randomBoxOfficeList.backdrop_path}
+            alt={randomBoxOfficeList.movieNm}
           />
           <div className="title-con">
-            <h1 className="movie-title">{RandomBoxOfficeList.movieNm}</h1>
-            <h4 className="movie-plot">{RandomBoxOfficeList.overview}</h4>
+            <h1 className="movie-title">{randomBoxOfficeList.movieNm}</h1>
+            <h4 className="movie-plot">{randomBoxOfficeList.overview}</h4>
             <h6 className="movie-age-rating">연령 등급 (15)</h6>
-            <h6 className="movie-people">누적 관객수</h6>
+            <h6 className="movie-people">
+              누적 관객수: {randomBoxOfficeList.audiAcc}
+            </h6>
           </div>
         </div>
         <div className="content">
@@ -57,8 +64,12 @@ const Main = () => {
                       <img src={el.poster_path} alt={el.movieNm}></img>
                       <div className="boxOfficeDetail">
                         <h4>{el.movieNm}</h4>
-                        <button onClick={() => navigate(`/screening/${el.id}`)}>예매하기</button>
-                        <Link to="/">상세정보</Link>
+                        <button onClick={() => navigate(`/screening/${el.id}`)}>
+                          예매하기
+                        </button>
+                        <button onClick={() => navigate(`/movie/detail/${el.id}`)}>
+                          상세정보
+                        </button>
                       </div>
                     </div>
                   </li>
@@ -68,7 +79,7 @@ const Main = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
   );
 };
 
