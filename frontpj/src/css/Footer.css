@@ -1,9 +1,6 @@
 /* 푸터 고정 스타일 */
 .footer {
     transition: all 0.5s;
-    position: fixed; /* 화면 하단에 고정 */
-    bottom: 0;
-    left: 0;
     width: 100%; /* 화면 가로폭에 맞게 */
     background-color: #f8f8f8;
     color: #666;

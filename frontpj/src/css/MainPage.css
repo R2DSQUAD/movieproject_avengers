@@ -1,18 +1,40 @@
 .index {
-  box-sizing: border-box;
-  padding: 0 100px;
 }
 
 .index .index-con {
-
+  
 }
 
-.index .index-con .title-con {
-  height: 300px;
+
+.index .index-con .title {
+  position: relative;
+  
+  width: 100%;
+  height: 600px;
+}
+
+.index .index-con .title img{
+  position: absolute;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 800px;
+  object-fit: cover;
+  box-sizing: border-box;
+  filter: brightness(40%);
+}
+
+.index .index-con .title .title-con{
+  position: relative;
+  top: 0%;
+  z-index: 2;
+  color: white;
 }
 
 .index .index-con .content{
-
+  box-sizing: border-box;
+  padding: 0 100px;
 }
 
 .index .index-con .content .popular-movie{

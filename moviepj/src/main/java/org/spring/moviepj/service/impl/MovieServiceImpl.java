@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.spring.moviepj.dto.MovieDto;
 import org.spring.moviepj.entity.MovieEntity;
 import org.spring.moviepj.movieapi.MovieListResponse;
 import org.spring.moviepj.movieapi.WeeklyBoxOfficeList;
@@ -39,7 +38,7 @@ public class MovieServiceImpl implements MovieService {
 
     private static final String TMDB_API_KEY = "3faa3953bb1d0746b8d7294bd106d787";
     private static final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=%s&language=ko-KR";
-    private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/";
 
     @Scheduled(cron = "0 00 10 * * MON")
     public void fetchAndSaveWeeklyBoxOffice() {
@@ -93,13 +92,13 @@ public class MovieServiceImpl implements MovieService {
 
                         // ✅ 제목이 정확히 일치하는 경우 저장
                         // ✅ 제목이 공백 제거 후 정확히 일치하는 경우 저장
-                        if (tmdbTitle.replaceAll("\s+", "").equalsIgnoreCase(el.getMovieNm().replaceAll("\s+", ""))) {
+                        if (tmdbTitle.replaceAll("\\s+", "").equalsIgnoreCase(el.getMovieNm().replaceAll("\\s+", ""))) {
                             overview = movieData.optString("overview", "줄거리 정보 없음");
                             posterPath = (movieData.optString("poster_path", null) != null)
-                                    ? TMDB_IMAGE_URL + movieData.optString("poster_path", null)
+                                    ? TMDB_IMAGE_URL + "w500/" + movieData.optString("poster_path", null)
                                     : null;
                             backdropPath = (movieData.optString("backdrop_path", null) != null)
-                                    ? TMDB_IMAGE_URL + movieData.optString("backdrop_path", null)
+                                    ? TMDB_IMAGE_URL + "w1920_and_h800_multi_faces/" + movieData.optString("backdrop_path", null)
                                     : null;
                             break;
                         }
@@ -135,12 +134,6 @@ public class MovieServiceImpl implements MovieService {
         LocalDate today = LocalDate.now();
         LocalDate lastSunday = today.with(java.time.DayOfWeek.SUNDAY).minusWeeks(1);
         return lastSunday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-    }
-
-    @Override
-    public MovieDto movieDetail(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'movieDetail'");
     }
 
 }

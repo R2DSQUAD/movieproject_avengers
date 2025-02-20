@@ -6,7 +6,7 @@ import "./css/reset.css";
 function App() {
   return (
     <>
-      <RouterProvider router={root} />
+      <RouterProvider router={root}/>
     </>
   );
 }
