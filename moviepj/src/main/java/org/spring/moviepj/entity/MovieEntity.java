@@ -1,6 +1,7 @@
 package org.spring.moviepj.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.spring.moviepj.common.BasicTime;
@@ -67,5 +68,9 @@ public class MovieEntity extends BasicTime {
     @OneToMany(mappedBy = "movieEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<ScreeningEntity> screeningEntities;
+
+    @OneToMany(mappedBy = "movieEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<TrailerEntity> trailerEntities;
 
 }

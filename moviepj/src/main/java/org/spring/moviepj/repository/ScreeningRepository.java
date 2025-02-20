@@ -3,6 +3,7 @@ package org.spring.moviepj.repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.spring.moviepj.entity.ScreeningEntity;
 import org.spring.moviepj.entity.TheaterEntity;
@@ -29,5 +30,8 @@ public interface ScreeningRepository extends JpaRepository<ScreeningEntity, Long
         boolean existsByTheaterEntityAndScreeningDate(TheaterEntity theaterEntity, LocalDate screeningDate);
 
         List<ScreeningEntity> findByMovieEntity_Id(Long movieId);
+
+        @Query("SELECT MAX(s.screeningDate) FROM ScreeningEntity s")
+        Optional<LocalDate> findLatestScreeningDate();
 
 }
