@@ -34,7 +34,7 @@ public class ScreeningServiceImpl implements ScreeningService {
     /**
      * 매일 새벽 3시에 실행 (최초 실행 시 5일치 생성, 이후에는 하루씩 추가)
      */
-    @Scheduled(cron = "0 4 11 * * *") // 매일 실행
+    @Scheduled(cron = "0 1 15 * * *") // 매일 실행
     public void updateScreenings() {
         System.out.println(">>> [자동 실행] 상영 일정 추가");
 
@@ -146,7 +146,6 @@ public class ScreeningServiceImpl implements ScreeningService {
                         .screeningDate(el.getScreeningDate())
                         .screeningTime(el.getScreeningTime())
                         .screeningEndTime(el.getScreeningEndTime())
-                        .screeningSeatEntities(el.getScreeningSeatEntities())
                         .createTime(el.getCreateTime())
                         .updateTime(el.getUpdateTime())
                         .build())

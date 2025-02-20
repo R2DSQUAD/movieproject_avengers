@@ -27,6 +27,8 @@ public class CartDto {
 
     private int status;
 
+    private int totalPrice;
+
     private Long cartItemId;
     private List<CartItemEntity> cartItemEntities;
 

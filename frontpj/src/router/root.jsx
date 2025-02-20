@@ -8,6 +8,7 @@ const MoviePage = lazy(() => import("../pages/movie/MoviePage"));
 const MemberLoginPage = lazy(() => import("../pages/member/MemberLoginPage"));
 const TrailerPage = lazy(() => import("../pages/movie/TrailerPage"));
 const ScreeningPage = lazy(() => import("../pages/screening/ScreeningPage"));
+const ScreeningSeatPage = lazy(() => import("../pages/screeningSeat/ScreeningSeatPage"));
 
 const root = createBrowserRouter([
   {
@@ -55,6 +56,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <TrailerPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "seatSelection/:screeningId",
+        element: (
+          <Suspense fallback={Loading}>
+            <ScreeningSeatPage />
           </Suspense>
         ),
       },

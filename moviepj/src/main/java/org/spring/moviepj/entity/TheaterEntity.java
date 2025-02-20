@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.spring.moviepj.common.BasicTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,4 +41,8 @@ public class TheaterEntity extends BasicTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CinemaEntity cinemaEntity;
+
+    @OneToMany(mappedBy = "theaterEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ScreeningEntity> screeningEntities;
 }
