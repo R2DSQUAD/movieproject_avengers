@@ -3,12 +3,8 @@ package org.spring.moviepj.dto;
 import java.time.LocalDateTime;
 
 import org.spring.moviepj.entity.CartEntity;
-import org.spring.moviepj.entity.ScreeningSeatEntity;
+import org.spring.moviepj.entity.ScreeningEntity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,12 +23,12 @@ public class CartItemDto {
     private Long cartId;
     private CartEntity cartEntity;
 
-    private Long screeningSeatId;
-    private ScreeningSeatEntity screeningSeatEntity;
+    private String seatNumber;
 
-    private int ticketCount; // 선택한 좌석 개수
+    private int price;
 
-    private int totalPrice;
+    private Long screeningId;
+    private ScreeningEntity screeningEntity;
 
     private LocalDateTime createTime;
 

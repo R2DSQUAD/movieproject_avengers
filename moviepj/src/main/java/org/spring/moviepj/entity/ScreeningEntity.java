@@ -60,7 +60,8 @@ public class ScreeningEntity extends BasicTime {
     @Column(nullable = false)
     private LocalTime screeningEndTime;
 
-    @OneToMany(mappedBy = "screeningEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "screeningEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<ScreeningSeatEntity> screeningSeatEntities;
+    private List<CartItemEntity> cartItemEntities;
+
 }

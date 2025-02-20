@@ -42,10 +42,10 @@ public class MovieServiceImpl implements MovieService {
 
     private static final String TMDB_API_KEY = "3faa3953bb1d0746b8d7294bd106d787";
     private static final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=%s&language=ko-KR";
-    private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
-    @Scheduled(cron = "0 55 10 * * THU")
+    @Scheduled(cron = "0 00 15 * * THU")
     public void fetchAndSaveWeeklyBoxOffice() {
         System.out.println(">>> [스케줄 실행됨] 박스오피스 데이터 가져오기 시작");
         String targetDate = getLastSundayDate();
@@ -98,10 +98,10 @@ public class MovieServiceImpl implements MovieService {
                         if (tmdbTitle.replaceAll("\\s+", "").equalsIgnoreCase(el.getMovieNm().replaceAll("\\s+", ""))) {
                             overview = movieData.optString("overview", "줄거리 정보 없음");
                             posterPath = movieData.optString("poster_path", null) != null
-                                    ? TMDB_IMAGE_URL + movieData.optString("poster_path")
+                                    ? TMDB_IMAGE_URL + "/w500/" + movieData.optString("poster_path")
                                     : null;
                             backdropPath = movieData.optString("backdrop_path", null) != null
-                                    ? TMDB_IMAGE_URL + movieData.optString("backdrop_path")
+                                    ? TMDB_IMAGE_URL +"/w1920_and_h800_multi_faces/" + movieData.optString("backdrop_path")
                                     : null;
                             tmdbId = movieData.optInt("id");
                             break;
@@ -155,13 +155,11 @@ public class MovieServiceImpl implements MovieService {
                         String type = video.optString("type");
                         String name = video.optString("name");
                         String key = video.optString("key");
-                        String youtubeUrl = "https://www.youtube.com/watch?v=" + key;
-
                         TrailerEntity trailer = TrailerEntity.builder()
                                 .movieEntity(movie)
                                 .name(name)
                                 .type(type)
-                                .url(youtubeUrl)
+                                .url(key)
                                 .build();
 
                         trailers.add(trailer);
