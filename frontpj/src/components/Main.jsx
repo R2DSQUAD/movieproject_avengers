@@ -1,13 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-// import LiteYouTubeEmbed from 'react-lite-youtube-embed';
-// import 'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
   const [boxOfficeList, setBoxOfficeList] = useState([]);
   const [randomBoxOfficeList, setRandomBoxOfficeList] = useState([]);
-  const [filteredTrailers, setFilteredTrailers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,7 +64,7 @@ const Main = () => {
                         <button onClick={() => navigate(`/screening/${el.id}`)}>
                           예매하기
                         </button>
-                        <button onClick={() => navigate(`/movie/detail/${el.id}`)}>
+                        <button onClick={() => navigate(`/movie/detail/${el.movieCd}`)}>
                           상세정보
                         </button>
                       </div>
