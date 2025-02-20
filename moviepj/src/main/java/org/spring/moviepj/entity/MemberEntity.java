@@ -49,7 +49,7 @@ public class MemberEntity extends BasicTime {
     private String address;
 
     @Column(nullable = false)
-    private int phoneNumber;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -63,6 +63,5 @@ public class MemberEntity extends BasicTime {
 
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RefreshTokenEntity> refreshTokenEntities;
-
 
 }

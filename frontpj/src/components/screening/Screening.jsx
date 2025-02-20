@@ -19,18 +19,19 @@ const Screening = () => {
         const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];
         return `${month}/${day} (${dayOfWeek})`;
     };
-
     useEffect(() => {
         const fetchScreenings = async () => {
             try {
                 const response = await axios.get(`http://localhost:8090/api/screening/${movieId}`);
-                const today = new Date().toISOString().split("T")[0];
+                console.log("Response data:", response.data); // ✅ 응답 데이터 확인
 
-                const upcomingDates = [...new Set(response.data.map(item => item.screeningDate))]
-                    .filter(date => date >= today);
+                const today = new Date().toISOString().split("T")[0];
+                const upcomingDates = Array.isArray(response.data)
+                    ? [...new Set(response.data.map(item => item.screeningDate))].filter(date => date >= today)
+                    : [];
 
                 setDates(upcomingDates);
-                setScreenings(response.data);
+                setScreenings(Array.isArray(response.data) ? response.data : []); // ✅ 배열인지 확인
 
                 if (upcomingDates.length > 0) {
                     setSelectedDate(upcomingDates[0]);
@@ -42,6 +43,7 @@ const Screening = () => {
         };
         fetchScreenings();
     }, [movieId]);
+
 
     const filterScreenings = (date, allScreenings = screenings) => {
         const now = new Date();
