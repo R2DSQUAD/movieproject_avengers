@@ -22,11 +22,11 @@
 }
 
 body.dark .header {
-    background-color: #374151;
+    /* background-color: #374151; */
 }
 
 body.light .header {
-    background-color: #e5e7eb;
+    /* background-color: #e5e7eb; */
 }
 
 /* 전체 페이지의 상단 패딩 추가 */

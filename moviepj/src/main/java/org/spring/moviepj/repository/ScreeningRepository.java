@@ -31,4 +31,7 @@ public interface ScreeningRepository extends JpaRepository<ScreeningEntity, Long
 
         List<ScreeningEntity> findByMovieEntity_Id(Long movieId);
 
+        @Query("SELECT MAX(s.screeningDate) FROM ScreeningEntity s")
+        Optional<LocalDate> findLatestScreeningDate();
+
 }
