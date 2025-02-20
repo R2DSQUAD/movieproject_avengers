@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
-import org.spring.moviepj.dto.MovieDto;
 import org.spring.moviepj.dto.ScreeningDto;
 import org.spring.moviepj.entity.MovieEntity;
 import org.spring.moviepj.entity.ScreeningEntity;
@@ -35,11 +34,10 @@ public class ScreeningServiceImpl implements ScreeningService {
     /**
      * 매일 새벽 3시에 실행 (최초 실행 시 5일치 생성, 이후에는 하루씩 추가)
      */
-    @Scheduled(cron = "0 57 11 * * *") // 매일 실행
+    @Scheduled(cron = "0 4 11 * * *") // 매일 실행
     public void updateScreenings() {
         System.out.println(">>> [자동 실행] 상영 일정 추가");
 
-        // 기존 상영 데이터 확인
         boolean hasExistingData = screeningRepository.count() > 0;
 
         if (!hasExistingData) {
@@ -51,9 +49,6 @@ public class ScreeningServiceImpl implements ScreeningService {
         }
     }
 
-    /**
-     * (초기 실행: 5일, 이후 매일: 1일)
-     */
     @Override
     public void createScreenings(int daysToAdd) {
         // 최신 영화 데이터 가져오기
@@ -76,8 +71,12 @@ public class ScreeningServiceImpl implements ScreeningService {
             return;
         }
 
-        LocalDate startDate = LocalDate.now();
-        LocalDate endDate = startDate.plusDays(daysToAdd - 1); // 오늘 포함한 5일 설정
+        // DB에서 가장 최근에 등록된 상영 날짜 가져오기 (null이면 오늘부터 시작)
+        Optional<LocalDate> latestScreeningDateOpt = screeningRepository.findLatestScreeningDate();
+        LocalDate startDate = latestScreeningDateOpt.orElse(LocalDate.now());
+        LocalDate endDate = startDate.plusDays(daysToAdd - 1); // 초기에는 5일치, 이후에는 1일씩 추가됨
+
+        System.out.println(" 스케줄 생성 시작: " + startDate + " ~ " + endDate);
 
         int theaterIndex = 0;
 
@@ -88,14 +87,13 @@ public class ScreeningServiceImpl implements ScreeningService {
             // 스케줄 생성
             for (LocalDate screeningDate = startDate; !screeningDate.isAfter(endDate); screeningDate = screeningDate
                     .plusDays(1)) {
-                // 이미 존재하는 상영 일정인지 확인
+                // 이미 존재하는 날짜인지 확인
                 if (screeningRepository.existsByTheaterEntityAndScreeningDate(theaterEntity, screeningDate)) {
                     System.out.println(
                             "⚠ 이미 존재하는 상영 일정 (생성하지 않음): " + screeningDate + " | 상영관: " + theaterEntity.getId());
                     continue;
                 }
 
-                // 5개 중 랜덤으로 3개의 시간 선택
                 List<LocalTime> selectedTimes = getRandomScreeningTimes();
 
                 for (LocalTime startTime : selectedTimes) {
@@ -111,7 +109,7 @@ public class ScreeningServiceImpl implements ScreeningService {
                                 .build();
 
                         screeningRepository.save(screening);
-                        System.out.println(" 상영 일정 추가됨: " + movie.getMovieNm() +
+                        System.out.println("🎬 상영 일정 추가됨: " + movie.getMovieNm() +
                                 " | " + screeningDate + " | " + startTime + " - " + endTime + " | 상영관: "
                                 + theaterEntity.getId());
                     }
@@ -120,9 +118,6 @@ public class ScreeningServiceImpl implements ScreeningService {
         }
     }
 
-    /**
-     * 5개 중 랜덤 3개 선택
-     */
     private List<LocalTime> getRandomScreeningTimes() {
         List<LocalTime> allTimes = new ArrayList<>(List.of(
                 LocalTime.of(10, 0),
@@ -136,9 +131,6 @@ public class ScreeningServiceImpl implements ScreeningService {
         return allTimes.subList(0, 3);
     }
 
-    /**
-     * 해당 날짜와 시간에 상영관이 비어있는지 확인
-     */
     private boolean isScreeningTimeAvailable(TheaterEntity theater, LocalDate date, LocalTime startTime,
             LocalTime endTime) {
         return screeningRepository.countOverlappingScreenings(theater, date, startTime, endTime) == 0;
