@@ -3,7 +3,6 @@ package org.spring.moviepj.repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.spring.moviepj.entity.ScreeningEntity;
 import org.spring.moviepj.entity.TheaterEntity;

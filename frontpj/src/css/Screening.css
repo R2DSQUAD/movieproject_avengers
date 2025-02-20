@@ -1,68 +1,68 @@
 .screening-page {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
-    text-align: center;
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
 /* 날짜 선택 버튼 */
 .date-selector {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .date-selector button {
-    background-color: #fff;
-    border: 2px solid #ccc;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
 }
 
 .date-selector button:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 .date-selector .selected {
-    background-color: #ffcc00;
-    border-color: #ffcc00;
-    font-weight: bold;
+  background-color: #ffcc00;
+  border-color: #ffcc00;
+  font-weight: bold;
 }
 
 /* 상영 정보 목록 */
 ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 ul li {
-    background-color: #ffffff;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* background-color: #ffffff; */
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 ul li p {
-    margin: 5px 0;
-    font-size: 16px;
-    color: #333;
+  margin: 5px 0;
+  font-size: 16px;
+  color: #333;
 }
 
 ul li p:first-child {
-    font-weight: bold;
-    color: #ff6600;
+  font-weight: bold;
+  color: #ff6600;
 }
