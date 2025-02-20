@@ -7,7 +7,7 @@ const MainLayout = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    if (isDarkMode) {
+    if (!isDarkMode) {
       document.body.classList.add("dark");
       document.body.classList.remove("light");
     } else {

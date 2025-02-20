@@ -1,12 +1,12 @@
 
 import React from "react";
+import MovieDetail from "../../components/movie/MovieDetail";
 
-import Trailer from "../../components/movie/Trailer";
 
 const TrailerPage = () => {
   return (
     <div>
-      <Trailer />
+      <MovieDetail />
     </div>
   );
 };

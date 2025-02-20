@@ -6,9 +6,9 @@ const MainLayout = lazy(() => import("../layout/MainLayout"));
 const MainPage = lazy(() => import("../pages/MainPage"));
 const MoviePage = lazy(() => import("../pages/movie/MoviePage"));
 const MemberLoginPage = lazy(() => import("../pages/member/MemberLoginPage"));
-const TrailerPage = lazy(() => import("../pages/movie/TrailerPage"));
 const ScreeningPage = lazy(() => import("../pages/screening/ScreeningPage"));
 const ScreeningSeatPage = lazy(() => import("../pages/screeningSeat/ScreeningSeatPage"));
+const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
 
 const root = createBrowserRouter([
   {
@@ -36,6 +36,14 @@ const root = createBrowserRouter([
         ),
       },
       {
+        path: "movie/detail/:movieId",
+        element: (
+          <Suspense fallback={Loading}>
+            <MovieDetail />
+          </Suspense>
+        ),
+      },
+      {
         path: "login",
         element: (
           <Suspense fallback={Loading}>
@@ -48,14 +56,6 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <ScreeningPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "movie/trailer",
-        element: (
-          <Suspense fallback={Loading}>
-            <TrailerPage />
           </Suspense>
         ),
       },
