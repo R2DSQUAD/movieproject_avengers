@@ -38,6 +38,7 @@ public class WebOnlySecurityConfigClass {
                 .usernameParameter("userEmail")
                 .passwordParameter("userPw")
                 .loginProcessingUrl("/member/login")
+                .failureUrl("/member/login?error=true")
                 .defaultSuccessUrl("/", true).permitAll());
 
         http.logout(out -> out

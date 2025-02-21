@@ -24,6 +24,8 @@ public class MemberServiceImpl implements MemberService {
                 .userEmail(memberDto.getUserEmail())
                 .userPw(passwordEncoder.encode(memberDto.getUserPw()))
                 .userName(memberDto.getUserName())
+                .address(memberDto.getAddress())
+                .phoneNumber(memberDto.getPhoneNumber())
                 .role(Role.MEMBER)
                 .build());
     }
