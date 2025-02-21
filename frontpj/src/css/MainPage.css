@@ -1,46 +1,51 @@
 .index {
+  
 }
 
 .index .index-con {
-  
+  margin-top: -80px; 
 }
 
 
 .index .index-con .title {
   position: relative;
-  
   width: 100%;
-  height: 600px;
+  height: 600px; /* 원하는 높이로 조정 */
+  overflow: hidden; /* 이미지를 넘치지 않도록 */
 }
 
 .index .index-con .title img{
   position: absolute;
-  display: flex;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 800px;
-  object-fit: cover;
-  box-sizing: border-box;
-  filter: brightness(40%);
+  height: 600px; /* 부모 높이와 동일 */
+  object-fit: cover; /* 이미지가 영역에 맞게 잘림/확대 */
+  filter: brightness(40%); /* 어둡게 보이게 조정 */
+  z-index: 0; /* 뒤에 배치 */
 }
 
 .index .index-con .title .title-con{
   position: relative;
-  top: 0%;
-  z-index: 2;
-  color: white;
+  z-index: 1; /* 이미지보다 위에 텍스트를 배치 */
+  color: #fff; /* 텍스트 색상 */
+  /* 가운데 정렬이나 여백을 주고 싶다면 추가 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0 40px; /* 좌우 여백 */
 }
 
-.index .index-con .content{
+.index .index-con .main-content{
   box-sizing: border-box;
   padding: 0 100px;
 }
 
-.index .index-con .content .popular-movie{
+.index .index-con .main-content .popular-movie{
 }
 
-.index .index-con .content .popular-movie > ul {
+.index .index-con .main-content .popular-movie > ul {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(10, 1fr);
@@ -53,7 +58,7 @@
   overflow-x: auto;
 }
 
-.index .index-con .content .popular-movie > ul > li{
+.index .index-con .main-content .popular-movie > ul > li{
   display: inline-grid;
   box-sizing: border-box;
   cursor: pointer;
@@ -61,16 +66,16 @@
   transform-style: preserve-3d;
 }
 
-.index .index-con .content .popular-movie > ul > li > * {
+.index .index-con .main-content .popular-movie > ul > li > * {
   backface-visibility: hidden;
   grid-area: 1 / 1 / 1 / 1;
 }
 
-.index .index-con .content .popular-movie > ul > li:hover {
+.index .index-con .main-content .popular-movie > ul > li:hover {
   transform: perspective(800px) rotateY(180deg);
 }
 
-.index .index-con .content .popular-movie > ul > li .item-front span{
+.index .index-con .main-content .popular-movie > ul > li .item-front span{
   position: absolute;
   bottom: 0%;
   z-index: 2;
@@ -80,16 +85,16 @@
   font-style: italic;
 }
 
-.index .index-con .content .popular-movie > ul > li > div.item-back {
+.index .index-con .main-content .popular-movie > ul > li > div.item-back {
   transform: perspective(800px) rotateY(180deg);
 }
 
-.index .index-con .content .popular-movie > ul > li > div {
+.index .index-con .main-content .popular-movie > ul > li > div {
   width: 100%;
   position: relative;
 }
 
-.index .index-con .content .popular-movie > ul > li > div > img {
+.index .index-con .main-content .popular-movie > ul > li > div > img {
   display: flex;
   box-sizing: border-box;
   width: 200px;
@@ -99,21 +104,33 @@
   filter: brightness(80%);
 }
 
-.index .index-con .content .popular-movie > ul > li > div.item-back > img {
+.index .index-con .main-content .popular-movie > ul > li > div.item-back > img {
   filter: brightness(20%);
 }
 
-.index .index-con .content .popular-movie > ul > li > div > .boxOfficeDetail {
+.index .index-con .main-content .popular-movie > ul > li > div > .boxOfficeDetail {
   position: absolute;
   top: 0%;
   z-index: 2;
 }
 
-.index .index-con .content .popular-movie > ul > li > div > .boxOfficeDetail > * {
+.index .index-con .main-content .popular-movie > ul > li > div > .boxOfficeDetail > * {
   z-index: 3;
   filter: none;
-  color: white;
+  color: black;
   font-weight: bold;
   font-size: 20px;
 }
 
+/* body.light > nav a{
+  color: #fff !important;
+} */
+
+/* body.light > .logo .logo-con #logo, .logo .logo-con img,
+body.light > .logo .logo-con #logo, .logo .logo-con p,
+.nav > a,
+.bar > a,
+#lightMode
+{
+  filter: brightness(0) contrast(100) invert(1) !important;
+} */

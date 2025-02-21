@@ -1,6 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCountUp } from "../hooks/useCountup";
+
 
 const Main = () => {
   const [boxOfficeList, setBoxOfficeList] = useState([]);
@@ -10,24 +12,28 @@ const Main = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 박스오피스 데이터 가져오기
         const boxOfficeResponse = await axios.get(
           "http://localhost:8090/api/boxOfficeList"
         );
         const boxOfficeData = boxOfficeResponse.data;
         setBoxOfficeList(boxOfficeData);
-        console.log("BoxOffice Data:", boxOfficeData);
 
-        // 랜덤 인덱스 선택 후 랜덤 박스오피스 데이터 저장
         const randomIndex = Math.floor(Math.random() * boxOfficeData.length);
         const selectedBoxOffice = boxOfficeData[randomIndex];
-        setRandomBoxOfficeList(selectedBoxOffice);       
+        setRandomBoxOfficeList(selectedBoxOffice);
       } catch (err) {
         console.error(err);
       }
     };
+
     fetchData();
   }, []);
+
+  // audiAcc 값이 없거나 숫자가 아니면 0으로 설정
+  const audiAcc = useCountUp(
+    Number(randomBoxOfficeList.audiAcc) || 0, // 숫자가 아니면 0 사용
+    1500
+  );
 
   return (
     <div className="index">
@@ -41,12 +47,25 @@ const Main = () => {
             <h1 className="movie-title">{randomBoxOfficeList.movieNm}</h1>
             <h4 className="movie-plot">{randomBoxOfficeList.overview}</h4>
             <h6 className="movie-age-rating">연령 등급 (15)</h6>
-            <h6 className="movie-people">
-              누적 관객수: {randomBoxOfficeList.audiAcc}
-            </h6>
+            <h6 className="movie-people">누적 관객수: {audiAcc}명</h6>
+
+            <div className="movieBtn">
+              <button
+                onClick={() => navigate(`/screening/${randomBoxOfficeList.id}`)}
+              >
+                예매하기
+              </button>
+              <button
+                onClick={() =>
+                  navigate(`/movie/detail/${randomBoxOfficeList.movieCd}`)
+                }
+              >
+                상세정보
+              </button>
+            </div>
           </div>
         </div>
-        <div className="content">
+        <div className="main-content">
           <h3>인기 영화</h3>
           <div className="popular-movie">
             <ul>
@@ -64,7 +83,11 @@ const Main = () => {
                         <button onClick={() => navigate(`/screening/${el.id}`)}>
                           예매하기
                         </button>
-                        <button onClick={() => navigate(`/movie/detail/${el.movieCd}`)}>
+                        <button
+                          onClick={() =>
+                            navigate(`/movie/detail/${el.movieCd}`)
+                          }
+                        >
                           상세정보
                         </button>
                       </div>
@@ -76,7 +99,7 @@ const Main = () => {
           </div>
         </div>
       </div>
-      </div>
+    </div>
   );
 };
 

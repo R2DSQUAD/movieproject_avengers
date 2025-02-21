@@ -2,42 +2,58 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { LiteYoutubeEmbed } from "react-lite-yt-embed";
+import { useCountUp } from "../../hooks/useCountup";
 
 const MovieDetail = () => {
   const { movieCd } = useParams();
-  const [filteredTrailers, setFilteredTrailers] = useState([]);
-  const [movieInfo, setMovieInfo] = useState([]);
+  const [trailers, setTrailers] = useState([]);
+  const [movieInfo, setMovieInfo] = useState({});
+  const [selectedTrailerId, setSelectedTrailerId] = useState(null); // 클릭된 영상 ID 상태 관리
 
   useEffect(() => {
-    const fetchTrailers = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8090/api/trailerList"
         );
         const trailerData = response.data;
 
-        // id에 해당하는 트레일러 필터링
+        // ID에 해당하는 트레일러 필터링
         const filtered = trailerData.filter(
           (trailer) => trailer.movieEntity.movieCd.toString() === movieCd
         );
 
-        setMovieInfo(filtered[0].movieEntity);
-        console.log(filtered[0].movieEntity);
-        // 트레일러의 url 값만 추출
-        const trailerUrls = filtered.map((trailer) => trailer.url);
-        console.log("Trailer URLs:", trailerUrls);
+        setMovieInfo(filtered[0]?.movieEntity || {});
+        setTrailers(filtered);
 
-        // 상태 업데이트
-        setFilteredTrailers(trailerUrls);
+        const dataCount = filtered.length; // 예: 데이터 개수가 10이라면
+        const gridContainer = document.querySelector('.thumbnailImg');
+        gridContainer.style.gridTemplateColumns = `repeat(${dataCount}, 1fr)`;
+
+        // 첫 번째 트레일러를 기본적으로 선택
+        if (filtered.length > 0) {
+          setSelectedTrailerId(filtered[0].url);
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchTrailers();
-  }, [movieCd]);
+    fetchData();
+  }, [movieCd]); // ✅ movieCd 변경 시 실행
+
+  // 썸네일 클릭 시 해당 ID를 상태에 저장
+  const handleThumbnailClick = (id) => {
+    setSelectedTrailerId(id);
+  };
+
+  const audiAcc = useCountUp(
+    Number(movieInfo.audiAcc) || 0, // 숫자가 아니면 0 사용
+    1500
+  );
 
   return (
-    <div className="movieDetail">
+    <div className="content">
+      <div className="movieDetail">
       <div className="movieDetail-con">
         <div className="leftBar">
           <div className="leftBar-con">
@@ -50,26 +66,45 @@ const MovieDetail = () => {
               <h4>순위</h4>
               <span>{movieInfo.rank}등</span>
               <h4>누적 관객 수</h4>
-              <span>{movieInfo.audiAcc}명</span>
+              <span>{audiAcc}명</span>
             </div>
           </div>
         </div>
+
         <div className="content">
-          <ul>
-            {filteredTrailers.map((el, idx) => {
-              return (
-                <li key={idx} data-id={el.id}>
-                  <LiteYoutubeEmbed
-                    id={filteredTrailers[idx]}
-                    mute={false}
-                    params="controls=0&rel=0"
-                  />
-                </li>
-              );
-            })}
+          <span>줄거리</span>
+          <p>{movieInfo.overview}</p>
+          {/* 상단에 고정된 영상 플레이어 */}
+          {selectedTrailerId && (
+            <div className="video-container">
+              <LiteYoutubeEmbed
+                key={selectedTrailerId} // key 추가
+                id={selectedTrailerId}
+                mute={false}
+                params="controls=1&rel=0"
+              />
+            </div>
+          )}
+          {/* 썸네일들 */}
+          <ul className="thumbnailImg">
+            {trailers.map((el, idx) => (
+              <>
+              <li className="thumbnailImg-con">
+                <img
+                  key={idx}
+                  src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
+                  alt={el.name}
+                  onClick={() => handleThumbnailClick(el.url)} // 클릭된 썸네일 ID 저장
+                  style={{ cursor: "pointer", margin: "10px" }}
+                />
+                <span>{el.name.replace("["+ movieInfo.movieNm + "]", "").trim()}</span>
+              </li>
+              </>
+            ))}
           </ul>
         </div>
       </div>
+    </div>
     </div>
   );
 };
