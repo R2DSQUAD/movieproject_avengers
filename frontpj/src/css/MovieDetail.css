@@ -11,8 +11,16 @@
   box-sizing: border-box;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   /* 바닥 그림자 */
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   /* 그림자 효과에 부드러운 전환 */
+}
+
+body.dark .content .movieDetail { 
+  background-color: var(--color-dark-2);
+}
+
+body.light .content .movieDetail { 
+  background-color: var(--color-light-2);
 }
 
 .content .movieDetail .movieDetail-con {
@@ -26,7 +34,11 @@
 }
 
 body.dark .content .movieDetail .movieDetail-con {
-  background-color: #1e2939;
+  background-color: var(--color-dark-3);
+}
+
+body.light .content .movieDetail .movieDetail-con {
+  background-color: var(--color-light-3);
 }
 
 .content .movieDetail .movieDetail-con .leftBar {
@@ -34,15 +46,6 @@ body.dark .content .movieDetail .movieDetail-con {
   display: flex;
   width: 25%;
   box-sizing: border-box;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  /* 바닥 그림자 */
-  transition: box-shadow 0.3s ease;
-  /* 그림자 효과에 부드러운 전환 */
-  
-}
-
-body.dark .content .movieDetail .movieDetail-con .leftBar {
-  background-color: #383838;
 }
 
 .content .movieDetail .movieDetail-con .leftBar .leftBar-con {
@@ -68,18 +71,18 @@ body.dark .content .movieDetail .movieDetail-con .leftBar {
   box-sizing: border-box;
   flex: 3 0 500px; /* 사이드바의 최소 너비 설정 */
   width: 75%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.5s ease;
 }
 
 body.dark .content .movieDetail .movieDetail-con .content {
-  background-color: #1e2939;
+  background-color: var(--color-dark-3);
 }
 
 
 .content .movieDetail .movieDetail-con .content>.video-container {
   width: 100%;
 }
-
-.content .movieDetail .movieDetail-con .content>.video-container>.styles-module_yt-lite__1-uDa {}
 
 .content .movieDetail .movieDetail-con .content>ul {
   display: grid;
@@ -100,14 +103,21 @@ body.dark .content .movieDetail .movieDetail-con .content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5px;
+  padding: 10px;
 }
 
 .content .movieDetail .movieDetail-con .content>ul>li>img {
   width: 100%;
+  max-width: 300px;
   min-width: 300px;
   height: auto;
   position: static;
   object-fit: cover;
   box-sizing: border-box;
+  transition: transform 0.5s;
+  transform-origin: center center;
+}
+
+.content .movieDetail .movieDetail-con .content>ul>li>img:hover {
+  transform: scale(1.03);
 }

@@ -12,6 +12,9 @@ const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
 const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
+const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
+
+
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
 const root = createBrowserRouter([
   {
@@ -87,6 +90,15 @@ const root = createBrowserRouter([
           </Suspense>
         ),
       },
+      {
+        path: "/member/detail",
+        element: (
+          <Suspense fallback={Loading}>
+            <MyMemberInfoPage />
+          </Suspense>
+        ),
+      },
+
       {
         path: "/calendar",
         element: (

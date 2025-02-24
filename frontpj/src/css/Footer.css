@@ -2,8 +2,8 @@
 .footer {
     transition: all 0.5s;
     width: 100%; /* 화면 가로폭에 맞게 */
-    background-color: #f8f8f8;
-    color: #666;
+    background-color: var(--color-light-2);
+    color: rgba(255, 255, 255, 0.5);
     text-align: center;
     padding: 20px;
     font-size: 12px;
@@ -12,15 +12,5 @@
 }
 
 body.dark .footer {
-    background-color: #121212;
-}
-
-/* 푸터 링크 스타일 */
-.footer a {
-    color: #666;
-    text-decoration: none;
-}
-
-.footer a:hover {
-    color: #333;
+    background-color: var(--color-dark-2);
 }

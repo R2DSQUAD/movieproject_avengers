@@ -1,15 +1,16 @@
 import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCountUp } from "../hooks/useCountup";
 
 
-const Main = () => {
+const Main = () => {  
   const [boxOfficeList, setBoxOfficeList] = useState([]);
   const [randomBoxOfficeList, setRandomBoxOfficeList] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 데이터 fetch 함수  
     const fetchData = async () => {
       try {
         const boxOfficeResponse = await axios.get(
@@ -27,11 +28,13 @@ const Main = () => {
     };
 
     fetchData();
-  }, []);
+
+    
+  }, []); // 빈 배열: 마운트 시 한 번 실행
 
   // audiAcc 값이 없거나 숫자가 아니면 0으로 설정
   const audiAcc = useCountUp(
-    Number(randomBoxOfficeList.audiAcc) || 0, // 숫자가 아니면 0 사용
+    Number(randomBoxOfficeList.audiAcc) || 0,
     1500
   );
 
@@ -47,7 +50,7 @@ const Main = () => {
             <h1 className="movie-title">{randomBoxOfficeList.movieNm}</h1>
             <h4 className="movie-plot">{randomBoxOfficeList.overview}</h4>
             <h6 className="movie-age-rating">연령 등급 (15)</h6>
-            <h6 className="movie-people">누적 관객수: {audiAcc}명</h6>
+            <h6 className="movie-people">누적 관객수: {audiAcc.toLocaleString("ko-KR")}명</h6>
 
             <div className="movieBtn">
               <button
@@ -69,32 +72,30 @@ const Main = () => {
           <h3>인기 영화</h3>
           <div className="popular-movie">
             <ul>
-              {boxOfficeList.map((el, idx) => {
-                return (
-                  <li key={idx} data-id={el.id}>
-                    <div className="item-front">
-                      <img src={el.poster_path} alt={el.movieNm}></img>
-                      <span className="movie-rank">{el.rank}</span>
+              {boxOfficeList.sort((a,b)=> a.rank - b.rank).map((el, idx) => (
+                <li key={idx} data-id={el.id}>
+                  <div className="item-front">
+                    <img src={el.poster_path} alt={el.movieNm} />
+                    <span className="movie-rank">{el.rank}</span>
+                  </div>
+                  <div className="item-back">
+                    <img src={el.poster_path} alt={el.movieNm} />
+                    <div className="boxOfficeDetail">
+                      <h4>{el.movieNm}</h4>
+                      <button onClick={() => navigate(`/screening/${el.id}`)}>
+                        예매하기
+                      </button>
+                      <button
+                        onClick={() =>
+                          navigate(`/movie/detail/${el.movieCd}`)
+                        }
+                      >
+                        상세정보
+                      </button>
                     </div>
-                    <div className="item-back">
-                      <img src={el.poster_path} alt={el.movieNm}></img>
-                      <div className="boxOfficeDetail">
-                        <h4>{el.movieNm}</h4>
-                        <button onClick={() => navigate(`/screening/${el.id}`)}>
-                          예매하기
-                        </button>
-                        <button
-                          onClick={() =>
-                            navigate(`/movie/detail/${el.movieCd}`)
-                          }
-                        >
-                          상세정보
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

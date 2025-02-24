@@ -22,6 +22,10 @@ const ScreeningSeat = () => {
         return selectedSeats.includes(seatNumber) ? "seat selected" : "seat available";
     };
 
+    const cartFn = () => {
+
+    }
+
     return (
         <div className="seat-selection-page">
             <h1 className="seat-title">좌석 선택 (상영 스케줄: {screeningId})</h1>
@@ -52,6 +56,9 @@ const ScreeningSeat = () => {
                 ) : (
                     <p>선택된 좌석이 없습니다.</p>
                 )}
+            </div>
+            <div className="cart-go">
+                <button onClick={cartFn}>장바구니</button>
             </div>
         </div>
     );

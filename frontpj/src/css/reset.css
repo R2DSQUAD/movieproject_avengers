@@ -1,20 +1,94 @@
+:root {
+	--color-dark-1: #121212;
+	--color-dark-2: #222222;
+	--color-dark-3: #333333;
+	--color-dark-text: rgba(255, 255, 255, 0.5);
+	--color-light-1: #EDEDED;
+	--color-light-2: #DDDDDD;
+	--color-light-3: #CCCCCC;
+	--color-light-text: rgba(0, 0, 0, 0.5);
+}
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
 */
 
-html, body, div, span, applet, object, iframe, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -22,49 +96,84 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
 	display: block;
 }
+
 body {
 	line-height: 1;
 	transition: all 0.5s;
 }
-ol, ul {
+
+ol,
+ul {
 	list-style: none;
 }
-blockquote, q {
+
+blockquote,
+q {
 	quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
 	content: '';
 	content: none;
 }
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-                  
+
 body a {
 	text-decoration: none;
 }
 
 body.dark {
-background-color: #101828;
-color: #f3f4f6;
+	background-color: var(--color-dark-1);
 }
 
 body.light {
-	background-color: #f3f4f6;
-	color: #101828;
+	background-color: var(--color-light-1);
 }
 
-body.dark a {
-  color: #f3f4f6;
+
+body.dark a,
+body.dark p,
+body.dark span,
+body.dark h1, 
+body.dark h2, 
+body.dark h3, 
+body.dark h4, 
+body.dark h5, 
+body.dark h6{
+	color: rgba(255, 255, 255, 0.5);
 }
 
-body.light a {
-  color: #101828;
+body.light a,
+body.light p,
+body.light span,
+body.light h1, 
+body.light h2, 
+body.light h3, 
+body.light h4, 
+body.light h5, 
+body.light h6{
+	color: rgba(0, 0, 0, 0.5);
 }
+

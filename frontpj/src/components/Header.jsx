@@ -1,33 +1,36 @@
 import { useEffect, useState } from "react";
 import "../css/Header.css";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux"
-import { logout } from "../slices/loginSlice"
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../slices/loginSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function Header({ isDarkMode, setIsDarkMode }) {
-
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const loginState = useSelector(state => state.loginSlice);
+  const [isVisible, setIsVisible] = useState(false);
+  const loginState = useSelector((state) => state.loginSlice);
   const isLoggedIn = !!loginState.email;
-
 
   const handleLogout = () => {
     dispatch(logout());
-    alert("로그아웃되었습니다")
-    navigate({ pathname: `/` }, { replace: true })
+    alert("로그아웃되었습니다");
+    navigate({ pathname: `/` }, { replace: true });
   };
 
+  const memberInfoOnClick = () => {
+    setIsVisible(!isVisible);
+  }
+
   return (
-    <header className="header">
+    <header>
       <nav className="nav">
         <Link to="/">
           <div className="logo">
             <div className="logo-con">
               <img src="/image/logo.png" alt="logo" id="logo" />
-              <p>Movie</p>
+              <span>Movie</span>
             </div>
           </div>
         </Link>
@@ -45,19 +48,33 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
         </Link>
       </nav>
       <div className="bar">
-        <input type="text" name="search" id="search" placeholder="search" />
+        <div className="search-container">
+          <input type="text" name="search" id="search" placeholder="search" />
+          <img src="/image/search.svg" alt="search" className="search-icon" />
+        </div>
         {isLoggedIn ? (
           <>
-            <Link to="/">{loginState.email}님</Link>
-            <button onClick={handleLogout}>로그아웃</button>
+            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick} />
+            <div className="member-info-con">
+              <Link to="/member/detail">{loginState.email}님</Link>
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
           </>
         ) : (
           <>
-            <Link to="/member/join">회원가입</Link>
-            <Link to="/member/login">로그인</Link>
+            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick} />
+            {isVisible && (
+              <div className="member-info-con">
+                <Link to="/member/join">회원가입</Link>
+                <Link to="/member/login">로그인</Link>
+              </div>
+            )}
           </>
         )}
-        <div onClick={() => setIsDarkMode((prev) => !prev)} className="toggle-button">
+        <div
+          onClick={() => setIsDarkMode((prev) => !prev)}
+          className="toggle-button"
+        >
           {isDarkMode ? (
             <img src="/image/light.svg" alt="lightMode" id="lightMode"></img>
           ) : (

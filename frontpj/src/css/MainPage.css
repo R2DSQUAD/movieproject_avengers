@@ -1,7 +1,3 @@
-.index {
-  
-}
-
 .index .index-con {
   margin-top: -80px; 
 }
@@ -12,6 +8,11 @@
   width: 100%;
   height: 600px; /* 원하는 높이로 조정 */
   overflow: hidden; /* 이미지를 넘치지 않도록 */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .index .index-con .title img{
@@ -21,20 +22,24 @@
   width: 100%;
   height: 600px; /* 부모 높이와 동일 */
   object-fit: cover; /* 이미지가 영역에 맞게 잘림/확대 */
-  filter: brightness(40%); /* 어둡게 보이게 조정 */
+  filter: brightness(30%); /* 어둡게 보이게 조정 */
   z-index: 0; /* 뒤에 배치 */
 }
 
 .index .index-con .title .title-con{
   position: relative;
   z-index: 1; /* 이미지보다 위에 텍스트를 배치 */
-  color: #fff; /* 텍스트 색상 */
   /* 가운데 정렬이나 여백을 주고 싶다면 추가 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
   padding: 0 40px; /* 좌우 여백 */
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.index .index-con .title .title-con > * {
+  color: rgba(255, 255, 255, 0.5); /* 텍스트 색상 */
 }
 
 .index .index-con .main-content{
@@ -42,7 +47,8 @@
   padding: 0 100px;
 }
 
-.index .index-con .main-content .popular-movie{
+body.light .index .index-con .main-content > h3{
+  color:rgba(0, 0, 0, 0.5)
 }
 
 .index .index-con .main-content .popular-movie > ul {
@@ -81,7 +87,7 @@
   z-index: 2;
   font-size: 50px;
   font-weight: bold;
-  color: white;
+  color: rgba(255,255,255,0.8);
   font-style: italic;
 }
 
@@ -101,7 +107,7 @@
   height: 300px;
   border-radius: 10px;
   z-index: 1;
-  filter: brightness(80%);
+  filter: brightness(70%);
 }
 
 .index .index-con .main-content .popular-movie > ul > li > div.item-back > img {
@@ -114,23 +120,18 @@
   z-index: 2;
 }
 
+.index .index-con .main-content .popular-movie > ul > li > div > .boxOfficeDetail > h4 {
+  color: rgba(255,255,255,0.5);
+}
+
 .index .index-con .main-content .popular-movie > ul > li > div > .boxOfficeDetail > * {
   z-index: 3;
   filter: none;
-  color: black;
+  color: rgba(0, 0, 0, 0.5);
   font-weight: bold;
   font-size: 20px;
 }
 
-/* body.light > nav a{
-  color: #fff !important;
-} */
-
-/* body.light > .logo .logo-con #logo, .logo .logo-con img,
-body.light > .logo .logo-con #logo, .logo .logo-con p,
-.nav > a,
-.bar > a,
-#lightMode
-{
-  filter: brightness(0) contrast(100) invert(1) !important;
-} */
+body.light > nav a{
+  color: rgba(255, 255, 255, 0.5);
+}
