@@ -59,14 +59,14 @@ const MovieDetail = () => {
           <div className="leftBar-con">
             <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
             <div className="movie-info">
-              <h4>제목</h4>
+              <h3>제목</h3>
               <span>{movieInfo.movieNm}</span>
-              <h4>개봉일</h4>
+              <h3>개봉일</h3>
               <span>{movieInfo.openDt}</span>
-              <h4>순위</h4>
+              <h3>순위</h3>
               <span>{movieInfo.rank}등</span>
-              <h4>누적 관객 수</h4>
-              <span>{audiAcc}명</span>
+              <h3>누적 관객 수</h3>
+              <span>{audiAcc.toLocaleString("ko-KR")}명</span>
             </div>
           </div>
         </div>

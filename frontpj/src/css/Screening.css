@@ -48,7 +48,7 @@
   padding: 20px;
   text-align: center;
   color: #d1d0d0;
-  background: #121212;
+  background: var(--color-dark-1);
   border-top: 1px solid #444;
 }
 

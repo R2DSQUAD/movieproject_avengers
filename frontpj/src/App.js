@@ -3,7 +3,7 @@ import './App.css';
 import root from './router/root';
 import "./css/reset.css";
 
-configure
+
 function App() {
   return (
     <>

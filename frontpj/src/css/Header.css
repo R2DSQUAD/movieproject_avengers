@@ -1,5 +1,5 @@
 /* 헤더 전체 스타일 */
-.header {
+header {
     transition: all 0.5s;
     position: fixed;
     /* 상단 고정 */
@@ -19,6 +19,59 @@
     z-index: 99;
     /* 다른 요소보다 위에 배치 */
     box-sizing: border-box;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+#search {
+    border-radius: 25px;
+    /* 둥글게 만들기 */
+    
+    /* 기본 테두리 */
+    padding: 10px 50px 10px 20px;
+    /* 패딩 추가 */
+    outline: none;
+}
+
+#search:focus {
+    border-color: var(--color-light-1);
+    /* 포커스 시 테두리 색상 변경 */
+    box-shadow: none;
+    /* 포커스 시 그림자 제거 */
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    width: 20px; /* 아이콘 크기 */
+    height: 20px; /* 아이콘 크기 */
+    cursor: pointer;
+}
+
+body.dark #search {
+    background-color: var(--color-dark-1);
+    border: 1px solid var(--color-dark-3);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+body.light .search-icon {
+    filter: invert(0%) !important; 
+}
+
+body.light #search {
+    background-color: var(--color-light-1);
+    border: 1px solid var(--color-light-3);
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.member-info {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
 }
 
 /* 전체 페이지의 상단 패딩 추가 */
@@ -45,18 +98,14 @@ body {
     transition: all 0.5s;
 }
 
-body.dark .logo .logo-con #logo {
-    filter: invert(100%);
-}
-
-.logo .logo-con p {
+.logo .logo-con span {
     box-sizing: border-box;
     font-size: 24px;
     transition: all 0.5s;
 }
 
 /* 네비게이션 바 */
-.header .nav {
+header .nav {
     display: flex;
     gap: 20px;
     flex-grow: 1;
@@ -65,7 +114,7 @@ body.dark .logo .logo-con #logo {
 }
 
 /* 네비게이션 링크 */
-.header .nav .nav-link {
+header .nav .nav-link {
     font-size: 16px;
     font-weight: 500;
     transition: color 0.3s;
@@ -74,12 +123,8 @@ body.dark .logo .logo-con #logo {
     box-sizing: border-box;
 }
 
-.nav-link:hover {
-    color: #ffcc00;
-}
-
 /* 바 */
-.header .bar {
+header .bar {
     justify-content: flex-end;
     /* 네비게이션을 오른쪽으로 정렬 */
     box-sizing: border-box;
@@ -88,7 +133,7 @@ body.dark .logo .logo-con #logo {
     align-items: center;
 }
 
-.header .bar>* {
+header .bar>* {
     transition: all 0.5s;
 }
 
@@ -96,12 +141,4 @@ body.dark .logo .logo-con #logo {
     width: 30px;
     height: 30px;
     object-fit: cover;
-}
-
-#darkMode {
-    filter: brightness(0) contrast(100) invert(1);
-}
-
-#lightMode {
-    filter: brightness(0) contrast(100);
 }
