@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface MemberRepository extends JpaRepository<MemberEntity, String> {
     @EntityGraph(attributePaths = { "memberRoleList" })
     @Query("select m from MemberEntity m where m.email = :email")
-    MemberEntity getWithRoles(@Param("email") String email); // 조회 시에 권한의 목록까지 같
+    MemberEntity getWithRoles(@Param("email") String email);
+
+    Optional<MemberEntity> findByEmail(String email);
 
 }
