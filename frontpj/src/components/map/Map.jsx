@@ -56,7 +56,7 @@ const Map = () => {
       const { latitude, longitude } = position.coords;
       try {
         const res = await axios.get(
-          `http://192.168.23.219:8090/api/cinemas/nearby?lat=${latitude}&lon=${longitude}`
+          `http://localhost:8090/api/cinemas/nearby?lat=${latitude}&lon=${longitude}`
         );
         setCinemas(res.data);
         clearMarkers(); // 기존 영화관 마커 삭제 후 새 마커 추가
