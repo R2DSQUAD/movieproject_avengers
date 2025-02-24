@@ -73,4 +73,7 @@ public class MemberEntity extends BasicTime {
         this.social = social;
     }
 
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CalendarEntity> calendarEntities;
+
 }
