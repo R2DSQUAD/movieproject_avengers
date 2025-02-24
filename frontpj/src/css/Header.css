@@ -21,14 +21,6 @@
     box-sizing: border-box;
 }
 
-body.dark .header {
-    /* background-color: #374151; */
-}
-
-body.light .header {
-    /* background-color: #e5e7eb; */
-}
-
 /* 전체 페이지의 상단 패딩 추가 */
 body {
     padding-top: 80px;
@@ -107,9 +99,9 @@ body.dark .logo .logo-con #logo {
 }
 
 #darkMode {
-    filter: brightness(0) contrast(100);
+    filter: brightness(0) contrast(100) invert(1);
 }
 
 #lightMode {
-    filter: brightness(0) contrast(100) invert(1);
+    filter: brightness(0) contrast(100);
 }

@@ -52,13 +52,13 @@ body a {
 }
 
 body.dark {
-background-color: #111827;
+background-color: #101828;
 color: #f3f4f6;
 }
 
 body.light {
 	background-color: #f3f4f6;
-	color: #111827;
+	color: #101828;
 }
 
 body.dark a {
@@ -66,5 +66,5 @@ body.dark a {
 }
 
 body.light a {
-  color: #111827;
+  color: #101828;
 }

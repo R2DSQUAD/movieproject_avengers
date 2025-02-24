@@ -34,7 +34,7 @@ public class ScreeningServiceImpl implements ScreeningService {
     /**
      * 매일 새벽 3시에 실행 (최초 실행 시 5일치 생성, 이후에는 하루씩 추가)
      */
-    @Scheduled(cron = "0 1 15 * * *") // 매일 실행
+    @Scheduled(cron = "0 52 10 * * *") // 매일 실행
     public void updateScreenings() {
         System.out.println(">>> [자동 실행] 상영 일정 추가");
 
@@ -73,7 +73,8 @@ public class ScreeningServiceImpl implements ScreeningService {
 
         // DB에서 가장 최근에 등록된 상영 날짜 가져오기 (null이면 오늘부터 시작)
         Optional<LocalDate> latestScreeningDateOpt = screeningRepository.findLatestScreeningDate();
-        LocalDate startDate = latestScreeningDateOpt.orElse(LocalDate.now());
+        LocalDate startDate = latestScreeningDateOpt.map(date -> date.plusDays(1)).orElse(LocalDate.now());
+
         LocalDate endDate = startDate.plusDays(daysToAdd - 1); // 초기에는 5일치, 이후에는 1일씩 추가됨
 
         System.out.println(" 스케줄 생성 시작: " + startDate + " ~ " + endDate);

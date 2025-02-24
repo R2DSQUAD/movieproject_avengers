@@ -6,7 +6,6 @@ const Loading = <div className="loading">Loading...</div>;
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const MainPage = lazy(() => import("../pages/MainPage"));
 const MoviePage = lazy(() => import("../pages/movie/MoviePage"));
-const MemberLoginPage = lazy(() => import("../pages/member/MemberLoginPage"));
 const ScreeningPage = lazy(() => import("../pages/screening/ScreeningPage"));
 const ScreeningSeatPage = lazy(() => import("../pages/screeningSeat/ScreeningSeatPage"));
 const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
@@ -53,14 +52,6 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <MovieDetail />
-          </Suspense>
-        ),
-      },
-      {
-        path: "login",
-        element: (
-          <Suspense fallback={Loading}>
-            <MemberLoginPage />
           </Suspense>
         ),
       },
