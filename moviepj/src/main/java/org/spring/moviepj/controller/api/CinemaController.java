@@ -1,4 +1,4 @@
-package org.spring.moviepj.controller.movie;
+package org.spring.moviepj.controller.api;
 
 import java.util.List;
 

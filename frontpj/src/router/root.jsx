@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+
 const Loading = <div className="loading">Loading...</div>;
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const MainPage = lazy(() => import("../pages/MainPage"));
@@ -12,6 +13,7 @@ const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
 const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
+const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
 const root = createBrowserRouter([
   {
     path: "/",
@@ -91,6 +93,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <LoginPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/calendar",
+        element: (
+          <Suspense fallback={Loading}>
+            <CalendarPage />
           </Suspense>
         ),
       },

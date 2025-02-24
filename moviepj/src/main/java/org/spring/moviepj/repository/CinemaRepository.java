@@ -14,7 +14,7 @@ public interface CinemaRepository extends JpaRepository<CinemaEntity, Long> {
 
     List<CinemaEntity> findByRegion(String region);
 
-    @Query(value = "SELECT * FROM cinema_tb2 WHERE ST_Distance_Sphere(POINT(lon, lat), POINT(:lon, :lat)) <= :radius * 1000", nativeQuery = true)
+    @Query(value = "SELECT * FROM cinema_tb WHERE ST_Distance_Sphere(POINT(lon, lat), POINT(:lon, :lat)) <= :radius * 1000", nativeQuery = true)
     List<CinemaEntity> findNearbyCinemas(double lat, double lon, double radius);
 
 }

@@ -29,7 +29,9 @@ public class WebOnlySecurityConfigClass {
                 .requestMatchers("/", "/index").permitAll()
                 .requestMatchers("/member/join", "/member/login").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/api/boxOfficeList", "/api/trailerList", "/api/screening/**").permitAll()
+                .requestMatchers("/api/boxOfficeList", "/api/trailerList", "/api/screening/**", "/api/cinemas/**",
+                        "/api/calendar/**")
+                .permitAll()
                 .requestMatchers("/member/logout").authenticated()
                 .anyRequest().authenticated());
 

@@ -64,4 +64,7 @@ public class MemberEntity extends BasicTime {
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RefreshTokenEntity> refreshTokenEntities;
 
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CalendarEntity> calendarEntities;
+
 }
