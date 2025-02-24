@@ -1,5 +1,6 @@
 package org.spring.moviepj.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.spring.moviepj.common.BasicTime;
@@ -7,6 +8,7 @@ import org.spring.moviepj.common.Role;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,28 +34,17 @@ import lombok.Setter;
 public class MemberEntity extends BasicTime {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private Long id;
+    private String email;
 
-    @Column(nullable = false, unique = true)
-    private String userEmail;
+    private String pw;
 
-    @Column(nullable = false)
-    private String userPw;
+    private String nickname;
 
-    @Column(nullable = false)
-    private String userName;
+    private boolean social; // 소셜 로그인시 필요
 
-    @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private String phoneNumber;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Role> memberRoleList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<CartEntity> cartEntities;
@@ -61,7 +52,25 @@ public class MemberEntity extends BasicTime {
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<PaymentEntity> paymentEntities;
 
-    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RefreshTokenEntity> refreshTokenEntities;
+    // 비즈니스 매서드==========================
+    public void addRole(Role role) {
+        memberRoleList.add(role);
+    }
+
+    public void clearRole() {
+        memberRoleList.clear();
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changePw(String pw) {
+        this.pw = pw;
+    }
+
+    public void changeSocial(boolean social) {
+        this.social = social;
+    }
 
 }

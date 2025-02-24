@@ -34,7 +34,7 @@ public class ScreeningServiceImpl implements ScreeningService {
     /**
      * 매일 새벽 3시에 실행 (최초 실행 시 5일치 생성, 이후에는 하루씩 추가)
      */
-    @Scheduled(cron = "0 40 9 * * *") // 매일 실행
+    @Scheduled(cron = "0 52 10 * * *") // 매일 실행
     public void updateScreenings() {
         System.out.println(">>> [자동 실행] 상영 일정 추가");
 

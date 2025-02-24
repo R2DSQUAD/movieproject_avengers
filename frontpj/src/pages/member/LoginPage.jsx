@@ -1,10 +1,11 @@
 import React from 'react'
-import LoginOnly from '../../components/member/LoginOnly'
+import Login from '../../components/member/Login'
+
 
 const LoginPage = () => {
     return (
         <>
-            <LoginOnly />
+            <Login />
         </>
     )
 }

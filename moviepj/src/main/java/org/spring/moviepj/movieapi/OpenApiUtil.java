@@ -1,4 +1,4 @@
-package org.spring.moviepj.openapi.util;
+package org.spring.moviepj.movieapi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
