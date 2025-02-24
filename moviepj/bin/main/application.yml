@@ -6,7 +6,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 1234
+<<<<<<< HEAD
+    url: jdbc:mysql://localhost:3306/springdb4?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+=======
     url: jdbc:mysql://localhost/moviedb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+>>>>>>> dev
 
 
   jpa:
@@ -19,6 +23,7 @@ spring:
         format_sql: true
 
   jackson:
+    time-zone: Asia/Seoul
     serialization:
       fail-on-empty-beans: false
 
