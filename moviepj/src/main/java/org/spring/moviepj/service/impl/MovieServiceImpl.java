@@ -14,8 +14,9 @@ import org.spring.moviepj.dto.MovieDto;
 import org.spring.moviepj.entity.MovieEntity;
 import org.spring.moviepj.entity.TrailerEntity;
 import org.spring.moviepj.movieapi.MovieListResponse;
+import org.spring.moviepj.movieapi.OpenApiUtil;
 import org.spring.moviepj.movieapi.WeeklyBoxOfficeList;
-import org.spring.moviepj.openapi.util.OpenApiUtil;
+
 import org.spring.moviepj.repository.MovieRepository;
 import org.spring.moviepj.repository.TrailerRepository;
 import org.spring.moviepj.service.MovieService;
@@ -45,7 +46,7 @@ public class MovieServiceImpl implements MovieService {
     private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
-    @Scheduled(cron = "0 00 15 * * THU")
+    @Scheduled(cron = "0 51 10 * * MON")
     public void fetchAndSaveWeeklyBoxOffice() {
         System.out.println(">>> [스케줄 실행됨] 박스오피스 데이터 가져오기 시작");
         String targetDate = getLastSundayDate();
@@ -101,7 +102,8 @@ public class MovieServiceImpl implements MovieService {
                                     ? TMDB_IMAGE_URL + "/w500/" + movieData.optString("poster_path")
                                     : null;
                             backdropPath = movieData.optString("backdrop_path", null) != null
-                                    ? TMDB_IMAGE_URL +"/w1920_and_h800_multi_faces/" + movieData.optString("backdrop_path")
+                                    ? TMDB_IMAGE_URL + "/w1920_and_h800_multi_faces/"
+                                            + movieData.optString("backdrop_path")
                                     : null;
                             tmdbId = movieData.optInt("id");
                             break;

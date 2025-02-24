@@ -1,8 +1,25 @@
 import { useEffect, useState } from "react";
 import "../css/Header.css";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"
+import { logout } from "../slices/loginSlice"
+import { useNavigate } from "react-router-dom";
 
 export default function Header({ isDarkMode, setIsDarkMode }) {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const loginState = useSelector(state => state.loginSlice);
+  const isLoggedIn = !!loginState.email;
+
+
+  const handleLogout = () => {
+    dispatch(logout());
+    alert("로그아웃되었습니다")
+    navigate({ pathname: `/` }, { replace: true })
+  };
+
   return (
     <header className="header">
       <nav className="nav">
@@ -29,9 +46,17 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
       </nav>
       <div className="bar">
         <input type="text" name="search" id="search" placeholder="search" />
-        <Link to="">프로필</Link>
-        <Link to="/member/join"> 회원가입</Link>
-        <Link to="/member/login" > 로그인</Link>
+        {isLoggedIn ? (
+          <>
+            <Link to="/">{loginState.email}님</Link>
+            <button onClick={handleLogout}>로그아웃</button>
+          </>
+        ) : (
+          <>
+            <Link to="/member/join">회원가입</Link>
+            <Link to="/member/login">로그인</Link>
+          </>
+        )}
         <div onClick={() => setIsDarkMode((prev) => !prev)} className="toggle-button">
           {isDarkMode ? (
             <img src="/image/light.svg" alt="lightMode" id="lightMode"></img>
