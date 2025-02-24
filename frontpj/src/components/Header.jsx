@@ -50,19 +50,19 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
       <div className="bar">
         <div className="search-container">
           <input type="text" name="search" id="search" placeholder="search" />
-          <img src="/image/search.svg" alt="search" className="search-icon"/>
+          <img src="/image/search.svg" alt="search" className="search-icon" />
         </div>
         {isLoggedIn ? (
           <>
-            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick}/>
+            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick} />
             <div className="member-info-con">
-              <Link to="/">{loginState.email}님</Link>
+              <Link to="/member/detail">{loginState.email}님</Link>
               <button onClick={handleLogout}>로그아웃</button>
             </div>
           </>
         ) : (
           <>
-            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick}/>
+            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick} />
             {isVisible && (
               <div className="member-info-con">
                 <Link to="/member/join">회원가입</Link>
