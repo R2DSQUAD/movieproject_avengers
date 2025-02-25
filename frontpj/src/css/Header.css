@@ -1,6 +1,6 @@
 /* 헤더 전체 스타일 */
 header {
-    transition: all 0.5s;
+    transition: all 0.5s ease;
     position: fixed;
     /* 상단 고정 */
     top: 0;
@@ -26,6 +26,7 @@ header {
   }
 
 #search {
+    transition: all 0.5s ease;
     border-radius: 25px;
     /* 둥글게 만들기 */
     
@@ -104,13 +105,13 @@ body {
     box-sizing: border-box;
     width: 30px;
     height: 30px;
-    transition: all 0.5s;
+    transition: all 0.5s ease;
 }
 
 .logo .logo-con span {
     box-sizing: border-box;
     font-size: 24px;
-    transition: all 0.5s;
+    transition: all 0.5s ease;
 }
 
 /* 네비게이션 바 */
@@ -143,13 +144,17 @@ header .bar {
 }
 
 header .bar>* {
-    transition: all 0.5s;
+    transition: all 0.5s ease;
 }
-
-
 
 .toggle-button>img {
     width: 30px;
     height: 30px;
     object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.toggle-button>img:hover {
+    cursor: pointer;
+    filter: invert(68%) sepia(89%) saturate(730%) hue-rotate(354deg) brightness(104%) contrast(101%) !important;
 }

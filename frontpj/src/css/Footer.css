@@ -1,6 +1,6 @@
 /* 푸터 고정 스타일 */
 .footer {
-    transition: all 0.5s;
+    transition: all 0.5s ease;
     width: 100%; /* 화면 가로폭에 맞게 */
     background-color: var(--color-light-2);
     color: var(--color-light-text);
