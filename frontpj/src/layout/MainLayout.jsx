@@ -18,27 +18,27 @@ const MainLayout = () => {
     if (document.body.classList.contains("light")) {
       document.querySelectorAll("header, header a, header img, header span").forEach((el) => {
         if (el.tagName === "HEADER") {
-          el.style.backgroundColor = scrolled ? "#DDDDDD" : "transparent";
+          el.style.backgroundColor = scrolled ? "var(--color-dark-2)" : "transparent";
         } else if (el.tagName === "A") {
-          el.style.color = isMainPage ? (scrolled ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)") : "rgba(0,0,0,0.5)";
+          el.style.color = isMainPage ? (scrolled ? "var(--color-light-text)" : "var(--color-dark-text)") : "var(--color-light-text)";
         } else if (el.tagName === "IMG") {
           el.style.filter = isMainPage ? (scrolled ? "invert(0%)" : "invert(100%)") : "invert(0%)";
           el.style.opacity = "0.5";
         } else if (el.tagName === "SPAN") {
-          el.style.color = isMainPage ? (scrolled ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)") : "rgba(0,0,0,0.5)";
+          el.style.color = isMainPage ? (scrolled ? "var(--color-light-text)" : "	var(--color-dark-text)") : "var(--color-light-text)";
         }
       });
     } else if (document.body.classList.contains("dark")) {
       document.querySelectorAll("header, header a, header img, header span").forEach((el) => {
         if (el.tagName === "HEADER") {
-          el.style.backgroundColor = scrolled ? "#222222" : "transparent";
+          el.style.backgroundColor = scrolled ? "var(--color-light-2)" : "transparent";
         } else if (el.tagName === "A") {
-          el.style.color = "rgba(255,255,255,0.5)";
+          el.style.color = "var(--color-dark-text)";
         } else if (el.tagName === "IMG") {
           el.style.filter = "invert(100%)";
           el.style.opacity = "0.5";
         } else if (el.tagName === "SPAN") {
-          el.style.color = "rgba(255,255,255,0.5)";
+          el.style.color = "	var(--color-dark-text)";
         }
       });
     }

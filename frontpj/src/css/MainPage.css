@@ -12,7 +12,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-dark-text);
 }
 
 .index .index-con .title img{
@@ -35,11 +35,11 @@
   justify-content: center;
   height: 100%;
   padding: 0 40px; /* 좌우 여백 */
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-dark-text);
 }
 
 .index .index-con .title .title-con > * {
-  color: rgba(255, 255, 255, 0.5); /* 텍스트 색상 */
+  color: var(--color-dark-text);
 }
 
 .index .index-con .main-content{
@@ -48,7 +48,7 @@
 }
 
 body.light .index .index-con .main-content > h3{
-  color:rgba(0, 0, 0, 0.5)
+  color: var(--color-dark-text);
 }
 
 .index .index-con .main-content .popular-movie > ul {
@@ -87,7 +87,7 @@ body.light .index .index-con .main-content > h3{
   z-index: 2;
   font-size: 50px;
   font-weight: bold;
-  color: rgba(255,255,255,0.8);
+  color: var(--color-dark-text);
   font-style: italic;
 }
 
@@ -118,20 +118,20 @@ body.light .index .index-con .main-content > h3{
   position: absolute;
   top: 0%;
   z-index: 2;
-}
+} 
 
 .index .index-con .main-content .popular-movie > ul > li > div > .boxOfficeDetail > h4 {
-  color: rgba(255,255,255,0.5);
+  color:var(--color-dark-text);
 }
 
 .index .index-con .main-content .popular-movie > ul > li > div > .boxOfficeDetail > * {
   z-index: 3;
   filter: none;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--color-light-text);
   font-weight: bold;
   font-size: 20px;
 }
 
 body.light > nav a{
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-dark-text);
 }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../../css/Join.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Join = () => {
   const [formData, setFormData] = useState({
@@ -47,23 +48,10 @@ const Join = () => {
 
   return (
     <div className="join">
-      <h1>Join</h1>
+      <h1>회원가입</h1>
 
       <div className="join-con">
         <form onSubmit={handleSubmit}>
-          {/* 닉네임 입력 */}
-          <div className="nickname">
-            <span>닉네임</span>
-            <input
-              id="nickname"
-              type="text"
-              name="nickname"
-              value={formData.nickname}
-              onChange={handleChange}
-            />
-          </div>
-          {errors.nickname && <span style={{ color: "red" }}>{errors.nickname ? errors.nickname : ""}</span>}
-
           {/* 이메일 입력 */}
           <div className="email">
             <span>이메일</span>
@@ -75,7 +63,18 @@ const Join = () => {
               onChange={handleChange}
             />
           </div>
-          {errors.email && <span style={{ color: "red" }}>{errors.email ? errors.email : ""}</span>}
+
+          {/* 닉네임 입력 */}
+          <div className="nickname">
+            <span>닉네임</span>
+            <input
+              id="nickname"
+              type="text"
+              name="nickname"
+              value={formData.nickname}
+              onChange={handleChange}
+            />
+          </div>
 
           {/* 비밀번호 입력 */}
           <div className="password">
@@ -88,7 +87,6 @@ const Join = () => {
               onChange={handleChange}
             />
           </div>
-          {errors.pw && <span style={{ color: "red" }}>{errors.pw ? errors.pw : ""}</span>}
 
           {/* 비밀번호 확인 입력 */}
           <div className="password_check">
@@ -101,12 +99,26 @@ const Join = () => {
               onChange={handleChange}
             />
           </div>
-          {errors.pw_check && <span style={{ color: "red" }}>{errors.pw_check ? errors.pw_check : ""}</span>}
+          <div id="error-msg">
+            {["email", "nickname", "pw", "pw_check"].map(
+              (key) =>
+                errors[key] && (
+                  <span key={key} className="error">
+                    {errors[key]}
+                  </span>
+                )
+            )}
+          </div>
 
           {/* 버튼 영역 */}
           <div className="btn">
             <button type="submit">회원가입</button>
-            <span>로그인</span>
+            <div className="loginBtn">
+              <p>
+                이미 가입하셨나요?
+              </p>
+              <Link to="/member/login">로그인</Link>
+            </div>
           </div>
         </form>
       </div>
