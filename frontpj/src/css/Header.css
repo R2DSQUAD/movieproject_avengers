@@ -53,7 +53,7 @@ header {
 body.dark #search {
     background-color: var(--color-dark-1);
     border: 1px solid var(--color-dark-3);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--color-dark-text);
 }
 
 body.light .search-icon {
@@ -63,7 +63,7 @@ body.light .search-icon {
 body.light #search {
     background-color: var(--color-light-1);
     border: 1px solid var(--color-light-3);
-    color: rgba(0, 0, 0, 0.5);
+    color: var(--color-light-text);
 }
 
 .member-info {
