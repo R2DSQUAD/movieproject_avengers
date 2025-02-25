@@ -17,11 +17,12 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
     dispatch(logout());
     alert("로그아웃되었습니다");
     navigate({ pathname: `/` }, { replace: true });
+    window.location.reload();
   };
 
   const memberInfoOnClick = () => {
     setIsVisible(!isVisible);
-  }
+  };
 
   return (
     <header>
@@ -54,21 +55,36 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
         </div>
         {isLoggedIn ? (
           <>
-            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick} />
-            <div className="member-info-con">
-              <Link to="/member/detail">{loginState.email}님</Link>
-              <button onClick={handleLogout}>로그아웃</button>
+            <div className="member-info">
+              <img
+                className="member-info-img"
+                src="/image/person.svg"
+                alt="member-info"
+                onClick={memberInfoOnClick}
+              />
+              <Link to="/"><span>{loginState.nickname}님</span></Link>
+              {isVisible && (
+                <div className="member-info-con">  
+                  <button onClick={handleLogout}>로그아웃</button>
+                </div>
+              )}
             </div>
           </>
         ) : (
           <>
-            <img className="member-info" src="./image/person.svg" alt="member-info" onClick={memberInfoOnClick} />
-            {isVisible && (
+          <Link to="/member/login">
+            <div className="member-info">
+              <img
+                className="member-info-img"
+                src="/image/person.svg"
+                alt="member-info"
+                onClick={memberInfoOnClick}
+              />
               <div className="member-info-con">
-                <Link to="/member/join">회원가입</Link>
-                <Link to="/member/login">로그인</Link>
+                <span>로그인</span>
               </div>
-            )}
+            </div>
+            </Link>
           </>
         )}
         <div
