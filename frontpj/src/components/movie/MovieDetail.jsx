@@ -88,8 +88,7 @@ const MovieDetail = () => {
           {/* 썸네일들 */}
           <ul className="thumbnailImg">
             {trailers.map((el, idx) => (
-              <>
-              <li className="thumbnailImg-con">
+              <li className="thumbnailImg-con" key={idx}>
                 <img
                   key={idx}
                   src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
@@ -99,7 +98,6 @@ const MovieDetail = () => {
                 />
                 <span>{el.name.replace("["+ movieInfo.movieNm + "]", "").trim()}</span>
               </li>
-              </>
             ))}
           </ul>
         </div>

@@ -23,7 +23,7 @@ public class MemberInsert {
         for (int i = 0; i < 10; i++) {
             MemberEntity memberEntity = MemberEntity.builder()
                     .email("user" + i + "@email.com")
-                    .pw(passwordEncoder.encode("1111"))
+                    .pw(passwordEncoder.encode("12345678"))
                     .nickname("USER" + i)
                     .build();
 

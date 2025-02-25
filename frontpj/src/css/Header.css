@@ -6,12 +6,10 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    height: 80px;
+    height: 60px;
     /* 헤더 높이 고정 */
     padding: 0 30px;
-    border-bottom-left-radius: 20px;
-    /* 왼쪽 아래 둥글게 */
-    border-bottom-right-radius: 20px;
+    border-radius: 0 0 30px 30px;
     /* 오른쪽 아래 둥글게 */
     display: flex;
     align-items: center;
@@ -69,9 +67,20 @@ body.light #search {
 }
 
 .member-info {
-    width: 30px;
-    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.member-info .member-info-img {
+    width: 20px;
+    height: 20px;
     cursor: pointer;
+}
+
+.member-info span{
+    font-size: 12px;
 }
 
 /* 전체 페이지의 상단 패딩 추가 */
@@ -136,6 +145,8 @@ header .bar {
 header .bar>* {
     transition: all 0.5s;
 }
+
+
 
 .toggle-button>img {
     width: 30px;
