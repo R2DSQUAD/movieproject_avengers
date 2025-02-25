@@ -7,6 +7,7 @@ import org.spring.moviepj.dto.MemberDto;
 import org.spring.moviepj.service.impl.MemberServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -31,11 +32,11 @@ public class MemberController {
         // 1. 유효성 검사 실패 시 오류 메시지를 반환
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                    FieldError::getField, // 필드 이름
-                    FieldError::getDefaultMessage, // 오류 메시지
-                    (existing, replacement) -> existing // 중복 키가 발생할 때 기존 값을 사용
-                ));
+                    .collect(Collectors.toMap(
+                            FieldError::getField, // 필드 이름
+                            FieldError::getDefaultMessage, // 오류 메시지
+                            (existing, replacement) -> existing // 중복 키가 발생할 때 기존 값을 사용
+                    ));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
@@ -44,6 +45,7 @@ public class MemberController {
         return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/myinfo/detail")
     public ResponseEntity<MemberDto> memberDetail(@AuthenticationPrincipal MemberDto memberDto) {
         if (memberDto == null) {

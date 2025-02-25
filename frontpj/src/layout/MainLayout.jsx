@@ -18,7 +18,7 @@ const MainLayout = () => {
     if (document.body.classList.contains("light")) {
       document.querySelectorAll("header, header a, header img, header span").forEach((el) => {
         if (el.tagName === "HEADER") {
-          el.style.backgroundColor = scrolled ? "var(--color-dark-2)" : "transparent";
+          el.style.backgroundColor = scrolled ? "var(--color-light-2)" : "transparent";
         } else if (el.tagName === "A") {
           el.style.color = isMainPage ? (scrolled ? "var(--color-light-text)" : "var(--color-dark-text)") : "var(--color-light-text)";
         } else if (el.tagName === "IMG") {
@@ -31,7 +31,7 @@ const MainLayout = () => {
     } else if (document.body.classList.contains("dark")) {
       document.querySelectorAll("header, header a, header img, header span").forEach((el) => {
         if (el.tagName === "HEADER") {
-          el.style.backgroundColor = scrolled ? "var(--color-light-2)" : "transparent";
+          el.style.backgroundColor = scrolled ? "var(--color-dark-2)" : "transparent";
         } else if (el.tagName === "A") {
           el.style.color = "var(--color-dark-text)";
         } else if (el.tagName === "IMG") {
