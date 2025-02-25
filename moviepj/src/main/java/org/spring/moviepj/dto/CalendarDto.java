@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CalendarDto {
 
-  private Integer id;
+  private Long id;
 
   private String content;
 

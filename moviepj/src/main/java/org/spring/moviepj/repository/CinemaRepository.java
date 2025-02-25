@@ -14,6 +14,7 @@ public interface CinemaRepository extends JpaRepository<CinemaEntity, Long> {
 
     List<CinemaEntity> findByRegion(String region);
 
+    // radius * 1000 컨트롤러에서 radius 값을 km로 받아와 m로 전환
     @Query(value = "SELECT * FROM cinema_tb WHERE ST_Distance_Sphere(POINT(lon, lat), POINT(:lon, :lat)) <= :radius * 1000", nativeQuery = true)
     List<CinemaEntity> findNearbyCinemas(double lat, double lon, double radius);
 
