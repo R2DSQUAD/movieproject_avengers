@@ -62,9 +62,9 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
                 alt="member-info"
                 onClick={memberInfoOnClick}
               />
-              <Link to="/"><span>{loginState.nickname}님</span></Link>
+              <Link to="/member/detail"><span>{loginState.nickname}님</span></Link>
               {isVisible && (
-                <div className="member-info-con">  
+                <div className="member-info-con">
                   <button onClick={handleLogout}>로그아웃</button>
                 </div>
               )}
@@ -72,18 +72,18 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
           </>
         ) : (
           <>
-          <Link to="/member/login">
-            <div className="member-info">
-              <img
-                className="member-info-img"
-                src="/image/person.svg"
-                alt="member-info"
-                onClick={memberInfoOnClick}
-              />
-              <div className="member-info-con">
-                <span>로그인</span>
+            <Link to="/member/login">
+              <div className="member-info">
+                <img
+                  className="member-info-img"
+                  src="/image/person.svg"
+                  alt="member-info"
+                  onClick={memberInfoOnClick}
+                />
+                <div className="member-info-con">
+                  <span>로그인</span>
+                </div>
               </div>
-            </div>
             </Link>
           </>
         )}

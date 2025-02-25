@@ -1,7 +1,10 @@
 package org.spring.moviepj.service.impl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.spring.moviepj.dto.CartItemDto;
 import org.spring.moviepj.dto.CartItemRequestDto;
 import org.spring.moviepj.entity.CartEntity;
 import org.spring.moviepj.entity.CartItemEntity;
@@ -30,20 +33,26 @@ public class CartServiceImpl implements CartService {
 
     private final ScreeningRepository screeningRepository;
 
+    @Transactional
     @Override
     public void addCart(CartItemRequestDto cartItemRequestDto, String email) {
         MemberEntity memberEntity = memberRepository.findById(email)
                 .orElseThrow(() -> new IllegalArgumentException("회원정보를 찾을 수 없습니다"));
 
-        // 결제하지않은 0상태 장바구니 가져오거나 없으면 0상태 생성
-        CartEntity cartEntity = cartRepository.findByMemberEntityAndStatus(memberEntity, 0)
-                .orElseGet(() -> CartEntity.builder()
-                        .memberEntity(memberEntity)
-                        .status(0)
-                        .totalPrice(0)
-                        .build());
+        Optional<CartEntity> optionalCartEntity = cartRepository.findByMemberEntityAndStatus(memberEntity, 0);
 
-        cartRepository.save(cartEntity);
+        CartEntity cartEntity;
+        if (optionalCartEntity.isPresent()) {
+            cartEntity = optionalCartEntity.get();
+        } else {
+            cartEntity = cartRepository.save(CartEntity.builder()
+                    .memberEntity(memberEntity)
+                    .status(0)
+                    .build());
+            System.out.println("Cart ID: " + cartEntity.getId());
+
+        }
+        // 결제하지않은 0상태 장바구니 가져오거나 없으면 0상태 생성
 
         int totalPrice = 0;
 
@@ -69,6 +78,30 @@ public class CartServiceImpl implements CartService {
 
         cartEntity.setTotalPrice(cartEntity.getTotalPrice() + totalPrice);
         cartRepository.save(cartEntity);
+
+    }
+
+    @Override
+    public List<CartItemDto> myCartList(String email, int status) {
+        MemberEntity memberEntity = memberRepository.findById(email).orElseThrow(IllegalArgumentException::new);
+
+        Optional<CartEntity> optionalCartEntity = cartRepository.findByMemberEntityAndStatus(memberEntity, status);
+        if (optionalCartEntity.isEmpty()) {
+            throw new IllegalArgumentException("장바구니가 존재하지 않습니다");
+        }
+
+        CartEntity cartEntity = optionalCartEntity.get();
+        List<CartItemEntity> cartItemEntities = cartItemRepository.findByCartEntityId(cartEntity.getId());
+
+        return cartItemEntities.stream().map(el -> CartItemDto.builder()
+                .id(el.getId())
+                .cartEntity(cartEntity)
+                .seatNumber(el.getSeatNumber())
+                .price(el.getPrice())
+                .screeningEntity(el.getScreeningEntity())
+                .createTime(el.getCreateTime())
+                .updateTime(el.getUpdateTime())
+                .build()).collect(Collectors.toList());
 
     }
 
