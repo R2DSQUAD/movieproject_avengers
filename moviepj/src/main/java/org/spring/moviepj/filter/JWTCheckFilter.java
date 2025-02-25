@@ -18,64 +18,66 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class JWTCheckFilter extends OncePerRequestFilter{
+public class JWTCheckFilter extends OncePerRequestFilter {
 
-    @Override //필터로 체크하지 않을 경로 Role -> 권한이용(여기에 설정해야됨 filter 때문에)
-    protected boolean shouldNotFilter(HttpServletRequest request)throws ServletException{
+    @Override // 필터로 체크하지 않을 경로 Role -> 권한이용(여기에 설정해야됨 filter 때문에)
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
-        //Preflight
-        if(request.getMethod().equals("OPTIONS")){
+        // Preflight
+        if (request.getMethod().equals("OPTIONS")) {
             return true;
         }
 
-        String path= request.getRequestURI();
+        String path = request.getRequestURI();
 
-        if (path.startsWith("/api/member/") || path.startsWith("/api/boxOfficeList") || path.startsWith("/api/screening/") || path.startsWith("/api/trailerList")) {
-            return true;  // JWT 검증 없이 접근 허용
+        if (path.startsWith("/api/member/") ||
+                path.startsWith("/api/boxOfficeList") ||
+                path.startsWith("/api/screening/") ||
+                path.startsWith("/api/trailerList")) {
+            return true; // JWT 검증 없이 접근 허용가능
         }
 
         // if(path.startsWith("/api/다른여러가지경로")){
-        //     return true;
+        // return true;
         // }
-        
+
         return false;
     }
 
-    @Override //체크할 경로(Access Token 검증을 통해 접근가능여부 판단)
+    @Override // 체크할 경로(Access Token 검증을 통해 접근가능여부 판단)
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeaderStr= request.getHeader("Authorization");
+        String authHeaderStr = request.getHeader("Authorization");
 
         try {
-            String accessToken=authHeaderStr.substring(7);
-            Map<String, Object> claims= JWTUtil.validateToken(accessToken);
-            
-            String email=(String) claims.get("email");
-            String pw=(String) claims.get("pw");
-            String nickname=(String) claims.get("nickname");
-            Boolean social=(Boolean) claims.get("social");
-            List<String> roleNames=(List<String>) claims.get("roleNames");
+            String accessToken = authHeaderStr.substring(7);
+            Map<String, Object> claims = JWTUtil.validateToken(accessToken);
 
-            MemberDto memberDto=new MemberDto(email, pw, nickname, social.booleanValue(), roleNames);
+            String email = (String) claims.get("email");
+            String pw = (String) claims.get("pw");
+            String nickname = (String) claims.get("nickname");
+            Boolean social = (Boolean) claims.get("social");
+            List<String> roleNames = (List<String>) claims.get("roleNames");
 
-            UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(memberDto, pw, memberDto.getAuthorities());
+            MemberDto memberDto = new MemberDto(email, pw, nickname, social.booleanValue(), roleNames);
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberDto,
+                    pw, memberDto.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             filterChain.doFilter(request, response);
-            
+
         } catch (Exception e) {
-            Gson gson= new Gson();
-            String msg= gson.toJson(Map.of("error","ERROR_ACCESS_TOKEN"));
+            Gson gson = new Gson();
+            String msg = gson.toJson(Map.of("error", "ERROR_ACCESS_TOKEN"));
 
             response.setContentType("application/json");
-            PrintWriter printWriter=response.getWriter();
+            PrintWriter printWriter = response.getWriter();
             printWriter.println(msg);
             printWriter.close();
         }
 
-        
-   
     }
-    
+
 }

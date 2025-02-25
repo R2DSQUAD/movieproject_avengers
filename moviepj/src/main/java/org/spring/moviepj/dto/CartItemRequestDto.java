@@ -12,5 +12,4 @@ public class CartItemRequestDto {
     private Long screeningId;
 
     private List<String> seats;
-
 }
