@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import jwtAxios from '../../util/jwtUtil';
 import { useNavigate } from 'react-router-dom';
 
+
 const MyMemberInfo = () => {
     const [member, setMember] = useState(null);
     const navigate = useNavigate();

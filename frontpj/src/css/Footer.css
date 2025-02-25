@@ -9,6 +9,7 @@
     font-size: 12px;
     z-index: 1000; /* 다른 요소들 위에 표시 */
     box-sizing: border-box;
+    height: 90px;
 }
 
 body.dark .footer {
