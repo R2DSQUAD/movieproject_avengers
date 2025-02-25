@@ -48,7 +48,7 @@ const Join = () => {
   return (
     <div className="join">
       <h1>Join</h1>
-      {success && <p style={{ color: "green" }}>회원가입 성공!</p>}
+
       <div className="join-con">
         <form onSubmit={handleSubmit}>
           {/* 닉네임 입력 */}
@@ -62,7 +62,7 @@ const Join = () => {
               onChange={handleChange}
             />
           </div>
-          {errors.nickname && <p style={{ color: "red" }}>{errors.nickname}</p>}
+          {errors.nickname && <span style={{ color: "red" }}>{errors.nickname ? errors.nickname : ""}</span>}
 
           {/* 이메일 입력 */}
           <div className="email">
@@ -75,7 +75,7 @@ const Join = () => {
               onChange={handleChange}
             />
           </div>
-          {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
+          {errors.email && <span style={{ color: "red" }}>{errors.email ? errors.email : ""}</span>}
 
           {/* 비밀번호 입력 */}
           <div className="password">
@@ -88,7 +88,7 @@ const Join = () => {
               onChange={handleChange}
             />
           </div>
-          {errors.pw && <p style={{ color: "red" }}>{errors.pw}</p>}
+          {errors.pw && <span style={{ color: "red" }}>{errors.pw ? errors.pw : ""}</span>}
 
           {/* 비밀번호 확인 입력 */}
           <div className="password_check">
@@ -101,7 +101,7 @@ const Join = () => {
               onChange={handleChange}
             />
           </div>
-          {errors.pw_check && <p style={{ color: "red" }}>{errors.pw_check}</p>}
+          {errors.pw_check && <span style={{ color: "red" }}>{errors.pw_check ? errors.pw_check : ""}</span>}
 
           {/* 버튼 영역 */}
           <div className="btn">

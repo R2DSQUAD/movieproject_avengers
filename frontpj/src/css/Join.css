@@ -10,12 +10,17 @@
 
 .join .join-con {
   display: flex;
+  box-sizing: border-box;
+  width: 50%;
+}
+
+.join .join-con form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  width: 30%;
   gap: 20px;
-  box-sizing: border-box;
 }
 
 .join .join-con .email,
