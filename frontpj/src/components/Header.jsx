@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../css/Header.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../slices/loginSlice";
-import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 export default function Header({ isDarkMode, setIsDarkMode }) {
   const dispatch = useDispatch();
@@ -90,6 +90,13 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
         <div
           onClick={() => setIsDarkMode((prev) => !prev)}
           className="toggle-button"
+          role="button"
+          tabIndex={0}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              setIsDarkMode((prev) => !prev);
+            }
+          }}
         >
           {isDarkMode ? (
             <img src="/image/light.svg" alt="lightMode" id="lightMode"></img>
@@ -101,3 +108,8 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
     </header>
   );
 }
+
+Header.propTypes = {
+  isDarkMode: PropTypes.bool.isRequired,
+  setIsDarkMode: PropTypes.func.isRequired,
+};

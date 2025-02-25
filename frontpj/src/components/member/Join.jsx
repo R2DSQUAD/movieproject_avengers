@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../css/Join.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Join = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +11,7 @@ const Join = () => {
     nickname: "",
   });
 
+  const navigate = useNavigate();
   const [errors, setErrors] = useState({}); // 서버에서 받은 에러 메시지 저장
   const [success, setSuccess] = useState(false); // 회원가입 성공 여부
 
@@ -39,6 +40,7 @@ const Join = () => {
 
       setSuccess(true); // 회원가입 성공
       setFormData({ email: "", pw: "", pw_check: "", nickname: "" }); // 입력 필드 초기화
+      navigate("/member/login"); // 로그인 페이지로 이동
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setErrors(error.response.data); // 서버에서 반환한 에러 메시지 저장

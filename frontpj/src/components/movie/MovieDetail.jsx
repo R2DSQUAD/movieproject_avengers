@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LiteYoutubeEmbed } from "react-lite-yt-embed";
 import { useCountUp } from "../../hooks/useCountup";
 
 const MovieDetail = () => {
+  const navigate = useNavigate();
   const { movieCd } = useParams();
   const [trailers, setTrailers] = useState([]);
   const [movieInfo, setMovieInfo] = useState({});
@@ -27,7 +28,7 @@ const MovieDetail = () => {
         setTrailers(filtered);
 
         const dataCount = filtered.length; // 예: 데이터 개수가 10이라면
-        const gridContainer = document.querySelector('.thumbnailImg');
+        const gridContainer = document.querySelector(".thumbnailImg");
         gridContainer.style.gridTemplateColumns = `repeat(${dataCount}, 1fr)`;
 
         // 첫 번째 트레일러를 기본적으로 선택
@@ -54,55 +55,62 @@ const MovieDetail = () => {
   return (
     <div className="content">
       <div className="movieDetail">
-      <div className="movieDetail-con">
-        <div className="leftBar">
-          <div className="leftBar-con">
-            <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
-            <div className="movie-info">
-              <h3>제목</h3>
-              <span>{movieInfo.movieNm}</span>
-              <h3>개봉일</h3>
-              <span>{movieInfo.openDt}</span>
-              <h3>순위</h3>
-              <span>{movieInfo.rank}등</span>
-              <h3>누적 관객 수</h3>
-              <span>{audiAcc.toLocaleString("ko-KR")}명</span>
+        <div className="movieDetail-con">
+          <div className="leftBar">
+            <div className="leftBar-con">
+              <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
+              <div className="movie-info">
+                <h3>제목</h3>
+                <span>{movieInfo.movieNm}</span>
+                <h3>개봉일</h3>
+                <span>{movieInfo.openDt}</span>
+                <h3>순위</h3>
+                <span>{movieInfo.rank}등</span>
+                <h3>누적 관객 수</h3>
+                <span>{audiAcc.toLocaleString("ko-KR")}명</span>
+                <h3>장르</h3>
+                <span>{movieInfo.genre}</span>
+                <button onClick={() => navigate(`/screening/${movieInfo.id}`)}>
+                  예매하기
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="content">
-          <span>줄거리</span>
-          <p>{movieInfo.overview}</p>
-          {/* 상단에 고정된 영상 플레이어 */}
-          {selectedTrailerId && (
-            <div className="video-container">
-              <LiteYoutubeEmbed
-                key={selectedTrailerId} // key 추가
-                id={selectedTrailerId}
-                mute={false}
-                params="controls=1&rel=0"
-              />
-            </div>
-          )}
-          {/* 썸네일들 */}
-          <ul className="thumbnailImg">
-            {trailers.map((el, idx) => (
-              <li className="thumbnailImg-con" key={idx}>
-                <img
-                  key={idx}
-                  src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
-                  alt={el.name}
-                  onClick={() => handleThumbnailClick(el.url)} // 클릭된 썸네일 ID 저장
-                  style={{ cursor: "pointer", margin: "10px" }}
+          <div className="content">
+            <span>줄거리</span>
+            <p>{movieInfo.overview}</p>
+            {/* 상단에 고정된 영상 플레이어 */}
+            {selectedTrailerId && (
+              <div className="video-container">
+                <LiteYoutubeEmbed
+                  key={selectedTrailerId} // key 추가
+                  id={selectedTrailerId}
+                  mute={false}
+                  params="controls=1&rel=0"
                 />
-                <span>{el.name.replace("["+ movieInfo.movieNm + "]", "").trim()}</span>
-              </li>
-            ))}
-          </ul>
+              </div>
+            )}
+            {/* 썸네일들 */}
+            <ul className="thumbnailImg">
+              {trailers.map((el, idx) => (
+                <li className="thumbnailImg-con" key={idx}>
+                  <img
+                    key={idx}
+                    src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
+                    alt={el.name}
+                    onClick={() => handleThumbnailClick(el.url)} // 클릭된 썸네일 ID 저장
+                    style={{ cursor: "pointer", margin: "10px" }}
+                  />
+                  <span>
+                    {el.name.replace("[" + movieInfo.movieNm + "]", "").trim()}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
