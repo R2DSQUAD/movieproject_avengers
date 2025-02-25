@@ -1,5 +1,4 @@
 .login {
-  height: calc(100vh - 80px - 90px);
   width: 100%;
   display: flex;
   justify-content: center;
@@ -67,30 +66,54 @@
   gap: 10px;
 }
 
-.login .login-con .btn > button,
-.login .login-con .btn > a {
+.login .login-con .btn > button{
   width: 100%;
   max-width: 350px;
   height: 40px;
   border: none;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 16px;
+  font-weight: bolder;
   cursor: pointer;
   box-sizing: border-box;
   align-items: center;
   display: flex;
   justify-content: center;  
+  background-color: var(--color-main-point);
+  color: var(--color-light-text);
 }
 
+.login .login-con .btn > a{
+  width: 100%;
+  max-width: 350px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bolder;
+  cursor: pointer;
+  box-sizing: border-box;
+  align-items: center;
+  display: flex;
+  justify-content: center;  
+  border: 1px solid var(--color-sub-point);
+}
 
-body.dark .login .login-con .btn > button,
 body.dark .login .login-con .btn > a {
-  background-color: var(--color-dark-3);
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-dark-text);
 }
 
-body.light .login .login-con .btn > button,
 body.light .login .login-con .btn > a {
-  background-color: var(--color-light-3);
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--color-light-text);
+}
+
+#error-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#error-msg > * {
+  color: var(--color-error);
+  font-size: 12px;
 }

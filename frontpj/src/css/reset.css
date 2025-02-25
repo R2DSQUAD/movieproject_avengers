@@ -1,12 +1,19 @@
+@import url('//fonts.googleapis.com/earlyaccess/notosanskr.css');
+
 :root {
+	font-family: 'Noto Sans KR', sans-serif;
 	--color-dark-1: #121212;
 	--color-dark-2: #222222;
 	--color-dark-3: #333333;
-	--color-dark-text: rgba(255, 255, 255, 0.5);
+	--color-dark-text: #ffffff80;
 	--color-light-1: #EDEDED;
 	--color-light-2: #DDDDDD;
 	--color-light-3: #CCCCCC;
-	--color-light-text: rgba(0, 0, 0, 0.5);
+	--color-light-text: #12121280;
+	--color-main-point: #FFC107;
+	--color-sub-point: #FFB300;
+	--color-error: #F44336;
+	--color-success: #4CAF50;
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -162,7 +169,7 @@ body.dark h3,
 body.dark h4, 
 body.dark h5, 
 body.dark h6{
-	color: rgba(255, 255, 255, 0.5);
+	color: var(--color-dark-text);
 }
 
 body.light a,
@@ -174,6 +181,6 @@ body.light h3,
 body.light h4, 
 body.light h5, 
 body.light h6{
-	color: rgba(0, 0, 0, 0.5);
+	color: var(--color-light-text);
 }
 

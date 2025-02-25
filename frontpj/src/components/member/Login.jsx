@@ -11,6 +11,7 @@ const initState = {
 
 const Login = () => {
   const [loginParam, setLoginParam] = useState(initState);
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,13 +23,25 @@ const Login = () => {
     }));
   };
 
+  const validate = () => {
+    const newErrors = {};
+    if (!loginParam.email) newErrors.email = "이메일을 입력하세요.";
+    if (!loginParam.pw) newErrors.pw = "비밀번호를 입력하세요.";
+    return newErrors;
+  };
+
   const handleClickLogin = () => {
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     dispatch(loginPostAsync(loginParam)) //비동기방식
       .unwrap()
       .then((data) => {
-        console.log(data);
         if (!data.accessToken) {
-          alert("이메일과 패스워드를 다시 확인하세요");
+          setErrors({ general: "이메일과 패스워드를 다시 확인하세요" });
         } else {
           alert("로그인 성공");
           navigate("/", { replace: true });
@@ -36,13 +49,13 @@ const Login = () => {
       })
       .catch((error) => {
         console.error("로그인 오류:", error);
-        alert("로그인 중 오류가 발생했습니다.");
+        setErrors({ general: "로그인 중 오류가 발생했습니다." });
       });
   };
 
   return (
     <div className="login">
-      <h1>LOGIN</h1>
+      <h1>로그인</h1>
       <div className="login-con">
         <div className="email">
           <span>이메일</span>
@@ -64,10 +77,20 @@ const Login = () => {
             onChange={handleChange}
           />
         </div>
+        <div id="error-msg">
+          {["email", "pw", "general"].map(
+            (key) =>
+              errors[key] && (
+                <span key={key} className="error-message">
+                  {errors[key]}
+                </span>
+              )
+          )}
+        </div>
         <div className="btn">
-        <button onClick={handleClickLogin}>로그인</button>
-        <Link to="/member/join">회원가입</Link>
-      </div>
+          <button onClick={handleClickLogin}>로그인</button>
+          <Link to="/member/join">회원가입</Link>
+        </div>
       </div>
     </div>
   );
