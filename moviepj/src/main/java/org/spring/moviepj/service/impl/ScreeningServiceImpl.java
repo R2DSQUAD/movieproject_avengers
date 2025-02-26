@@ -148,4 +148,20 @@ public class ScreeningServiceImpl implements ScreeningService {
 
     }
 
+    @Override
+    public ScreeningDto getScreeningById(Long screeningId) {
+        return screeningRepository.findByIdWithMovie(screeningId)
+                .map(el -> ScreeningDto.builder()
+                        .id(el.getId())
+                        .movieEntity(el.getMovieEntity())
+                        .theaterEntity(el.getTheaterEntity())
+                        .screeningDate(el.getScreeningDate())
+                        .screeningTime(el.getScreeningTime())
+                        .screeningEndTime(el.getScreeningEndTime())
+                        .createTime(el.getCreateTime())
+                        .updateTime(el.getUpdateTime())
+                        .build())
+                .orElse(null);
+    }
+
 }
