@@ -5,7 +5,8 @@ const EventModal = ({ open, setOpen, newEvent, setNewEvent, addEvent }) => {
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
       <div style={{ padding: 20, background: "#fff", margin: "10% auto", width: 400 }}>
-        <h3>일정 추가</h3>
+      <h3 style={{ color: "black" }}>캘린더를 드래그 해 일정 추가도 가능합니다.</h3>
+
 
         <TextField
           label="일정 내용"

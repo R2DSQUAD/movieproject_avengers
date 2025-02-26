@@ -1,5 +1,6 @@
 package org.spring.moviepj.controller;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -57,4 +58,15 @@ public class MemberController {
     }
 
     // Member 수정,삭제 나중에 추가예정
+    @GetMapping("/memberList")
+    public ResponseEntity<List<MemberDto>> getMemberList() {
+        List<MemberDto> members = memberServiceImpl.memberList(); // 회원 목록 조회
+        // 회원 목록이 비어 있으면 204 No Content 반환
+        if (members.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        // 회원 목록 반환
+        return ResponseEntity.ok(members);
+    }
+
 }

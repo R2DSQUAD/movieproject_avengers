@@ -1,7 +1,6 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-
 const Loading = <div className="loading">Loading...</div>;
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const MainPage = lazy(() => import("../pages/MainPage"));
@@ -15,7 +14,11 @@ const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 
 
+const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
+const AdminLayout = lazy(() => import("../components/admin/AdminLayout"));
+const MemberList = lazy(() => import("../components/admin/member/MemberList"));
+
 const root = createBrowserRouter([
   {
     path: "/",
@@ -42,16 +45,15 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/movie/map",
+        path: "movie/map",
         element: (
           <Suspense fallback={Loading}>
             <MapPage />
           </Suspense>
         ),
-
       },
       {
-        path: "movie/detail?/:movieCd",
+        path: "movie/detail/:movieCd",
         element: (
           <Suspense fallback={Loading}>
             <MovieDetail />
@@ -75,7 +77,7 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/member/join",
+        path: "member/join",
         element: (
           <Suspense fallback={Loading}>
             <JoinPage />
@@ -83,7 +85,7 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/member/login",
+        path: "member/login",
         element: (
           <Suspense fallback={Loading}>
             <LoginPage />
@@ -91,21 +93,48 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/member/detail",
+        path: "member/detail",
         element: (
           <Suspense fallback={Loading}>
             <MyMemberInfoPage />
           </Suspense>
         ),
       },
-
+  
+      // 어드민 
       {
-        path: "/calendar",
+        path: "admin",
         element: (
           <Suspense fallback={Loading}>
-            <CalendarPage />
+            <AdminLayout /> 
           </Suspense>
         ),
+        children: [
+          {
+            path: "",
+            element: (
+              <Suspense fallback={Loading}>
+                <AdminPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "memberList",
+            element: (
+              <Suspense fallback={Loading}>
+                <MemberList />
+              </Suspense>
+            ),
+          },
+          {
+            path: "calendar",
+            element: (
+              <Suspense fallback={Loading}>
+                <CalendarPage />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },
