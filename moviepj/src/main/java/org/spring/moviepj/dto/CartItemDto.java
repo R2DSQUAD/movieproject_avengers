@@ -21,6 +21,7 @@ public class CartItemDto {
     private Long id;
 
     private Long cartId;
+    private int totalPrice;
     private CartEntity cartEntity;
 
     private String seatNumber;
@@ -28,7 +29,12 @@ public class CartItemDto {
     private int price;
 
     private Long screeningId;
+    private String screeningDate;
+    private String screeningTime;
     private ScreeningEntity screeningEntity;
+
+    private String movieNm;
+    private String theaterName;
 
     private LocalDateTime createTime;
 

@@ -15,8 +15,9 @@ const ScreeningSeat = () => {
 
 
     useEffect(() => {
-        const memberInfo = getCookie("member"); // 쿠키에서 JWT 가져오기
-        if (!memberInfo) { // JWT가 없으면 로그인 페이지로 이동
+
+        const memberInfo = getCookie("member");
+        if (!memberInfo) {
             alert("로그인이 필요합니다.");
             navigate("/member/login", { replace: true });
             return;
@@ -28,12 +29,14 @@ const ScreeningSeat = () => {
         try {
             const response = await jwtAxios.get(`http://localhost:8090/api/cart/disabledSeats/${screeningId}`);
             const seats = Array.isArray(response.data) ? response.data : [];
+            console.log("Disabled seats:", seats);
             setDisabledSeats(seats);
         } catch (error) {
             console.error("좌석 정보를 불러오는 중 오류 발생:", error);
             setDisabledSeats([]);
         }
     };
+
 
     const toggleSeat = (seatNumber) => {
         if (disabledSeats.includes(seatNumber)) return;

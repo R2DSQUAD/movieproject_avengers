@@ -20,22 +20,14 @@ public class MemberInsert {
     @Test
     public void insertMember() {
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 10; i < 11; i++) {
             MemberEntity memberEntity = MemberEntity.builder()
                     .email("user" + i + "@email.com")
-                    .pw(passwordEncoder.encode("12345678"))
+                    .pw(passwordEncoder.encode("123456789a"))
                     .nickname("USER" + i)
                     .build();
 
-            memberEntity.addRole(Role.USER);
-
-            if (i >= 5) {
-                memberEntity.addRole(Role.MANAGER);
-            }
-
-            if (i >= 8) {
-                memberEntity.addRole(Role.ADMIN);
-            }
+            memberEntity.addRole(Role.ADMIN);
 
             memberRepository.save(memberEntity);
 

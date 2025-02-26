@@ -36,9 +36,6 @@ public class CartController {
     public ResponseEntity<?> addCart(@RequestBody CartItemRequestDto cartItemRequestDto,
             @AuthenticationPrincipal MemberDto memberDto) {
 
-        System.out.println("요청 데이터: " + cartItemRequestDto);
-        System.out.println("이메일: " + memberDto.getEmail());
-
         try {
             cartServiceImpl.addCart(cartItemRequestDto, memberDto.getEmail());
             return ResponseEntity.status(HttpStatus.OK).body("장바구니에 추가되었습니다.");
@@ -49,23 +46,27 @@ public class CartController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/cart/myCartList")
-    public ResponseEntity<?> myCartList(@AuthenticationPrincipal String email) {
+    public ResponseEntity<?> myCartList(@AuthenticationPrincipal MemberDto memberDto) {
 
         try {
-            List<CartItemDto> cartItemDtos = cartServiceImpl.myCartList(email, 0);
-            return ResponseEntity.status(HttpStatus.OK).body("장바구니리스트 입니다");
+            List<CartItemDto> cartItemDtos = cartServiceImpl.myCartList(memberDto.getEmail(), 0);
+            return ResponseEntity.status(HttpStatus.OK).body(cartItemDtos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/cart/disabledSeats/{screeningId}") // 프론트에서 사용 -> 해당상영스케줄좌석리스트(예약된좌석제외하고)
+    // 프론트에서 사용하기 위함
+    @GetMapping("/cart/disabledSeats/{screeningId}")
     public ResponseEntity<List<String>> getDisabledSeats(@PathVariable Long screeningId) {
+        System.out.println(">>> Screening ID: " + screeningId);
+
         List<String> disabledSeats = cartItemRepository.findByScreeningEntityId(screeningId).stream()
                 .map(CartItemEntity::getSeatNumber)
                 .collect(Collectors.toList());
+
+        System.out.println(">>> Disabled seats: " + disabledSeats);
+
         return ResponseEntity.ok(disabledSeats);
     }
 

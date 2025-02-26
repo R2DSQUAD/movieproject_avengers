@@ -44,7 +44,7 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
         <Link to="" className="nav-link">
           Movies
         </Link>
-        <Link to="" className="nav-link">
+        <Link to="/test" className="nav-link">
           Kids
         </Link>
       </nav>
@@ -62,6 +62,7 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
                 alt="member-info"
                 onClick={memberInfoOnClick}
               />
+              <Link to="/cart/myCartList">장바구니</Link>
               <Link to="/member/detail"><span>{loginState.nickname}님</span></Link>
               {isVisible && (
                 <div className="member-info-con">

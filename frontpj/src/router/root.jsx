@@ -13,9 +13,11 @@ const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
-
+const CartPage = lazy(() => import("../pages/cart/CartPage"));
+const TestPage = lazy(() => import("../pages/test/TestPage"));
 
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
+
 const root = createBrowserRouter([
   {
     path: "/",
@@ -98,12 +100,28 @@ const root = createBrowserRouter([
           </Suspense>
         ),
       },
-
+      {
+        path: "/cart/myCartList",
+        element: (
+          <Suspense fallback={Loading}>
+            <CartPage />
+          </Suspense>
+        ),
+      },
       {
         path: "/calendar",
         element: (
           <Suspense fallback={Loading}>
             <CalendarPage />
+          </Suspense>
+        ),
+      },
+
+      {
+        path: "/test",
+        element: (
+          <Suspense fallback={Loading}>
+            <TestPage />
           </Suspense>
         ),
       },

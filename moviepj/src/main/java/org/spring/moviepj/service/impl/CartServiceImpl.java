@@ -48,11 +48,10 @@ public class CartServiceImpl implements CartService {
             cartEntity = cartRepository.save(CartEntity.builder()
                     .memberEntity(memberEntity)
                     .status(0)
+                    .totalPrice(0)
                     .build());
             System.out.println("Cart ID: " + cartEntity.getId());
-
         }
-        // 결제하지않은 0상태 장바구니 가져오거나 없으면 0상태 생성
 
         int totalPrice = 0;
 
@@ -60,7 +59,8 @@ public class CartServiceImpl implements CartService {
             ScreeningEntity screeningEntity = screeningRepository.findById(cartItemRequestDto.getScreeningId())
                     .orElseThrow(() -> new IllegalArgumentException("상영 정보를 찾을 수 없습니다."));
 
-            boolean seatExists = cartItemRepository.existsByCartEntityAndSeatNumber(cartEntity, seat);
+            // 모든 사용자의 장바구니에 해당 좌석이 있는지 검사
+            boolean seatExists = cartItemRepository.existsByScreeningEntityAndSeatNumber(screeningEntity, seat);
             if (seatExists) {
                 throw new IllegalArgumentException("이미 선택된 좌석입니다: " + seat);
             }
@@ -78,7 +78,6 @@ public class CartServiceImpl implements CartService {
 
         cartEntity.setTotalPrice(cartEntity.getTotalPrice() + totalPrice);
         cartRepository.save(cartEntity);
-
     }
 
     @Override
@@ -95,10 +94,13 @@ public class CartServiceImpl implements CartService {
 
         return cartItemEntities.stream().map(el -> CartItemDto.builder()
                 .id(el.getId())
-                .cartEntity(cartEntity)
+                .totalPrice(cartEntity.getTotalPrice())
                 .seatNumber(el.getSeatNumber())
                 .price(el.getPrice())
-                .screeningEntity(el.getScreeningEntity())
+                .screeningDate(el.getScreeningEntity().getScreeningDate().toString())
+                .screeningTime(el.getScreeningEntity().getScreeningTime().toString())
+                .movieNm(el.getScreeningEntity().getMovieEntity().getMovieNm())
+                .theaterName(el.getScreeningEntity().getTheaterEntity().getName())
                 .createTime(el.getCreateTime())
                 .updateTime(el.getUpdateTime())
                 .build()).collect(Collectors.toList());
