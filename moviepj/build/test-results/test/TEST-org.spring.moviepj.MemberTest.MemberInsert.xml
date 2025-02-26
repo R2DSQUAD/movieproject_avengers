@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.spring.moviepj.MemberTest.MemberInsert" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-02-26T02:40:38" hostname="602-5" time="0.26">
+  <properties/>
+  <testcase name="testRead()" classname="org.spring.moviepj.MemberTest.MemberInsert" time="0.118"/>
+  <testcase name="insertMember()" classname="org.spring.moviepj.MemberTest.MemberInsert" time="0.141"/>
+  <system-out><![CDATA[2025-02-26T11:40:38.102+09:00  INFO 2744 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.spring.moviepj.MemberTest.MemberInsert]: MemberInsert does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-02-26T11:40:38.110+09:00  INFO 2744 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.spring.moviepj.MoviepjApplication for test class org.spring.moviepj.MemberTest.MemberInsert
+2025-02-26T11:40:38.213+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time 
+    from
+        member_tb me1_0 
+    left join
+        member_entity_member_role_list mrl1_0 
+            on me1_0.email=mrl1_0.member_entity_email 
+    where
+        me1_0.email=?
+Hibernate: 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time 
+    from
+        member_tb me1_0 
+    left join
+        member_entity_member_role_list mrl1_0 
+            on me1_0.email=mrl1_0.member_entity_email 
+    where
+        me1_0.email=?
+2025-02-26T11:40:38.324+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time,
+        ce1_0.member_id,
+        ce1_0.id,
+        ce1_0.content,
+        ce1_0.end,
+        ce1_0.start 
+    from
+        member_tb me1_0 
+    left join
+        calendar ce1_0 
+            on me1_0.email=ce1_0.member_id 
+    where
+        me1_0.email=?
+Hibernate: 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time,
+        ce1_0.member_id,
+        ce1_0.id,
+        ce1_0.content,
+        ce1_0.end,
+        ce1_0.start 
+    from
+        member_tb me1_0 
+    left join
+        calendar ce1_0 
+            on me1_0.email=ce1_0.member_id 
+    where
+        me1_0.email=?
+2025-02-26T11:40:38.328+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list 
+    from
+        member_entity_member_role_list mrl1_0 
+    where
+        mrl1_0.member_entity_email=?
+Hibernate: 
+    select
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list 
+    from
+        member_entity_member_role_list mrl1_0 
+    where
+        mrl1_0.member_entity_email=?
+2025-02-26T11:40:38.356+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    update
+        member_tb 
+    set
+        nickname=?,
+        pw=?,
+        social=?,
+        update_time=? 
+    where
+        email=?
+Hibernate: 
+    update
+        member_tb 
+    set
+        nickname=?,
+        pw=?,
+        social=?,
+        update_time=? 
+    where
+        email=?
+2025-02-26T11:40:38.365+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    delete 
+    from
+        member_entity_member_role_list 
+    where
+        member_entity_email=?
+Hibernate: 
+    delete 
+    from
+        member_entity_member_role_list 
+    where
+        member_entity_email=?
+2025-02-26T11:40:38.368+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        member_entity_member_role_list
+        (member_entity_email, member_role_list) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        member_entity_member_role_list
+        (member_entity_email, member_role_list) 
+    values
+        (?, ?)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

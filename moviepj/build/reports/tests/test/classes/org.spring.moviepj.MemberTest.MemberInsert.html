@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - MemberInsert</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>MemberInsert</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/org.spring.moviepj.MemberTest.html">org.spring.moviepj.MemberTest</a> &gt; MemberInsert</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">2</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.259s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">insertMember()</td>
+<td class="success">0.141s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testRead()</td>
+<td class="success">0.118s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2025-02-26T11:40:38.102+09:00  INFO 2744 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.spring.moviepj.MemberTest.MemberInsert]: MemberInsert does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-02-26T11:40:38.110+09:00  INFO 2744 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.spring.moviepj.MoviepjApplication for test class org.spring.moviepj.MemberTest.MemberInsert
+2025-02-26T11:40:38.213+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time 
+    from
+        member_tb me1_0 
+    left join
+        member_entity_member_role_list mrl1_0 
+            on me1_0.email=mrl1_0.member_entity_email 
+    where
+        me1_0.email=?
+Hibernate: 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time 
+    from
+        member_tb me1_0 
+    left join
+        member_entity_member_role_list mrl1_0 
+            on me1_0.email=mrl1_0.member_entity_email 
+    where
+        me1_0.email=?
+2025-02-26T11:40:38.324+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time,
+        ce1_0.member_id,
+        ce1_0.id,
+        ce1_0.content,
+        ce1_0.end,
+        ce1_0.start 
+    from
+        member_tb me1_0 
+    left join
+        calendar ce1_0 
+            on me1_0.email=ce1_0.member_id 
+    where
+        me1_0.email=?
+Hibernate: 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time,
+        ce1_0.member_id,
+        ce1_0.id,
+        ce1_0.content,
+        ce1_0.end,
+        ce1_0.start 
+    from
+        member_tb me1_0 
+    left join
+        calendar ce1_0 
+            on me1_0.email=ce1_0.member_id 
+    where
+        me1_0.email=?
+2025-02-26T11:40:38.328+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list 
+    from
+        member_entity_member_role_list mrl1_0 
+    where
+        mrl1_0.member_entity_email=?
+Hibernate: 
+    select
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list 
+    from
+        member_entity_member_role_list mrl1_0 
+    where
+        mrl1_0.member_entity_email=?
+2025-02-26T11:40:38.356+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    update
+        member_tb 
+    set
+        nickname=?,
+        pw=?,
+        social=?,
+        update_time=? 
+    where
+        email=?
+Hibernate: 
+    update
+        member_tb 
+    set
+        nickname=?,
+        pw=?,
+        social=?,
+        update_time=? 
+    where
+        email=?
+2025-02-26T11:40:38.365+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    delete 
+    from
+        member_entity_member_role_list 
+    where
+        member_entity_email=?
+Hibernate: 
+    delete 
+    from
+        member_entity_member_role_list 
+    where
+        member_entity_email=?
+2025-02-26T11:40:38.368+09:00 DEBUG 2744 --- [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        member_entity_member_role_list
+        (member_entity_email, member_role_list) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        member_entity_member_role_list
+        (member_entity_email, member_role_list) 
+    values
+        (?, ?)
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 8.12.1</a> at 2025. 2. 26. 오전 11:40:38</p>
+</div>
+</div>
+</body>
+</html>

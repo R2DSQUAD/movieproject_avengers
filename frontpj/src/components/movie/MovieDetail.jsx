@@ -77,7 +77,7 @@ const MovieDetail = () => {
             </div>
           </div>
 
-          <div className="content">
+          <div className="moviedetail-content">
             <span>줄거리</span>
             <p>{movieInfo.overview}</p>
             {/* 상단에 고정된 영상 플레이어 */}
