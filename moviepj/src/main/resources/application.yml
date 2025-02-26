@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 1234
-    url: jdbc:mysql://localhost/moviedb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://192.168.23.234/moviedb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
 
 
   jpa:

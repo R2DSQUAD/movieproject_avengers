@@ -73,7 +73,7 @@
 }
 
 .index .index-con .title .title-con .movieBtn button:hover {
-  filter: brightness(70%);
+  filter: opacity(80%)
 }
 
 .index .index-con .main-content {
@@ -208,7 +208,7 @@ body.light .index .index-con .main-content>h3 {
 }
 
 .index .index-con .main-content .popular-movie>ul>li>div.item-back .boxOfficeDetail button:hover {
-  filter: brightness(70%);
+  filter: opacity(80%)
 }
 
 .index .index-con .main-content .popular-movie>ul>li>div {

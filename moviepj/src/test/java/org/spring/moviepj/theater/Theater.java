@@ -12,15 +12,15 @@ public class Theater {
     @Autowired
     TheaterRepository theaterRepository;
 
-    @Test
-    void insertTheater() {
-        for (int i = 1; i <= 10; i++) {
-            TheaterEntity theater = TheaterEntity.builder()
-                    .name("상영관 " + i)
-                    .build();
-            theaterRepository.save(theater);
-        }
+    // @Test
+    // void insertTheater() {
+    //     for (int i = 1; i <= 10; i++) {
+    //         TheaterEntity theater = TheaterEntity.builder()
+    //                 .name("상영관 " + i)
+    //                 .build();
+    //         theaterRepository.save(theater);
+    //     }
 
-    }
+    // }
 
 }
