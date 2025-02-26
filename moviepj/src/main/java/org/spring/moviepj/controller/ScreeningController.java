@@ -29,4 +29,13 @@ public class ScreeningController {
         return ResponseEntity.ok(screenings);
     }
 
+    @GetMapping("/screening/info/{screeningId}")
+    public ResponseEntity<ScreeningDto> getScreeningById(@PathVariable("screeningId") Long screeningId) {
+        ScreeningDto screening = screeningServiceImpl.getScreeningById(screeningId);
+        if (screening == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(screening);
+    }
+
 }

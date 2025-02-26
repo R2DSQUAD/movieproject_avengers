@@ -26,17 +26,17 @@ const Screening = () => {
         const response = await axios.get(
           `http://localhost:8090/api/screening/${movieId}`
         );
-        console.log("Response data:", response.data); // ✅ 응답 데이터 확인
+        console.log("Response data:", response.data); //  응답 데이터 확인
 
         const today = new Date().toISOString().split("T")[0];
         const upcomingDates = Array.isArray(response.data)
           ? [
-              ...new Set(response.data.map((item) => item.screeningDate)),
-            ].filter((date) => date >= today)
+            ...new Set(response.data.map((item) => item.screeningDate)),
+          ].filter((date) => date >= today)
           : [];
 
         setDates(upcomingDates);
-        setScreenings(Array.isArray(response.data) ? response.data : []); // ✅ 배열인지 확인
+        setScreenings(Array.isArray(response.data) ? response.data : []); //  배열인지 확인
 
         if (upcomingDates.length > 0) {
           setSelectedDate(upcomingDates[0]);
