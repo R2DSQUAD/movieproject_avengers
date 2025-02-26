@@ -24,4 +24,6 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
     @Query("SELECT m FROM MovieEntity m WHERE FUNCTION('DATE', m.createTime) = (SELECT FUNCTION('DATE', MAX(m2.createTime)) FROM MovieEntity m2) ORDER BY m.rank ASC")
     List<MovieEntity> findLatestTop10Movies();
 
+    Optional<MovieEntity> findByMovieNm(String name);
+
 }

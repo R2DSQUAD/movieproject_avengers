@@ -67,6 +67,7 @@ export default function Header({ isDarkMode, setIsDarkMode }) {
               {isVisible && (
                 <div className="member-info-con">
                   <button onClick={handleLogout}>로그아웃</button>
+                  <Link to="/chatroom">실시간채팅</Link>
                 </div>
               )}
             </div>

@@ -14,6 +14,9 @@ const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 const CartPage = lazy(() => import("../pages/cart/CartPage"));
 const TestPage = lazy(() => import("../pages/test/TestPage"));
+const ChatRoom = lazy(() => import("../pages/ws/ChatRoomPage"));
+const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
+const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 
 
 const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
@@ -102,13 +105,19 @@ const root = createBrowserRouter([
           </Suspense>
         ),
       },
-  
-      // 어드민 
       {
         path: "/cart/myCartList",
         element: (
           <Suspense fallback={Loading}>
             <CartPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/chatBot",
+        element: (
+          <Suspense fallback={Loading}>
+            <ChatBot />
           </Suspense>
         ),
       },
@@ -146,7 +155,14 @@ const root = createBrowserRouter([
           },
         ],
       },
-
+      {
+        path: "/Komoran",
+        element: (
+          <Suspense fallback={Loading}>
+            <Komoran />
+          </Suspense>
+        ),
+      },
       {
         path: "/test",
         element: (
