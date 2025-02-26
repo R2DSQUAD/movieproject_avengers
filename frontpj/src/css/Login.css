@@ -122,6 +122,6 @@ body.light .login .login-con .btn > a {
 }
 
 #error-msg > * {
-  color: var(--color-error);
+  color: var(--color-red);
   font-size: 12px;
 }
