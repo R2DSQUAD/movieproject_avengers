@@ -1,7 +1,6 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-
 const Loading = <div className="loading">Loading...</div>;
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const MainPage = lazy(() => import("../pages/MainPage"));
@@ -15,7 +14,9 @@ const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 const CartPage = lazy(() => import("../pages/cart/CartPage"));
 const TestPage = lazy(() => import("../pages/test/TestPage"));
-
+const ChatRoom = lazy(() => import("../pages/ws/ChatRoomPage"));
+const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
+const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
 
 const root = createBrowserRouter([
@@ -50,7 +51,6 @@ const root = createBrowserRouter([
             <MapPage />
           </Suspense>
         ),
-
       },
       {
         path: "movie/detail?/:movieCd",
@@ -101,10 +101,26 @@ const root = createBrowserRouter([
         ),
       },
       {
+        path: "/chatroom",
+        element: (
+          <Suspense fallback={Loading}>
+            <ChatRoom />
+          </Suspense>
+        ),
+      },
+      {
         path: "/cart/myCartList",
         element: (
           <Suspense fallback={Loading}>
             <CartPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/chatBot",
+        element: (
+          <Suspense fallback={Loading}>
+            <ChatBot />
           </Suspense>
         ),
       },
@@ -116,7 +132,14 @@ const root = createBrowserRouter([
           </Suspense>
         ),
       },
-
+      {
+        path: "/Komoran",
+        element: (
+          <Suspense fallback={Loading}>
+            <Komoran />
+          </Suspense>
+        ),
+      },
       {
         path: "/test",
         element: (

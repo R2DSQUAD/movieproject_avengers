@@ -26,6 +26,8 @@ spring:
 #  profiles:
 #    include: open  #application-open.yml
 
+
+
 logging:
   level:
     org.hibernate.SQL: debug
