@@ -25,7 +25,6 @@
     margin-bottom: 20px;
 }
 
-
 .seat-container {
     display: flex;
     flex-direction: column;
@@ -33,12 +32,10 @@
     align-items: center;
 }
 
-
 .seat-row {
     display: flex;
     gap: 8px;
 }
-
 
 .seat {
     display: inline-block;
@@ -54,7 +51,7 @@
     transition: all 0.3s;
 }
 
-
+/* 사용 가능한 좌석 */
 .seat.available {
     background-color: #ffffff;
     color: black;
@@ -67,7 +64,7 @@
     transition: 0.3s;
 }
 
-
+/* 선택된 좌석 */
 .seat.selected {
     background-color: #4caf50;
     color: white;
@@ -80,17 +77,39 @@
     color: white;
     cursor: not-allowed;
     opacity: 0.6;
+    position: relative;
+    /* 의사 요소가 상대적으로 위치하도록 설정 */
+    display: flex;
+    /* X 표시를 중앙에 위치 */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* 넘치는 내용 숨김 */
 }
 
+/* 예약된 좌석에 X 표시 */
 .seat.disabled::before {
     content: "X";
-    display: block;
-    text-align: center;
-    line-height: 40px;
+    font-size: 1.4rem;
+    /* 크기 조정 */
     font-weight: bold;
     color: red;
+    position: absolute;
+    /* 좌석의 중앙에 위치 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+    /* X 표시 클릭 불가능 */
 }
 
+
+.seat.disabled:hover {
+    background-color: #555555;
+    border: 1px solid red;
+    transition: 0.3s;
+}
 
 .selected-seats {
     margin-top: 20px;
@@ -108,7 +127,6 @@
     color: #333;
 }
 
-
 .cart-go {
     margin-top: 20px;
 }
@@ -119,12 +137,5 @@
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.cart-go button:hover {
-    background-color: #388e3c;
+    font-size: 12px;
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.spring.moviepj.common.BasicTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,6 +40,7 @@ public class CartEntity extends BasicTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @JsonIgnore
     private MemberEntity memberEntity;
 
     @Column(nullable = false)
