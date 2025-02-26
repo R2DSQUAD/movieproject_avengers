@@ -16,8 +16,8 @@
 	--color-main-point: #FFC107;
 	--color-sub-point: #FFB300;
 	--color-point: #fff3ce;
-	--color-error: #F44336;
-	--color-success: #4CAF50;
+	--color-red: #F44336;
+	--color-green: #4CAF50;
 
 	/* 드래그 방지 */
 	-webkit-user-select:none;
