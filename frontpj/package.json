@@ -10,6 +10,7 @@
     "@fullcalendar/react": "^6.1.15",
     "@mui/material": "^6.4.5",
     "@reduxjs/toolkit": "^2.6.0",
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "framer-motion": "^12.4.7",
@@ -24,6 +25,8 @@
     "react-router-dom": "^7.2.0",
     "react-scripts": "^5.0.1",
     "redux": "^5.0.1",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
