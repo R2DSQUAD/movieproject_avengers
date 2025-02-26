@@ -11,4 +11,5 @@ public interface CartService {
 
     List<CartItemDto> myCartList(String email, int status);
 
+    void deleteCartItems(List<Long> ids, String email);
 }

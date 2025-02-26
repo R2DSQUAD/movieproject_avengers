@@ -118,6 +118,6 @@ body.light .join .join-con .btn > button{
 }
 
 #error-msg > * {
-  color: var(--color-error);
+  color: var(--color-red);
   font-size: 12px;
 }

@@ -31,7 +31,7 @@ public class ScreeningServiceImpl implements ScreeningService {
     private final MovieRepository movieRepository;
     private final TheaterRepository theaterRepository;
 
-    @Scheduled(cron = "0 21 12 * * *") // 매일 실행
+    @Scheduled(cron = "0 7 14 * * *") // 매일 실행
     public void updateScreenings() {
         System.out.println(">>> [자동 실행] 상영 일정 추가");
 
@@ -92,7 +92,7 @@ public class ScreeningServiceImpl implements ScreeningService {
                     continue;
                 }
 
-                List<LocalTime> selectedTimes = getRandomScreeningTimes();
+                List<LocalTime> selectedTimes = getAllScreeningTimes();
 
                 for (LocalTime startTime : selectedTimes) {
                     LocalTime endTime = startTime.plusHours(2);
@@ -107,7 +107,7 @@ public class ScreeningServiceImpl implements ScreeningService {
                                 .build();
 
                         screeningRepository.save(screening);
-                        System.out.println("🎬 상영 일정 추가됨: " + movie.getMovieNm() +
+                        System.out.println(" 상영 일정 추가됨: " + movie.getMovieNm() +
                                 " | " + screeningDate + " | " + startTime + " - " + endTime + " | 상영관: "
                                 + theaterEntity.getId());
                     }
@@ -116,17 +116,14 @@ public class ScreeningServiceImpl implements ScreeningService {
         }
     }
 
-    private List<LocalTime> getRandomScreeningTimes() {
-        List<LocalTime> allTimes = new ArrayList<>(List.of(
+    private List<LocalTime> getAllScreeningTimes() {
+        return List.of(
+                LocalTime.of(7, 0),
                 LocalTime.of(10, 0),
                 LocalTime.of(13, 0),
                 LocalTime.of(16, 0),
                 LocalTime.of(19, 0),
-                LocalTime.of(22, 0)));
-
-        Collections.shuffle(allTimes);
-
-        return allTimes.subList(0, 3);
+                LocalTime.of(22, 0));
     }
 
     private boolean isScreeningTimeAvailable(TheaterEntity theater, LocalDate date, LocalTime startTime,
@@ -149,6 +146,22 @@ public class ScreeningServiceImpl implements ScreeningService {
                         .build())
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public ScreeningDto getScreeningById(Long screeningId) {
+        return screeningRepository.findByIdWithMovie(screeningId)
+                .map(el -> ScreeningDto.builder()
+                        .id(el.getId())
+                        .movieEntity(el.getMovieEntity())
+                        .theaterEntity(el.getTheaterEntity())
+                        .screeningDate(el.getScreeningDate())
+                        .screeningTime(el.getScreeningTime())
+                        .screeningEndTime(el.getScreeningEndTime())
+                        .createTime(el.getCreateTime())
+                        .updateTime(el.getUpdateTime())
+                        .build())
+                .orElse(null);
     }
 
 }

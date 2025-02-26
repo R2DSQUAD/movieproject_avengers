@@ -12,9 +12,10 @@ const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
+const CartPage = lazy(() => import("../pages/cart/CartPage"));
+const TestPage = lazy(() => import("../pages/test/TestPage"));
 
 
-const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
 const AdminLayout = lazy(() => import("../components/admin/AdminLayout"));
 const MemberList = lazy(() => import("../components/admin/member/MemberList"));
@@ -103,6 +104,14 @@ const root = createBrowserRouter([
   
       // 어드민 
       {
+        path: "/cart/myCartList",
+        element: (
+          <Suspense fallback={Loading}>
+            <CartPage />
+          </Suspense>
+        ),
+      },
+      {
         path: "admin",
         element: (
           <Suspense fallback={Loading}>
@@ -135,6 +144,15 @@ const root = createBrowserRouter([
             ),
           },
         ],
+      },
+
+      {
+        path: "/test",
+        element: (
+          <Suspense fallback={Loading}>
+            <TestPage />
+          </Suspense>
+        ),
       },
     ],
   },

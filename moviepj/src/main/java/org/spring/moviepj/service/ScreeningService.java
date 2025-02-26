@@ -14,4 +14,6 @@ public interface ScreeningService {
 
     List<ScreeningDto> getScreeningsByMovieId(Long movieId);
 
+    ScreeningDto getScreeningById(Long screeningId);
+
 }

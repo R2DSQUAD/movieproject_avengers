@@ -23,6 +23,12 @@ const Login = () => {
     }));
   };
 
+  const activeEnter = (e) => {
+    if(e.key === "Enter") {
+      handleClickLogin();
+    }
+  }
+
   const validate = () => {
     const newErrors = {};
     if (!loginParam.email) newErrors.email = "이메일을 입력하세요.";
@@ -41,9 +47,8 @@ const Login = () => {
       .unwrap()
       .then((data) => {
         if (!data.accessToken) {
-          setErrors({ general: "이메일과 패스워드를 다시 확인하세요" });
+          setErrors({ general: "이메일과 비밀번호를 다시 확인하세요" });
         } else {
-          alert("로그인 성공");
           navigate("/", { replace: true });
         }
       })
@@ -65,6 +70,7 @@ const Login = () => {
             name="email"
             value={loginParam.email}
             onChange={handleChange}
+            onKeyDown={activeEnter}
           />
         </div>
         <div className="password">
@@ -75,6 +81,7 @@ const Login = () => {
             name="pw"
             value={loginParam.pw}
             onChange={handleChange}
+            onKeyDown={activeEnter}
           />
         </div>
         <div id="error-msg">

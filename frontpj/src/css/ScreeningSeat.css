@@ -1,10 +1,11 @@
-.seat-selection-page {
+@import url('../css/Screen.css');
+
+.seat-selection-con {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .seat-title {
@@ -16,8 +17,6 @@
 .screen {
     width: 80%;
     height: 30px;
-    background-color: #333;
-    color: white;
     text-align: center;
     line-height: 30px;
     font-weight: bold;
@@ -25,89 +24,138 @@
     margin-bottom: 20px;
 }
 
+body.dark .screen {
+    background-color: var(--color-light-3);
+    color: var(--color-light-text);
+}
+
+body.light .screen {
+    background-color: var(--color-dark-3);
+    color: var(--color-dark-text);
+
+}
 
 .seat-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
 }
 
-
 .seat-row {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    width: 100%;
 }
 
-
 .seat {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    margin: 5px;
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 10px;
     text-align: center;
     line-height: 40px;
-    border: 1px solid #000;
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9rem;
     transition: all 0.3s;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
 }
 
+.seat-row .seat:nth-child(7) {
+    margin-left: 50px;
+}
 
+.seat-row .seat:nth-child(18) {
+    margin-right: 50px;
+}
+
+/* 사용 가능한 좌석 */
 .seat.available {
-    background-color: #ffffff;
-    color: black;
+    background-color: var(--color-light-1);
+    color: var(--color-dark-1);
+    box-sizing: border-box;
+    border: 1px solid var(--color-dark-1);
 }
 
 .seat.available:hover {
-    background-color: #ddd;
-    color: black;
-    border: 1px solid #4caf50;
+    background-color: var(--color-light-3);
+    color: var(--color-dark-1);
+    border: 1px solid var(--color-green);
     transition: 0.3s;
+    box-sizing: border-box;
 }
 
-
+/* 선택된 좌석 */
 .seat.selected {
-    background-color: #4caf50;
-    color: white;
-    border: 2px solid #388e3c;
+    background-color: var(--color-green);
+    color: var(--color-light-1);
+    border: 1px solid var(--color-green);
     font-weight: bold;
+    box-sizing: border-box;
 }
 
 .seat.disabled {
-    background-color: #333333;
-    color: white;
+    background-color: var(--color-light-3);
+    color: var(--color-light-1);
     cursor: not-allowed;
     opacity: 0.6;
+    position: relative;
+    /* 의사 요소가 상대적으로 위치하도록 설정 */
+    display: flex;
+    /* X 표시를 중앙에 위치 */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* 넘치는 내용 숨김 */
+    box-sizing: border-box;
 }
 
+/* 예약된 좌석에 X 표시 */
 .seat.disabled::before {
     content: "X";
-    display: block;
-    text-align: center;
-    line-height: 40px;
+    font-size: 1.4rem;
+    /* 크기 조정 */
     font-weight: bold;
-    color: red;
+    color: var(--color-red);
+    position: absolute;
+    /* 좌석의 중앙에 위치 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+    /* X 표시 클릭 불가능 */
+    box-sizing: border-box;
 }
 
+
+.seat.disabled:hover {
+    background-color: var(--color-dark-3);
+    border: 1px solid var(--color-red);
+    transition: 0.3s;
+    box-sizing: border-box;
+}
 
 .selected-seats {
     margin-top: 20px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .selected-seats h2 {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 .selected-seats p {
     font-size: 1.2rem;
-    color: #333;
+    color: var(--color-dark-3);
 }
-
 
 .cart-go {
     margin-top: 20px;
@@ -115,16 +163,10 @@
 
 .cart-go button {
     padding: 10px 20px;
-    background-color: #4caf50;
-    color: white;
+    background-color: var(--color-main-point);
+    color: var(--color-dark-1);
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.cart-go button:hover {
-    background-color: #388e3c;
+    box-sizing: border-box;
+    font-weight: bolder;
 }

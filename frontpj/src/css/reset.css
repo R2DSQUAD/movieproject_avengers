@@ -2,18 +2,51 @@
 
 :root {
 	font-family: 'Noto Sans KR', sans-serif;
-	--color-dark-1: #121212;
+	--color-shadow: #00000033;
+	--color-dark-1: #121212;	
 	--color-dark-2: #222222;
 	--color-dark-3: #333333;
+	--color-dark-main-text: #ffffff;
 	--color-dark-text: #ffffff80;
-	--color-light-1: #EDEDED;
-	--color-light-2: #DDDDDD;
+	--color-light-1: #F5F5F5;
+	--color-light-2: #E0E0E0;
 	--color-light-3: #CCCCCC;
+	--color-light-main-text: #121212;
 	--color-light-text: #12121280;
 	--color-main-point: #FFC107;
 	--color-sub-point: #FFB300;
-	--color-error: #F44336;
-	--color-success: #4CAF50;
+	--color-point: #fff3ce;
+	--color-red: #F44336;
+	--color-green: #4CAF50;
+
+	/* 드래그 방지 */
+	-webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+	scroll-behavior: smooth;
+}
+
+/* 스크롤바 전체 */
+::-webkit-scrollbar {
+	width: 10px; /* 스크롤바의 너비 */
+	height: 10px; /* 가로 스크롤바의 높이 */
+}
+
+/* 스크롤바 트랙 */
+::-webkit-scrollbar-track {
+	background: var(--color-point); /* 트랙의 배경색 */
+}
+
+/* 스크롤바 핸들 */
+::-webkit-scrollbar-thumb {
+	background: var(--color-main-point); /* 핸들의 배경색 */
+	border-radius: 50px; /* 핸들의 모서리 둥글게 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-sub-point); /* 핸들의 배경색 */
+	border-radius: 50px; /* 핸들의 모서리 둥글게 */
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -121,7 +154,7 @@ section {
 
 body {
 	line-height: 1;
-	transition: all 0.5s;
+	transition: all 0.5s ease;
 }
 
 ol,
