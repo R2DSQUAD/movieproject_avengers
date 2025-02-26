@@ -58,6 +58,7 @@ public class MemberController {
     }
 
     // Member 수정,삭제 나중에 추가예정
+    @PreAuthorize("has any Role ('admin')")
     @GetMapping("/memberList")
     public ResponseEntity<List<MemberDto>> getMemberList() {
         List<MemberDto> members = memberServiceImpl.memberList(); // 회원 목록 조회

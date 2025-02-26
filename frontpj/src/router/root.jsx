@@ -16,6 +16,7 @@ const CartPage = lazy(() => import("../pages/cart/CartPage"));
 const TestPage = lazy(() => import("../pages/test/TestPage"));
 
 
+const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
 const AdminLayout = lazy(() => import("../components/admin/AdminLayout"));
 const MemberList = lazy(() => import("../components/admin/member/MemberList"));
