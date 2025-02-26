@@ -107,4 +107,23 @@ public class CartServiceImpl implements CartService {
 
     }
 
+    @Override
+    public void deleteCartItems(List<Long> ids, String email) {
+        MemberEntity memberEntity = memberRepository.findById(email)
+                .orElseThrow(() -> new IllegalArgumentException("회원정보를 찾을 수 없습니다"));
+
+        CartEntity cartEntity = cartRepository.findByMemberEntityAndStatus(memberEntity, 0)
+                .orElseThrow(() -> new IllegalArgumentException("장바구니가 존재하지 않습니다"));
+
+        List<CartItemEntity> itemsToDelete = cartItemRepository.findAllById(ids);
+
+        int totalPriceToRemove = itemsToDelete.stream().mapToInt(CartItemEntity::getPrice).sum();
+
+        cartItemRepository.deleteAll(itemsToDelete);
+
+        // 총 가격 업데이트 (삭제했으니까 장바구니 총가격 변동)
+        cartEntity.setTotalPrice(cartEntity.getTotalPrice() - totalPriceToRemove);
+        cartRepository.save(cartEntity);
+    }
+
 }

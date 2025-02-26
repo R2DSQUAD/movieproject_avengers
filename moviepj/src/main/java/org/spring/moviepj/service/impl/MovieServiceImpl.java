@@ -46,7 +46,7 @@ public class MovieServiceImpl implements MovieService {
     private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
-    @Scheduled(cron = "0 20 12 * * TUE")
+    @Scheduled(cron = "0 5 14 * * WED")
     public void fetchAndSaveWeeklyBoxOffice() {
         System.out.println(">>> [스케줄 실행됨] 박스오피스 데이터 가져오기 시작");
         String targetDate = getLastSundayDate();
@@ -92,22 +92,40 @@ public class MovieServiceImpl implements MovieService {
                     JSONObject jsonResponse = new JSONObject(tmdbResponse.getBody());
                     JSONArray results = jsonResponse.getJSONArray("results");
 
+                    List<JSONObject> matchingList = new ArrayList<>();
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject movieData = results.getJSONObject(i);
-                        String tmdbTitle = movieData.optString("title", "").trim();
-
-                        if (tmdbTitle.replaceAll("\\s+", "").equalsIgnoreCase(el.getMovieNm().replaceAll("\\s+", ""))) {
-                            overview = movieData.optString("overview", "줄거리 정보 없음");
-                            posterPath = movieData.optString("poster_path", null) != null
-                                    ? TMDB_IMAGE_URL + "/w500/" + movieData.optString("poster_path")
-                                    : null;
-                            backdropPath = movieData.optString("backdrop_path", null) != null
-                                    ? TMDB_IMAGE_URL + "/w1920_and_h800_multi_faces/"
-                                            + movieData.optString("backdrop_path")
-                                    : null;
-                            tmdbId = movieData.optInt("id");
-                            break;
+                        String tmdbTitle = movieData.optString("title", "").replaceAll("\\s+", "");
+                        String apiTitle = el.getMovieNm().replaceAll("\\s+", "");
+                        if (tmdbTitle.equalsIgnoreCase(apiTitle)) {
+                            matchingList.add(movieData);
                         }
+                    }
+
+                    JSONObject selectedMovie = null;
+                    if (matchingList.size() == 1) {
+                        selectedMovie = matchingList.get(0);
+                    } else if (matchingList.size() > 1) {
+                        String openYear = el.getOpenDt().substring(0, 4);
+                        for (JSONObject movieData : matchingList) {
+                            String tmdbReleaseDate = movieData.optString("release_date", "").trim();
+                            if (tmdbReleaseDate.startsWith(openYear)) {
+                                selectedMovie = movieData;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (selectedMovie != null) {
+                        overview = selectedMovie.optString("overview", "줄거리 정보 없음");
+                        posterPath = selectedMovie.optString("poster_path", null) != null
+                                ? TMDB_IMAGE_URL + "/w500/" + selectedMovie.optString("poster_path")
+                                : null;
+                        backdropPath = selectedMovie.optString("backdrop_path", null) != null
+                                ? TMDB_IMAGE_URL + "/w1920_and_h800_multi_faces/"
+                                        + selectedMovie.optString("backdrop_path")
+                                : null;
+                        tmdbId = selectedMovie.optInt("id");
                     }
                 }
             } catch (Exception e) {
@@ -129,8 +147,7 @@ public class MovieServiceImpl implements MovieService {
             movieRepository.save(movie);
             System.out.println("영화 저장 완료: " + el.getMovieNm());
 
-            // 트레일러 리스트 저장
-            if (tmdbId != null) {
+            if (tmdbId != null && (posterPath != null || backdropPath != null)) {
                 List<TrailerEntity> trailers = getMovieTrailerList(movie, tmdbId);
                 if (!trailers.isEmpty()) {
                     trailerRepository.saveAll(trailers);
@@ -152,16 +169,12 @@ public class MovieServiceImpl implements MovieService {
 
                 for (int i = 0; i < results.length(); i++) {
                     JSONObject video = results.getJSONObject(i);
-
                     if ("YouTube".equalsIgnoreCase(video.optString("site"))) {
-                        String type = video.optString("type");
-                        String name = video.optString("name");
-                        String key = video.optString("key");
                         TrailerEntity trailer = TrailerEntity.builder()
                                 .movieEntity(movie)
-                                .name(name)
-                                .type(type)
-                                .url(key)
+                                .name(video.optString("name"))
+                                .type(video.optString("type"))
+                                .url(video.optString("key"))
                                 .build();
 
                         trailers.add(trailer);
@@ -172,20 +185,16 @@ public class MovieServiceImpl implements MovieService {
             e.printStackTrace();
             System.err.println("트레일러 가져오기 실패: " + e.getMessage());
         }
-
         return trailers;
     }
 
     private String getLastSundayDate() {
-        LocalDate today = LocalDate.now();
-        LocalDate lastSunday = today.with(java.time.DayOfWeek.SUNDAY).minusWeeks(1);
+        LocalDate lastSunday = LocalDate.now().with(java.time.DayOfWeek.SUNDAY).minusWeeks(1);
         return lastSunday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 
     @Override
     public MovieDto movieDetail(Long id) {
-
         throw new UnsupportedOperationException("Unimplemented method 'movieDetail'");
     }
-
 }
