@@ -4,6 +4,7 @@ import "../../css/Cart.css";
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
+    const [selectedItems, setSelectedItems] = useState(new Set());
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -20,8 +21,41 @@ const Cart = () => {
         fetchCartItems();
     }, []);
 
+    //체크박스 선택 및 해제
+    const handleCheckboxChange = (id) => {
+        setSelectedItems((prev) => {
+            const newSelectedItems = new Set(prev);
+            if (newSelectedItems.has(id)) {
+                newSelectedItems.delete(id)
+            } else {
+                newSelectedItems.add(id)
+            }
+            return newSelectedItems;
+        })
+    }
 
-    const totalPrice = cartItems.length > 0 ? cartItems[0].totalPrice : 0;
+    const handleDelete = async () => {
+        if (selectedItems.size === 0) {
+            alert('삭제할 항목을 선택하세요.')
+            return;
+        }
+
+        try {
+            const response = await jwtAxios.delete('http://localhost:8090/api/cart/delete', {
+                data: { ids: Array.from(selectedItems) }
+            })
+            alert(response.data)
+
+            setCartItems((prev) => prev.filter((item) => !selectedItems.has(item.id)))
+            setSelectedItems(new Set());
+        } catch (error) {
+            alert('삭제 중 오류가 발생했습니다.');
+
+        }
+    }
+
+
+    const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
 
     return (
         <>
@@ -33,6 +67,9 @@ const Cart = () => {
                         <>
                             {cartItems.map(item => (
                                 <div key={item.id} className="cart-item">
+                                    <input type="checkbox"
+                                        checked={selectedItems.has(item.id)}
+                                        onChange={() => handleCheckboxChange(item.id)} />
                                     <p>좌석 번호: {item.seatNumber}</p>
                                     <p>가격: {item.price.toLocaleString()}원</p>
                                     <p>상영 날짜: {item.screeningDate}</p>
@@ -41,6 +78,7 @@ const Cart = () => {
                                     <p>영화: {item.movieNm}</p>
                                 </div>
                             ))}
+                            <button onClick={handleDelete}>선택 삭제</button>
                             <div className="total-price">
                                 <h2>총 가격: {totalPrice.toLocaleString()}원</h2>
                             </div>
