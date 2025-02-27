@@ -9,7 +9,6 @@ import org.spring.moviepj.dto.CartItemRequestDto;
 import org.spring.moviepj.dto.MemberDto;
 import org.spring.moviepj.entity.CartItemEntity;
 import org.spring.moviepj.repository.CartItemRepository;
-import org.spring.moviepj.service.impl.CartItemServiceImpl;
 import org.spring.moviepj.service.impl.CartServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class CartController {
 
     private final CartServiceImpl cartServiceImpl;
-
-    private final CartItemServiceImpl cartItemServiceImpl;
 
     private final CartItemRepository cartItemRepository;
 

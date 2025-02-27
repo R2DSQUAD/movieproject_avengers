@@ -13,6 +13,7 @@ const JoinPage = lazy(() => import("../pages/member/JoinPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 const CartPage = lazy(() => import("../pages/cart/CartPage"));
+const PaymentPage = lazy(() => import("../pages/payment/PaymentPage"));
 const TestPage = lazy(() => import("../pages/test/TestPage"));
 const ChatRoom = lazy(() => import("../pages/ws/ChatRoomPage"));
 const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
@@ -137,6 +138,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <Komoran />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/payment/orderSettlement",
+        element: (
+          <Suspense fallback={Loading}>
+            <PaymentPage />
           </Suspense>
         ),
       },

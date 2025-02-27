@@ -33,6 +33,7 @@ public class CartItemDto {
     private String screeningTime;
     private ScreeningEntity screeningEntity;
 
+    private String poster_path;
     private String movieNm;
     private String theaterName;
 

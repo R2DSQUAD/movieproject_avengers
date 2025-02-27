@@ -100,6 +100,7 @@ public class CartServiceImpl implements CartService {
                 .screeningDate(el.getScreeningEntity().getScreeningDate().toString())
                 .screeningTime(el.getScreeningEntity().getScreeningTime().toString())
                 .movieNm(el.getScreeningEntity().getMovieEntity().getMovieNm())
+                .poster_path(el.getScreeningEntity().getMovieEntity().getPoster_path())
                 .theaterName(el.getScreeningEntity().getTheaterEntity().getName())
                 .createTime(el.getCreateTime())
                 .updateTime(el.getUpdateTime())
