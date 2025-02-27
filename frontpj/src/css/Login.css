@@ -15,6 +15,7 @@
   width: 30%;
   gap: 20px;
   box-sizing: border-box;
+  min-width: 300px;
 }
 
 .login .login-con .email,
@@ -26,6 +27,32 @@
   align-items: center;
   box-sizing: border-box;
 }
+
+.login .login-con .password div {
+  max-width: 350px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.login .login-con .password div .eye {
+  width: 20px;
+  position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.login .login-con .password div .eye > img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
 
 .login .login-con div span {
   display: flex;
@@ -50,11 +77,10 @@
   border-radius: 10px;
   /* 둥글게 만들기 */
   
-  /* 기본 테두리 */
-  padding: 0 10px;
   /* 패딩 추가 */
   outline: none;
   box-sizing: border-box;
+  padding: 0 60px 0 20px;
 }
 
 .login .login-con .btn {

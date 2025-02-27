@@ -1,94 +1,6 @@
-.content {
-  display: flex;
-  padding: 80px;
-  box-sizing: border-box;
-}
+@import url('../css/MainContent.css');
 
-.content .movieDetail {
-  display: flex;
-  width: 100%;
-  padding: 40px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 15px var(--color-shadow);
-  /* 바닥 그림자 */
-  transition: all 0.3s ease;
-  /* 그림자 효과에 부드러운 전환 */
-  border-radius: 20px;
-}
-
-body.dark .content .movieDetail { 
-  background-color: var(--color-dark-2);
-}
-
-body.light .content .movieDetail { 
-  background-color: var(--color-light-2);
-}
-
-.content .movieDetail .movieDetail-con {
-  display: flex;
-  width: 100%;
-  box-sizing: border-box;
-  box-shadow: 0 4px 15px var(--color-shadow);
-  /* 바닥 그림자 */
-  transition: box-shadow 0.3s ease;
-  /* 그림자 효과에 부드러운 전환 */
-  border-radius: 20px;
-}
-
-body.dark .content .movieDetail .movieDetail-con {
-  background-color: var(--color-dark-3);
-}
-
-body.light .content .movieDetail .movieDetail-con {
-  background-color: var(--color-light-3);
-}
-
-.content .movieDetail .movieDetail-con .leftBar {
-  flex: 1 0 150px; /* 사이드바의 최소 너비 설정 */
-  display: flex;
-  width: 25%;
-  box-sizing: border-box;
-}
-
-.content .movieDetail .movieDetail-con .leftBar .leftBar-con {
-  display: flex;
-  flex-direction: column;
-}
-
-.content .movieDetail .movieDetail-con .leftBar .leftBar-con img {
-  display: block;
-  width: 100%;
-  border-radius: 20px 0 0 0;
-}
-
-
-.content .movieDetail .movieDetail-con .leftBar .leftBar-con button {
-  width: 100%;
-  height: 40px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bolder;
-  cursor: pointer;
-  box-sizing: border-box;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  background-color: var(--color-main-point);
-  color: var(--color-light-text);
-  transition: all 0.5s ease;
-}
-
-.content .movieDetail .movieDetail-con .leftBar .leftBar-con button:hover { 
-  filter: opacity(80%);
-}
-
-.content .movieDetail .movieDetail-con .leftBar .leftBar-con .movie-info {
-  padding: 30px;
-  box-sizing: border-box;
-}
-
-.content .movieDetail .movieDetail-con .moviedetail-content {
+.moviedetail-content {
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -99,18 +11,21 @@ body.light .content .movieDetail .movieDetail-con {
   box-shadow: 0 4px 15px var(--color-shadow);
   transition: box-shadow 0.5s ease;
   border-radius: 0 20px 20px 0;
+  align-items: center;
+  justify-content: center;
 }
 
-body.dark .content .movieDetail .movieDetail-con .moviedetail-content {
+body.dark .moviedetail-content {
   background-color: var(--color-dark-3);
 }
 
 
-.content .movieDetail .movieDetail-con .moviedetail-content>.video-container {
+.moviedetail-content>.video-container {
   width: 100%;
+  max-width: 800px;
 }
 
-.content .movieDetail .movieDetail-con .moviedetail-content>ul {
+.moviedetail-content>ul {
   display: grid;
   gap: 10px;
   overflow-x: auto; /* 가로 스크롤 가능하도록 */
@@ -120,19 +35,21 @@ body.dark .content .movieDetail .movieDetail-con .moviedetail-content {
   margin: 0;
   width: 100%;
   max-width: 100%; /* 부모 너비에 맞추기 */
+  position: relative;
 }
 
 
-.content .movieDetail .movieDetail-con .moviedetail-content>ul>li {
+.moviedetail-content>ul>li {
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 10px;
+  gap: 30px;
 }
 
-.content .movieDetail .movieDetail-con .moviedetail-content>ul>li>img {
+.moviedetail-content>ul>li>img {
   width: 100%;
   max-width: 300px;
   min-width: 300px;
@@ -142,8 +59,13 @@ body.dark .content .movieDetail .movieDetail-con .moviedetail-content {
   box-sizing: border-box;
   transition: all 0.5s ease;
   transform-origin: center center;
+  cursor: pointer;
 }
 
-.content .movieDetail .movieDetail-con .moviedetail-content>ul>li>img:hover {
+.moviedetail-content>ul>li>img:hover {
   transform: scale(1.03);
+}
+
+.moviedetail-content>ul>li>img.selected {
+  border: 3px solid var(--color-red);
 }

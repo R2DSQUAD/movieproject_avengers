@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../../css/ScreeningSeat.css";
 import jwtAxios from "../../util/jwtUtil";
 import { getCookie } from "../../util/cookieUtil";
 
 const ScreeningSeat = () => {
+  const location = useLocation();
+  const [movieEntity, setMovieEntity] = useState(location.state?.movieEntity || null);
   const { screeningId } = useParams();
   const navigate = useNavigate();
   const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -13,6 +15,7 @@ const ScreeningSeat = () => {
   const [screening, setScreening] = useState();
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [disabledSeats, setDisabledSeats] = useState([]);
+
 
   useEffect(() => {
     const memberInfo = getCookie("member");
@@ -94,34 +97,36 @@ const ScreeningSeat = () => {
     }
   };
 
+  console.log(movieEntity);
+
   return (
     <div className="content">
-      <div className="screening">
-        <div className="screening-con">
+      <div className="main">
+        <div className="main-con">
           <div className="leftBar">
             <div className="leftBar-con">
-              <img
-                src={screening?.movieEntity?.poster_path}
-                alt={screening?.movieEntity?.movieNm}
-              />
-              <div className="movie-info">
-                <h3>제목</h3>
-                <span>{screening?.movieEntity?.movieNm}</span>
-                <h3>개봉일</h3>
-                <span>{screening?.movieEntity?.openDt}</span>
-                <h3>순위</h3>
-                <span>{screening?.movieEntity?.rank}등</span>
-                <h3>누적 관객 수</h3>
-                <span>{screening?.movieEntity?.audiAcc.toLocaleString("ko-KR")}명</span>
-                <h3>장르</h3>
-                {/* <span>{screening.movieEntity.genre}</span>  아직 데이터 없음*/}
-              </div>
+                <img
+                  src={movieEntity.poster_path}
+                  alt={movieEntity.movieNm}
+                />
+                <div className="movie-info">
+                  <h3>제목</h3>
+                  <span>{movieEntity.movieNm}</span>
+                  <h3>개봉일</h3>
+                  <span>{movieEntity.openDt}</span>
+                  <h3>순위</h3>
+                  <span>{movieEntity.rank}등</span>
+                  <h3>누적 관객 수</h3>
+                  {/* <span>{movieEntity.audiAcc.toLocaleString("ko-KR")}명</span> */}
+                  <h3>장르</h3>
+                  {/* <span>{screening.movieEntity.genre}</span>  아직 데이터 없음*/}
+                </div>
             </div>
           </div>
           <div className="screening-content">
             <div className="movie-title">
               <h1>
-                {screening?.movieEntity?.movieNm}
+                {movieEntity.movieNm}
               </h1>
             </div>
             <div className="seat-selection-con">
@@ -129,10 +134,13 @@ const ScreeningSeat = () => {
               <div className="screen">SCREEN</div>
               <div className="seat-container">
                 {rows.map((row) => (
+                              <div className="row">
+            <span>{row}</span>
                   <div key={row} className="seat-row">
                     {cols.map((col) => {
                       const seatNumber = `${row}${col}`;
                       return (
+                        <>
                         <div
                           key={seatNumber}
                           className={getSeatClass(seatNumber)}
@@ -140,8 +148,11 @@ const ScreeningSeat = () => {
                         >
                           {col}
                         </div>
+                        </>
                       );
                     })}
+                  </div>
+                  <span>{row}</span>
                   </div>
                 ))}
               </div>

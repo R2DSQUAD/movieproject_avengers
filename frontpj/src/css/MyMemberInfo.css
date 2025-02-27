@@ -1,0 +1,40 @@
+.memberInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 40px;
+  padding: 0 200px;
+}
+
+.userTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.userTitle>span {
+  font-size: 40px;
+}
+
+.userTitle>span:nth-child(2) {
+  font-weight: bold;
+}
+
+.memberInfoContent {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.memberInfoContent>div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}

@@ -54,8 +54,8 @@ const MovieDetail = () => {
 
   return (
     <div className="content">
-      <div className="movieDetail">
-        <div className="movieDetail-con">
+      <div className="main">
+        <div className="main-con">
           <div className="leftBar">
             <div className="leftBar-con">
               <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
@@ -99,8 +99,8 @@ const MovieDetail = () => {
                     key={idx}
                     src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
                     alt={el.name}
-                    onClick={() => handleThumbnailClick(el.url)} // 클릭된 썸네일 ID 저장
-                    style={{ cursor: "pointer", margin: "10px" }}
+                    onClick={() => handleThumbnailClick(el.url, idx)} // 클릭된 썸네일 ID 저장
+                    className={selectedTrailerId === el.url ? "selected" : ""}
                   />
                   <span>
                     {el.name.replace("[" + movieInfo.movieNm + "]", "").trim()}

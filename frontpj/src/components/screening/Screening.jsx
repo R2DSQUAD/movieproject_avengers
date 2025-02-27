@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import "../../css/Screening.css";
 import { useCountUp } from "../../hooks/useCountup";
+import ScreeningSeat from "../screeningSeat/ScreeningSeat";
 
 const Screening = () => {
   const { movieId } = useParams();
@@ -64,7 +65,9 @@ const Screening = () => {
   };
 
   const handleSelectScreening = (screeningId) => {
-    navigate(`/seatSelection/${screeningId}`);
+    navigate(`/seatSelection/${screeningId}`, {
+      state: { movieEntity: screenings[0]?.movieEntity },
+    });
   };
 
   const audiAcc = useCountUp(
@@ -78,8 +81,8 @@ const Screening = () => {
 
   return (
     <div className="content">
-      <div className="screening">
-        <div className="screening-con">
+      <div className="main">
+        <div className="main-con">
           <div className="leftBar">
             <div className="leftBar-con">
               {screenings.length > 0 && screenings[0]?.movieEntity ? (

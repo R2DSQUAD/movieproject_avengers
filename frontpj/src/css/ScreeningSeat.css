@@ -1,10 +1,26 @@
-@import url('../css/Screen.css');
+@import url('../css/MainContent.css');
+
+.screening-content {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    flex: 3 0 500px;
+    width: 75%;
+    box-shadow: 0 4px 15px var(--color-shadow);
+    transition: box-shadow 0.5s ease;
+    border-radius: 0 20px 20px 0;
+  }
+  
+  body.dark .screening-content {
+    background-color: var(--color-dark-3);
+  }
 
 .seat-selection-con {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
     width: 100%;
 }
 
@@ -38,26 +54,35 @@ body.light .screen {
 .seat-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
     align-items: center;
 }
 
 .seat-row {
     display: flex;
-    gap: 10px;
     width: 100%;
+    justify-content: center;
+    gap: 5px;
 }
 
 .seat {
     display: flex;
-    width: 20px;
-    height: 20px;
-    padding: 10px;
+    width: 10px;
+    height: 10px;
+    padding: 8px;
     text-align: center;
     line-height: 40px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 10px;
     transition: all 0.3s;
     box-sizing: border-box;
     align-items: center;
@@ -65,11 +90,11 @@ body.light .screen {
 }
 
 .seat-row .seat:nth-child(7) {
-    margin-left: 50px;
+    margin-left: 10px;
 }
 
 .seat-row .seat:nth-child(18) {
-    margin-right: 50px;
+    margin-right: 10px;
 }
 
 /* 사용 가능한 좌석 */
@@ -86,6 +111,10 @@ body.light .screen {
     border: 1px solid var(--color-green);
     transition: 0.3s;
     box-sizing: border-box;
+}
+
+body.dark .seat.available {
+    border: 1px solid var(--color-light-1);
 }
 
 /* 선택된 좌석 */
@@ -115,8 +144,8 @@ body.light .screen {
 
 /* 예약된 좌석에 X 표시 */
 .seat.disabled::before {
-    content: "X";
-    font-size: 1.4rem;
+    content: "×";
+    font-size: 20px;
     /* 크기 조정 */
     font-weight: bold;
     color: var(--color-red);
