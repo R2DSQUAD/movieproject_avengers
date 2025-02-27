@@ -43,4 +43,7 @@ public class PaymentEntity extends BasicTime {
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity memberEntity;
 
+    @Column(nullable = false)
+    private String paymentMethod;
+
 }
