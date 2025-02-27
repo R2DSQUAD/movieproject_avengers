@@ -42,7 +42,8 @@ const MemberList = () => {
               <td>{member.nickname}</td>
               <td>{member.email}</td>
               <td>{member.social ? "O" : "X"}</td>
-              <td>{member.roles.join(", ")}</td>
+              <td>{member.roles ? member.roles.join(", ") : "권한 없음"}</td>
+
             </tr>
           ))}
         </tbody>

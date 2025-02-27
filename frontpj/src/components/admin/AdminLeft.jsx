@@ -14,6 +14,9 @@ const AdminLeft = () => {
           <Link to="/admin/memberList">회원 관리</Link>
         </li>
         <li>
+          <Link to="/admin/cinemas">영화관 관리</Link>
+        </li>
+        <li>
           <Link to="/admin/calendar">일정 관리</Link>
         </li>
       </ul>

@@ -20,24 +20,15 @@ public class MemberInsert {
     @Test
     public void insertMember() {
 
-        for (int i = 10; i < 11; i++) {
-            MemberEntity memberEntity = MemberEntity.builder()
-                    .email("user" + i + "@email.com")
-                    .pw(passwordEncoder.encode("123456789a"))
-                    .nickname("USER" + i)
-                    .build();
+        MemberEntity memberEntity = MemberEntity.builder()
+                .email("a1@email.com")
+                .pw(passwordEncoder.encode("qwer1234"))
+                .nickname("AdminUser")
+                .build();
 
-            memberEntity.addRole(Role.ADMIN);
+        memberEntity.addRole(Role.ADMIN);
 
-            memberRepository.save(memberEntity);
-
-        }
-    }
-
-    @Test
-    public void testRead() {
-        String eamil = "user9@email.com";
-        MemberEntity memberEntity = memberRepository.getWithRoles(eamil);
+        memberRepository.save(memberEntity);
 
     }
 

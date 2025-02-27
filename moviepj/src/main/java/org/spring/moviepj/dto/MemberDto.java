@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.spring.moviepj.common.Role;
 import org.spring.moviepj.entity.CartEntity;
+import org.spring.moviepj.entity.MemberEntity;
 import org.spring.moviepj.entity.PaymentEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -38,7 +39,6 @@ public class MemberDto extends User {
     @Pattern(regexp = "^[a-zA-Z가-힣0-9]{2,10}$", message = "닉네임은 한글, 영문, 숫자를 포함한 2~10자로 입력해주세요.")
     private String nickname; // 닉네임
 
-
     private boolean social; // 소셜로그인 여부
 
     private List<String> roleNames = new ArrayList<>(); // 권한 목록
@@ -58,7 +58,6 @@ public class MemberDto extends User {
     public MemberDto() {
         super("default", "default", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
     }
-
 
     public MemberDto(String email, String pw, String nickname, boolean social, List<String> roleNames) {
         super(
@@ -86,4 +85,23 @@ public class MemberDto extends User {
         return dataMap;
     }
 
+    // 멤버리스트 role관련
+    public MemberDto(MemberEntity member) {
+        super(
+                member.getEmail(),
+                member.getPw(),
+                member.getMemberRoleList().stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())) // Enum → String 변환
+                        .collect(Collectors.toList()));
+
+        this.email = member.getEmail();
+        this.pw = member.getPw();
+        this.nickname = member.getNickname();
+        this.social = member.isSocial();
+
+        // 역할 정보를 List<String> 형태로 변환하여 저장
+        this.roleNames = member.getMemberRoleList().stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
 }

@@ -14,7 +14,7 @@ const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 const CartPage = lazy(() => import("../pages/cart/CartPage"));
 const TestPage = lazy(() => import("../pages/test/TestPage"));
-const ChatRoom = lazy(() => import("../pages/ws/ChatRoomPage"));
+const ChatRoomPage = lazy(() => import("../pages/ws/ChatRoomPage"));
 const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
 const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 
@@ -23,6 +23,7 @@ const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
 const AdminLayout = lazy(() => import("../components/admin/AdminLayout"));
 const MemberList = lazy(() => import("../components/admin/member/MemberList"));
+const Cinemas = lazy(() => import("../components/admin/cinema/Cinemas"));
 
 const root = createBrowserRouter([
   {
@@ -153,6 +154,14 @@ const root = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: "cinemas", 
+            element: (
+              <Suspense fallback={Loading}>
+                <Cinemas />
+              </Suspense>
+            ),
+          },
         ],
       },
       {
@@ -160,6 +169,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <Komoran />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/chatRoom",
+        element: (
+          <Suspense fallback={Loading}>
+            <ChatRoomPage />
           </Suspense>
         ),
       },
