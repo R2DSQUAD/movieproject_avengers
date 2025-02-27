@@ -30,12 +30,8 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (path.startsWith("/api/member/") || 
-        path.startsWith("/api/boxOfficeList") || 
-        path.startsWith("/api/screening/") || 
-        path.startsWith("/api/trailerList") || 
-        path.startsWith("/chat") || 
-        path.startsWith("/botController")) {
+        if (path.startsWith("/api/member/") || path.startsWith("/api/boxOfficeList") || path.startsWith("/api/screening/") || path.startsWith("/api/trailerList")
+            ||path.startsWith("/chat")|| path.startsWith("/botController") ) {
             return true;  // JWT 검증 없이 접근 허용
 
         }
@@ -52,7 +48,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String authHeaderStr= request.getHeader("Authorization");
-
+                
         try {
             String accessToken = authHeaderStr.substring(7);
             Map<String, Object> claims = JWTUtil.validateToken(accessToken);

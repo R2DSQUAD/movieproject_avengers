@@ -136,11 +136,10 @@ public class KomoranService {
       List<MovieEntity> movieDtoList = movieRepository.findAll();
       List<MovieDto> movieDtos = new ArrayList<>();
       for (MovieEntity movieEntity : movieDtoList) {
-        MovieDto movieDto = MovieDto.builder()
-               
+        MovieDto movieDto = MovieDto.builder() 
                 .movieCd(movieEntity.getMovieCd())
                 .movieNm(movieEntity.getMovieNm())
-               
+                .poster_path(movieEntity.getPoster_path())
                 .build();
         movieDtos.add(movieDto);
 
@@ -154,21 +153,32 @@ public class KomoranService {
 
 
   //  영화 제목 조회
-  private MovieDto analyzeTokenIsMovie(Set<String> next) {
-    System.out.println(next+" next");
-    for (String name : next) {
+  // 2차 영화 제목 조회 수정
+private MovieDto analyzeTokenIsMovie(Set<String> next) {
+  System.out.println(next + " next");
+  for (String name : next) {
+      System.out.println(name + " name");
 
-      System.out.println(name+" name");
-      Optional<MovieEntity> move = movieRepository.findByMovieNm(name);
-      System.out.println(move.get().getMovieNm()+" 영화제목");      
+      // 영화 제목의 일부와 일치하는 영화들 찾기
+      List<MovieEntity> movies = movieRepository.findByMovieNmContaining(name);
       
-      return MovieDto.builder()
-              .id(move.get().getId())
-              .movieCd(move.get().getMovieCd())
-              .movieNm(move.get().getMovieNm())
-              .build();
-    }
-    return null;
+      // 영화 제목이 일치하는 것이 있을 경우, 해당 영화들 중 첫 번째 영화 반환 (또는 리스트 반환)
+      if (!movies.isEmpty()) {
+          MovieEntity movie = movies.get(0); // 일치하는 첫 번째 영화 가져오기
+          System.out.println(movie.getMovieNm() + " 영화제목");
+
+          // MovieDto로 반환
+          return MovieDto.builder()
+                  .movieNm(movie.getMovieNm())
+                  .poster_path(movie.getPoster_path())
+                  .audiAcc(movie.getAudiAcc())
+                  .openDt(movie.getOpenDt())
+                  .overview(movie.getOverview())
+                  .build();
+      }
   }
+  return null;
+}
+
 
 }

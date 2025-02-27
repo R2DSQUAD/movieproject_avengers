@@ -1,0 +1,76 @@
+/* ChatRoom.css */
+.chatContainer {
+    width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    color: #000000;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .chatBox {
+    height: 600px;
+    overflow-y: scroll;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+    color: #000000;
+    background-color: #ffffff;
+    border-radius: 8px;
+    text-align: left;
+    font-family: Arial, sans-serif;
+  }
+  
+  .message {
+    padding: 8px;
+    color: #000000;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+    display: flex;
+  }
+  
+  .messageText {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    background-color: #f0f0f0;
+    color: #000000;
+    border-radius: 8px;
+    max-width: 80%;
+    word-break: break-word;
+  }
+  
+  .time {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+  }
+  
+  .inputContainer {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .input {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-height: 50px; /* 메시지가 길어질 때를 대비한 최소 높이 추가 */
+    resize: none; /* textarea 크기 변경 불가 */
+  }
+  
+  .button {
+    width: 15%;
+    padding: 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  

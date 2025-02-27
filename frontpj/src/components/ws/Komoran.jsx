@@ -29,10 +29,10 @@ const Komoran = () => {
     const ampm = now.getHours() > 11 ? "오후" : "오전";
     const time = `${ampm} ${now.getHours() % 12}:${now.getMinutes()}`;
 
-    return `
+    return ` 
       <div class="msg user flex end">
         <div class="message">
-          <div class="part">
+          <div class="part" >
             <p>${text}</p>
           </div>
           <div class="time">${time}</div>
@@ -85,20 +85,29 @@ const Komoran = () => {
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        style={{ color: 'white', backgroundColor: '#333', border: '1px solid #444', padding: '10px', borderRadius: '5px', marginBottom: '10px' }} // 입력 필드 스타일
       />
-      <div id="chat-content" dangerouslySetInnerHTML={{ __html: chatContent }} />
+      <div id="chat-content" dangerouslySetInnerHTML={{ __html: chatContent }} style={{ color: 'white', marginTop: '20px' }} />
       
       {/* 서버 응답의 content만 화면에 표시 */}
       
-
       {/* 영화 데이터가 있을 경우에만 영화 정보 표시 */}
-      {movieDetails && movieDetails.id && (
-        <div className="movie-details">
-          <p><strong>영화 ID:</strong> {movieDetails.id}</p>
-          <p><strong>영화 코드:</strong> {movieDetails.movieCd}</p>
+      {movieDetails && movieDetails.movieNm && (
+        <div className="movie-details" style={{ color: 'white', marginTop: '20px' }}>
+          {/* 이미지가 없을 경우 대체 이미지 제공 */}
+          <img 
+            src={movieDetails.poster_path ? movieDetails.poster_path : 'path_to_default_image.jpg'} 
+            alt={movieDetails.movieNm} 
+            style={{ width: '200px', height: '300px', objectFit: 'cover' }} 
+          />
+          
           <p><strong>영화 이름:</strong> {movieDetails.movieNm}</p>
+          <p><strong>개봉일:</strong> {movieDetails.openDt}</p>
+          <p><strong>누적 관객수:</strong> {movieDetails.audiAcc}명</p>
+          <p><strong>줄거리:</strong> {movieDetails.overview}</p>
         </div>
       )}
+
     </div>
   );
 };
