@@ -56,14 +56,21 @@ public class MovieEntity extends BasicTime {
     @Column(nullable = false)
     private String audiAcc;
 
-    private String runningTime;
+    @Column(nullable = false)
+    private String director; // tmdb디테일
+
+    @Column(nullable = false)
+    private String runTime; // tmdb디테일
+
+    @Column(nullable = false)
+    private String genres; // tmdb디테일
 
     @Column(columnDefinition = "TEXT")
-    private String overview; // tmdb
+    private String overview; // tmdb이미지
 
-    private String poster_path; // tmdb
+    private String poster_path; // tmdb이미지
 
-    private String backdrop_path; // tmdb
+    private String backdrop_path; // tmdb이미지
 
     @OneToMany(mappedBy = "movieEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
@@ -71,6 +78,6 @@ public class MovieEntity extends BasicTime {
 
     @OneToMany(mappedBy = "movieEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<TrailerEntity> trailerEntities;
+    private List<TrailerEntity> trailerEntities; // tmdb트레일러
 
 }

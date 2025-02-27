@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import jwtAxios from '../../util/jwtUtil';
 import "../../css/Cart.css";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState(new Set());
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCartItems = async () => {
@@ -58,6 +60,16 @@ const Cart = () => {
         }
     };
 
+    const paymentFn = () => {
+        if (cartItems.length === 0) {
+            alert('결제할 티켓이 없습니다');
+            return;
+        }
+
+        navigate("/payment/orderSettlement");
+    };
+
+
     const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
 
     return (
@@ -73,6 +85,7 @@ const Cart = () => {
                                     <input type="checkbox"
                                         checked={selectedItems.has(item.id)}
                                         onChange={() => handleCheckboxChange(item.id)} />
+                                    <img src={item.poster_path} alt={item.movieNm} style={{ width: '100px', height: 'auto', borderRadius: '5px' }} />
                                     <p>좌석 번호: {item.seatNumber}</p>
                                     <p>가격: {item.price.toLocaleString()}원</p>
                                     <p>상영 날짜: {item.screeningDate}</p>
@@ -82,6 +95,7 @@ const Cart = () => {
                                 </div>
                             ))}
                             <button onClick={handleDelete}>선택 삭제</button>
+                            <button onClick={paymentFn}>결제하기</button>
                             <div className="total-price">
                                 <h2>총 가격: {totalPrice.toLocaleString()}원</h2>
                             </div>

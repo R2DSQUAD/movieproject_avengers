@@ -1,13 +1,13 @@
 .content {
   display: flex;
-  padding: 80px;
+  padding: 40px;
   box-sizing: border-box;
 }
 
-.content .screening {
+.content .main {
   display: flex;
   width: 100%;
-  padding: 40px;
+  padding: 20px;
   box-sizing: border-box;
   box-shadow: 0 4px 15px var(--color-shadow);
   /* 바닥 그림자 */
@@ -16,15 +16,15 @@
   border-radius: 20px;
 }
 
-body.dark .content .screening { 
+body.dark .content .main { 
   background-color: var(--color-dark-2);
 }
 
-body.light .content .screening { 
+body.light .content .main { 
   background-color: var(--color-light-2);
 }
 
-.content .screening .screening-con {
+.content .main .main-con {
   display: flex;
   width: 100%;
   box-sizing: border-box;
@@ -35,34 +35,35 @@ body.light .content .screening {
   border-radius: 20px;
 }
 
-body.dark .content .screening .screening-con {
+body.dark .content .main .main-con {
   background-color: var(--color-dark-3);
 }
 
-body.light .content .screening .screening-con {
+body.light .content .main .main-con {
   background-color: var(--color-light-3);
 }
 
-.content .screening .screening-con .leftBar {
+.content .main .main-con .leftBar {
   flex: 1 0 150px; /* 사이드바의 최소 너비 설정 */
   display: flex;
   width: 25%;
   box-sizing: border-box;
+  max-width: 300px;
 }
 
-.content .screening .screening-con .leftBar .leftBar-con {
+.content .main .main-con .leftBar .leftBar-con {
   display: flex;
   flex-direction: column;
 }
 
-.content .screening .screening-con .leftBar .leftBar-con img {
+.content .main .main-con .leftBar .leftBar-con img {
   display: block;
   width: 100%;
   border-radius: 20px 0 0 0;
 }
 
 
-.content .screening .screening-con .leftBar .leftBar-con button {
+.content .main .main-con .leftBar .leftBar-con button {
   width: 100%;
   height: 40px;
   border: none;
@@ -79,28 +80,11 @@ body.light .content .screening .screening-con {
   transition: all 0.5s ease;
 }
 
-.content .screening .screening-con .leftBar .leftBar-con button:hover { 
+.content .main .main-con .leftBar .leftBar-con button:hover { 
   filter: opacity(80%);
 }
 
-.content .screening .screening-con .leftBar .leftBar-con .movie-info {
+.content .main .main-con .leftBar .leftBar-con .movie-info {
   padding: 30px;
   box-sizing: border-box;
-}
-
-.content .screening .screening-con .screening-content {
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  box-sizing: border-box;
-  flex: 3 0 500px; /* 사이드바의 최소 너비 설정 */
-  width: 75%;
-  box-shadow: 0 4px 15px var(--color-shadow);
-  transition: box-shadow 0.5s ease;
-  border-radius: 0 20px 20px 0;
-}
-
-body.dark .content .screening .screening-con .screening-content {
-  background-color: var(--color-dark-3);
 }

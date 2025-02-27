@@ -5,11 +5,6 @@ import java.time.LocalDateTime;
 import org.spring.moviepj.entity.CartEntity;
 import org.spring.moviepj.entity.MemberEntity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +27,8 @@ public class PaymentDto {
 
     private Long memberId;
     private MemberEntity memberEntity;
+
+    private String paymentMethod;
 
     private LocalDateTime createTime;
 
