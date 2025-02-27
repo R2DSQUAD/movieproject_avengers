@@ -82,8 +82,8 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
         <Link to="" className="nav-link">
           Movies
         </Link>
-        <Link to="/test" className="nav-link">
-          Kids
+        <Link to="/movie/map" className="nav-link">
+          Cinemas
         </Link>
       </nav>
       <div className="bar">

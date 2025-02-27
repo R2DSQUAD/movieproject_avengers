@@ -1,0 +1,17 @@
+.admin-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .admin-left {
+    width: 250px;
+    background-color: rgb(80, 80, 80);
+  }
+  
+  .admin-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+  }
+  

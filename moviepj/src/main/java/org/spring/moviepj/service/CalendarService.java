@@ -9,4 +9,6 @@ public interface CalendarService {
     public List<CalendarDto> eventListAll();
 
     public void setCalendar(CalendarDto dto);
+
+    public void deleteEvent(Long id);
 }

@@ -115,8 +115,8 @@ const Map = () => {
         content: `
         <div style="color: black; padding: 10px; position: relative; font-size: 14px; overflow: hidden; ">
            <b style="font-weight: bold; font-size: 16px;">${cinemaName} 메가박스</b>
-           <p style="font-size: 14px;">도로명주소: ${address}</p>
-           <p style="font-size: 14px; margin-bottom: 5px;">전화번호: 0000-0000</p> <!-- 전화번호에 마진 추가 -->
+           <p style="font-size: 14px; color: black;">도로명주소: ${address}</p>
+           <p style="font-size: 14px; margin-bottom: 5px; color: black;">전화번호: 0000-0000</p> <!-- 전화번호에 마진 추가 -->
           <button id="close-btn" 
           style="position: absolute; top: 5px; right: 5px; background-color: #ccc; 
                  border: none; width: 16px; height: 16px; font-size: 12px; color: white; cursor: pointer;">

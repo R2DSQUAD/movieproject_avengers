@@ -9,6 +9,7 @@ import org.spring.moviepj.service.CalendarService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +49,16 @@ public class CalendarServiceImpl implements CalendarService {
     CalendarEntity savedEntity = calendarRepository.save(entity);
 
     System.out.println(" 일정 저장 완료: " + savedEntity);
+  }
+
+  @Override
+  public void deleteEvent(Long eventId) {
+    Optional<CalendarEntity> event = calendarRepository.findById(eventId); // Calendar로 수정
+    if (event.isPresent()) {
+      calendarRepository.deleteById(eventId);
+    } else {
+      System.out.println("Event with ID " + eventId + " not found.");
+    }
   }
 
 }

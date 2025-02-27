@@ -27,7 +27,7 @@ public class CalendarEntity {
   @Id
   @Column(nullable = false)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  private Long id;
 
   @Column(nullable = false)
   private String content;

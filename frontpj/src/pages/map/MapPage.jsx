@@ -7,9 +7,7 @@ import Map from "../../components/map/Map";
 const MapPage = () => {
   return (
     <div>
-      <Header /> 
       <Map />
-      <Footer />
     </div>
   );
 };

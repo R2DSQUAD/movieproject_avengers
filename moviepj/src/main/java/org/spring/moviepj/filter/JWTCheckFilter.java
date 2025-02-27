@@ -30,25 +30,29 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (path.startsWith("/api/member/") || path.startsWith("/api/boxOfficeList") || path.startsWith("/api/screening/") || path.startsWith("/api/trailerList")
-            ||path.startsWith("/chat")|| path.startsWith("/botController") ) {
-            return true;  // JWT 검증 없이 접근 허용
-
+        // 중복된 if문을 하나로 합침
+        if (path.startsWith("/api/member/") ||
+                path.startsWith("/api/boxOfficeList") ||
+                path.startsWith("/api/screening/") ||
+                path.startsWith("/api/trailerList") ||
+                path.startsWith("/chat") ||
+                path.startsWith("/botController") ||
+                path.startsWith("/api/cinemas") ||
+                path.startsWith("/api/calendar") ||
+                path.startsWith("/api/memberList") ||
+                path.startsWith("/admin/")) {
+            return true; // JWT 검증 없이 접근 허용
         }
 
-        // if(path.startsWith("/api/다른여러가지경로")){
-        // return true;
-        // }
-
-        return false;
+        return false; // 그 외 경로는 JWT 검증 필요
     }
 
     @Override // 체크할 경로(Access Token 검증을 통해 접근가능여부 판단)
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeaderStr= request.getHeader("Authorization");
-                
+        String authHeaderStr = request.getHeader("Authorization");
+
         try {
             String accessToken = authHeaderStr.substring(7);
             Map<String, Object> claims = JWTUtil.validateToken(accessToken);

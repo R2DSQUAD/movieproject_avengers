@@ -15,10 +15,16 @@ const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 const CartPage = lazy(() => import("../pages/cart/CartPage"));
 const PaymentPage = lazy(() => import("../pages/payment/PaymentPage"));
 const TestPage = lazy(() => import("../pages/test/TestPage"));
-const ChatRoom = lazy(() => import("../pages/ws/ChatRoomPage"));
+const ChatRoomPage = lazy(() => import("../pages/ws/ChatRoomPage"));
 const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
 const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
+
+
+const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
 const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
+const AdminLayout = lazy(() => import("../components/admin/AdminLayout"));
+const MemberList = lazy(() => import("../components/admin/member/MemberList"));
+const Cinemas = lazy(() => import("../components/admin/cinema/Cinemas"));
 
 const root = createBrowserRouter([
   {
@@ -46,7 +52,7 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/movie/map",
+        path: "movie/map",
         element: (
           <Suspense fallback={Loading}>
             <MapPage />
@@ -54,7 +60,7 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "movie/detail?/:movieCd",
+        path: "movie/detail/:movieCd",
         element: (
           <Suspense fallback={Loading}>
             <MovieDetail />
@@ -78,7 +84,7 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/member/join",
+        path: "member/join",
         element: (
           <Suspense fallback={Loading}>
             <JoinPage />
@@ -86,7 +92,7 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/member/login",
+        path: "member/login",
         element: (
           <Suspense fallback={Loading}>
             <LoginPage />
@@ -94,18 +100,10 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/member/detail",
+        path: "member/detail",
         element: (
           <Suspense fallback={Loading}>
             <MyMemberInfoPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/chatroom",
-        element: (
-          <Suspense fallback={Loading}>
-            <ChatRoom />
           </Suspense>
         ),
       },
@@ -126,12 +124,46 @@ const root = createBrowserRouter([
         ),
       },
       {
-        path: "/calendar",
+        path: "admin",
         element: (
           <Suspense fallback={Loading}>
-            <CalendarPage />
+            <AdminLayout /> 
           </Suspense>
         ),
+        children: [
+          {
+            path: "",
+            element: (
+              <Suspense fallback={Loading}>
+                <AdminPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "memberList",
+            element: (
+              <Suspense fallback={Loading}>
+                <MemberList />
+              </Suspense>
+            ),
+          },
+          {
+            path: "calendar",
+            element: (
+              <Suspense fallback={Loading}>
+                <CalendarPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "cinemas", 
+            element: (
+              <Suspense fallback={Loading}>
+                <Cinemas />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "/Komoran",
@@ -146,6 +178,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <PaymentPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/chatRoom",
+        element: (
+          <Suspense fallback={Loading}>
+            <ChatRoomPage />
           </Suspense>
         ),
       },
