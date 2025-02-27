@@ -78,7 +78,7 @@
 
 .index .index-con .main-content {
   box-sizing: border-box;
-  padding: 0 100px;
+  padding: 0 10px;
 }
 
 body.light .index .index-con .main-content>h3 {

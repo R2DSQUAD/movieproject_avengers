@@ -14,6 +14,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPw, setShowPw] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,10 +25,10 @@ const Login = () => {
   };
 
   const activeEnter = (e) => {
-    if(e.key === "Enter") {
+    if (e.key === "Enter") {
       handleClickLogin();
     }
-  }
+  };
 
   const validate = () => {
     const newErrors = {};
@@ -58,6 +59,10 @@ const Login = () => {
       });
   };
 
+  const toggleShowPw = () => {
+    setShowPw(!showPw);
+  };
+
   return (
     <div className="login">
       <h1>로그인</h1>
@@ -68,6 +73,7 @@ const Login = () => {
             id="email"
             type="text"
             name="email"
+            placeholder="이메일을 입력하세요."
             value={loginParam.email}
             onChange={handleChange}
             onKeyDown={activeEnter}
@@ -75,14 +81,28 @@ const Login = () => {
         </div>
         <div className="password">
           <span>비밀번호</span>
-          <input
-            id="pw"
-            type="password"
-            name="pw"
-            value={loginParam.pw}
-            onChange={handleChange}
-            onKeyDown={activeEnter}
-          />
+          <div>
+            <input
+              id="pw"
+              type={showPw ? "text" : "password"}
+              name="pw"
+              value={loginParam.pw}
+              placeholder="비밀번호를 입력하세요."
+              onChange={handleChange}
+              onKeyDown={activeEnter}
+            />
+            {showPw ? ( //비밀번호 보이기/숨기기
+              <div className="eye" onClick={toggleShowPw}>
+                {" "}
+                <img src="/image/eye.svg" alt="eye" />
+              </div>
+            ) : (
+              <div className="eye" onClick={toggleShowPw}>
+                {" "}
+                <img src="/image/eye-slash.svg" alt="eye-slash" />
+              </div>
+            )}
+          </div>
         </div>
         <div id="error-msg">
           {["email", "pw", "general"].map(

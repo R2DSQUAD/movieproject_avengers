@@ -5,79 +5,71 @@ import Footer from '../components/Footer';
 
 const MainLayout = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isTop, setIsTop] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMemberInfoActive, setIsMemberInfoActive] = useState(false);
+  const [isHeaderActive, setIsHeaderActive] = useState(false); // 스크롤 상태를 저장하는 상태 변수 추가
   const location = useLocation();
 
-  // 헤더 스타일 업데이트 함수
   const updateHeaderStyle = useCallback(() => {
-    const currentScrollY = window.scrollY;
-    const scrolled = currentScrollY > 0;
+    const scrolled = window.scrollY > 0;
     const isMainPage = location.pathname === "/";
+    const isLightMode = document.body.classList.contains("light");
+    const isDarkMode = document.body.classList.contains("dark");
 
-    if (document.body.classList.contains("light")) {
-      document.querySelectorAll("header, header a, header img, header span").forEach((el) => {
-        if (el.tagName === "HEADER") {
-          el.style.backgroundColor = scrolled ? "var(--color-light-2)" : "transparent";
-        } else if (el.tagName === "A") {
-          el.style.color = isMainPage ? (scrolled ? "var(--color-light-text)" : "var(--color-dark-text)") : "var(--color-light-text)";
-        } else if (el.tagName === "IMG") {
-          el.style.filter = isMainPage ? (scrolled ? "invert(0%)" : "invert(100%)") : "invert(0%)";
-          el.style.opacity = "0.5";
-        } else if (el.tagName === "SPAN") {
-          el.style.color = isMainPage ? (scrolled ? "var(--color-light-text)" : "	var(--color-dark-text)") : "var(--color-light-text)";
-        }
-      });
-    } else if (document.body.classList.contains("dark")) {
-      document.querySelectorAll("header, header a, header img, header span").forEach((el) => {
-        if (el.tagName === "HEADER") {
-          el.style.backgroundColor = scrolled ? "var(--color-dark-2)" : "transparent";
-        } else if (el.tagName === "A") {
-          el.style.color = "var(--color-dark-text)";
-        } else if (el.tagName === "IMG") {
-          el.style.filter = "invert(100%)";
-          el.style.opacity = "0.5";
-        } else if (el.tagName === "SPAN") {
-          el.style.color = "	var(--color-dark-text)";
-        }
-      });
-    }
-  }, [location.pathname]);
+    setIsHeaderActive(scrolled); // 스크롤 여부에 따라 상태 업데이트
 
-  // 통합된 useEffect 훅
-  useEffect(() => {
-    // 다크/라이트 모드 클래스 설정
-    if (!isDarkMode) {
-      document.body.classList.add("dark");
-      document.body.classList.remove("light");
-    } else {
-      document.body.classList.add("light");
-      document.body.classList.remove("dark");
-    }
+    // 배경색은 isHeaderActive에 따라 동적으로 변경
+    const backgroundColor = isHeaderActive ? (isLightMode ? "var(--color-light-2)" : "var(--color-dark-2)") : "transparent";
+    const textColor = isMainPage && !scrolled ? "var(--color-dark-text)" : "var(--color-light-text)";
+    const imgFilter = isMainPage && !scrolled ? "invert(100%)" : "invert(0%)";
+    const spanColor = isLightMode ? textColor : "var(--color-dark-text)";
 
-    // 스크롤 이벤트 핸들러
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      // 스크롤 방향에 따른 isTop 업데이트
-      if (currentScrollY > lastScrollY) {
-        setIsTop(false);
-      } else if (currentScrollY < lastScrollY) {
-        setIsTop(true);
+    const header = document.querySelector("header");
+    if (header) {
+        header.style.backgroundColor = backgroundColor;
       }
-      setLastScrollY(currentScrollY);
+    document.querySelectorAll("header a, header img, header span").forEach((el) => {
+      switch (el.tagName) {
+        case "A":
+          el.style.color = isLightMode ? textColor : "var(--color-dark-text)";
+          break;
+        case "IMG":
+          el.style.filter = isLightMode ? imgFilter : "invert(100%)";
+          el.style.opacity = "0.5";
+          break;
+        case "SPAN":
+          el.style.color = spanColor;
+          break;
+      }
+    });
+  }, [location.pathname, isHeaderActive]);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", !isDarkMode);
+    document.body.classList.toggle("light", isDarkMode);
+
+    const handleScroll = () => {
       updateHeaderStyle();
     };
 
-    // 초기 스타일 업데이트 (최상단일 때)
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isDarkMode, location.pathname, lastScrollY, updateHeaderStyle]);
+  }, [isDarkMode, location.pathname, updateHeaderStyle]);
+
+  useEffect(() => {
+    console.log(document.querySelector('.member-info-con.active a'));
+  },[isHeaderActive])
 
   return (
     <>
-      <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} isTop={isTop} />
-      <Outlet context={{ setIsTop }} />
+      <Header
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+        isMemberInfoActive={isMemberInfoActive}
+        setIsMemberInfoActive={setIsMemberInfoActive}
+        isHeaderActive={isHeaderActive} // 스크롤 상태를 Header로 전달
+      />
+      <Outlet />
       <Footer />
     </>
   );
