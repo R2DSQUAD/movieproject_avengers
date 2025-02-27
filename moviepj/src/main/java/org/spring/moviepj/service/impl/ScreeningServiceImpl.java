@@ -31,7 +31,7 @@ public class ScreeningServiceImpl implements ScreeningService {
     private final MovieRepository movieRepository;
     private final TheaterRepository theaterRepository;
 
-    @Scheduled(cron = "0 3 15 * * *") // 매일 실행
+    @Scheduled(cron = "0 55 15 * * *") // 매일 실행
     public void updateScreenings() {
         System.out.println(">>> [자동 실행] 상영 일정 추가");
 
