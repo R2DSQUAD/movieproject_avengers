@@ -34,7 +34,11 @@ public class MovieDto {
 
     private String audiAcc;
 
-    private String runningTime;
+    private String director;
+
+    private String runTime;
+
+    private String genres;
 
     private String overview;
 

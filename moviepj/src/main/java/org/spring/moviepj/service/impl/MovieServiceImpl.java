@@ -16,7 +16,6 @@ import org.spring.moviepj.entity.TrailerEntity;
 import org.spring.moviepj.movieapi.MovieListResponse;
 import org.spring.moviepj.movieapi.OpenApiUtil;
 import org.spring.moviepj.movieapi.WeeklyBoxOfficeList;
-
 import org.spring.moviepj.repository.MovieRepository;
 import org.spring.moviepj.repository.TrailerRepository;
 import org.spring.moviepj.service.MovieService;
@@ -43,10 +42,11 @@ public class MovieServiceImpl implements MovieService {
 
     private static final String TMDB_API_KEY = "3faa3953bb1d0746b8d7294bd106d787";
     private static final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=%s&language=ko-KR";
+    private static final String TMDB_DETAIL_URL = "https://api.themoviedb.org/3/movie/%d?api_key=%s&language=ko-KR&append_to_response=credits";
     private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
-    @Scheduled(cron = "0 5 14 * * WED")
+    @Scheduled(cron = "0 54 14 * * THU")
     public void fetchAndSaveWeeklyBoxOffice() {
         System.out.println(">>> [스케줄 실행됨] 박스오피스 데이터 가져오기 시작");
         String targetDate = getLastSundayDate();
@@ -61,8 +61,6 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional
     public void insertResponseBody(String responseBody) {
-        System.out.println("API 응답 데이터: " + responseBody);
-
         ObjectMapper objectMapper = new ObjectMapper();
         MovieListResponse movieListResponse;
 
@@ -92,31 +90,8 @@ public class MovieServiceImpl implements MovieService {
                     JSONObject jsonResponse = new JSONObject(tmdbResponse.getBody());
                     JSONArray results = jsonResponse.getJSONArray("results");
 
-                    List<JSONObject> matchingList = new ArrayList<>();
-                    for (int i = 0; i < results.length(); i++) {
-                        JSONObject movieData = results.getJSONObject(i);
-                        String tmdbTitle = movieData.optString("title", "").replaceAll("\\s+", "");
-                        String apiTitle = el.getMovieNm().replaceAll("\\s+", "");
-                        if (tmdbTitle.equalsIgnoreCase(apiTitle)) {
-                            matchingList.add(movieData);
-                        }
-                    }
-
-                    JSONObject selectedMovie = null;
-                    if (matchingList.size() == 1) {
-                        selectedMovie = matchingList.get(0);
-                    } else if (matchingList.size() > 1) {
-                        String openYear = el.getOpenDt().substring(0, 4);
-                        for (JSONObject movieData : matchingList) {
-                            String tmdbReleaseDate = movieData.optString("release_date", "").trim();
-                            if (tmdbReleaseDate.startsWith(openYear)) {
-                                selectedMovie = movieData;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (selectedMovie != null) {
+                    if (!results.isEmpty()) {
+                        JSONObject selectedMovie = results.getJSONObject(0);
                         overview = selectedMovie.optString("overview", "줄거리 정보 없음");
                         posterPath = selectedMovie.optString("poster_path", null) != null
                                 ? TMDB_IMAGE_URL + "/w500/" + selectedMovie.optString("poster_path")
@@ -130,7 +105,6 @@ public class MovieServiceImpl implements MovieService {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("TMDb API 호출 오류: " + e.getMessage());
             }
 
             MovieEntity movie = MovieEntity.builder()
@@ -144,17 +118,61 @@ public class MovieServiceImpl implements MovieService {
                     .backdrop_path(backdropPath)
                     .build();
 
-            movieRepository.save(movie);
-            System.out.println("영화 저장 완료: " + el.getMovieNm());
+            if (tmdbId != null) {
+                movie = fetchMovieDetailsFromTMDb(movie, tmdbId);
+            }
 
-            if (tmdbId != null && (posterPath != null || backdropPath != null)) {
+            movieRepository.save(movie);
+
+            if (tmdbId != null) {
                 List<TrailerEntity> trailers = getMovieTrailerList(movie, tmdbId);
                 if (!trailers.isEmpty()) {
                     trailerRepository.saveAll(trailers);
-                    System.out.println("트레일러 저장 완료: " + el.getMovieNm());
                 }
             }
         }
+    }
+
+    private MovieEntity fetchMovieDetailsFromTMDb(MovieEntity movie, int tmdbId) {
+        try {
+            String url = String.format(TMDB_DETAIL_URL, tmdbId, TMDB_API_KEY);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                JSONObject jsonResponse = new JSONObject(response.getBody());
+
+                String runTime = jsonResponse.has("runtime") ? jsonResponse.get("runtime").toString() + "분" : null;
+
+                String director = null;
+                if (jsonResponse.has("credits") && jsonResponse.getJSONObject("credits").has("crew")) {
+                    JSONArray crewArray = jsonResponse.getJSONObject("credits").getJSONArray("crew");
+                    for (int i = 0; i < crewArray.length(); i++) {
+                        JSONObject crewMember = crewArray.getJSONObject(i);
+                        if ("Director".equalsIgnoreCase(crewMember.optString("job"))) {
+                            director = crewMember.optString("name");
+                            break;
+                        }
+                    }
+                }
+
+                String genres = null;
+                if (jsonResponse.has("genres")) {
+                    JSONArray genresArray = jsonResponse.getJSONArray("genres");
+                    List<String> genreList = new ArrayList<>();
+                    for (int i = 0; i < genresArray.length(); i++) {
+                        genreList.add(genresArray.getJSONObject(i).optString("name"));
+                    }
+                    genres = String.join(", ", genreList);
+                }
+
+                movie.setRunTime(runTime);
+                movie.setDirector(director);
+                movie.setGenres(genres);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return movie;
     }
 
     private List<TrailerEntity> getMovieTrailerList(MovieEntity movie, int movieId) {
@@ -169,7 +187,8 @@ public class MovieServiceImpl implements MovieService {
 
                 for (int i = 0; i < results.length(); i++) {
                     JSONObject video = results.getJSONObject(i);
-                    if ("YouTube".equalsIgnoreCase(video.optString("site"))) {
+                    if ("YouTube".equalsIgnoreCase(video.optString("site"))
+                            && "Trailer".equalsIgnoreCase(video.optString("type"))) {
                         TrailerEntity trailer = TrailerEntity.builder()
                                 .movieEntity(movie)
                                 .name(video.optString("name"))
@@ -183,7 +202,6 @@ public class MovieServiceImpl implements MovieService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("트레일러 가져오기 실패: " + e.getMessage());
         }
         return trailers;
     }
