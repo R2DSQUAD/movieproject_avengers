@@ -18,6 +18,7 @@ const ChatRoom = () => {
     // 웹소켓 열렸을 때
     webSocket.current.onopen = () => {
       console.log('웹소켓 연결 성공');
+      console.log(loginState)
       // 서버에 닉네임 전송
       if (webSocket.current && webSocket.current.readyState === WebSocket.OPEN) {
         const nicknameMessage = `nickname:${loginState.nickname}`; // 닉네임을 서버에 전송

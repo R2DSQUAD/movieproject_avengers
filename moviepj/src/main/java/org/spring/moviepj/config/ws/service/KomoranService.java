@@ -8,8 +8,11 @@ import org.spring.moviepj.config.ws.dto.MessageDto;
 import org.spring.moviepj.config.ws.entity.AnswerEntity;
 import org.spring.moviepj.config.ws.entity.IntentionEntity;
 import org.spring.moviepj.config.ws.repository.IntentionRepository;
+import org.spring.moviepj.dto.CinemaDto;
 import org.spring.moviepj.dto.MovieDto;
+import org.spring.moviepj.entity.CinemaEntity;
 import org.spring.moviepj.entity.MovieEntity;
+import org.spring.moviepj.repository.CinemaRepository;
 import org.spring.moviepj.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,7 +77,18 @@ public class KomoranService {
       if (token.contains("안녕")) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
         messageDto.today(today.format(dateFormatter));//처음 접속할때만 날짜표기
-      }  else if (token.contains("영화 조회") || token.contains("영화")) {
+      }  else if (token.contains("영화관 조회") || token.contains("영화관")) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        messageDto.today(today.format(dateFormatter));//처음 접속할때만 날짜표기
+        System.out.println(token+"영화관 이름 검색 token");
+        List<CinemaDto> cinema = analyzeTokenIsCinemaList(next);
+        System.out.println("analyzeTokenIsCinema@@@"+ cinema);
+        if (cinema != null) {
+          answer.cinemaList(cinema);
+          System.out.println(cinema.get(0).getCinemaName() + "  영화관이름 검색");
+        }
+      
+      }else if (token.contains("영화") || token.contains("영화 조회")) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
         messageDto.today(today.format(dateFormatter));//처음 접속할때만 날짜표기
         System.out.println(token + " 영화이름 검색  token");
@@ -177,6 +191,59 @@ private MovieDto analyzeTokenIsMovie(Set<String> next) {
                   .build();
       }
   }
+  return null;
+}
+
+@Autowired
+CinemaRepository cinemaRepository;
+
+private CinemaDto analyzeTokenIsCinema(Set<String> next) {
+  System.out.println(next + " next시네마");
+  for (String name : next) {
+      // 검색할 영화관 이름을 출력해 확인
+      System.out.println("검색할 영화관 이름: " + name);
+
+      List<CinemaEntity> cinemas = cinemaRepository.findByCinemaNameContaining(name);
+      if (!cinemas.isEmpty()) {
+          CinemaEntity cinema = cinemas.get(0); // 첫 번째 일치하는 영화관을 사용
+          System.out.println(cinema.getCinemaName() + " 영화관이 일치");
+
+          return CinemaDto.builder()
+                  .address(cinema.getAddress())
+                  .cinemaName(cinema.getCinemaName())
+                  .lat(cinema.getLat())
+                  .lon(cinema.getLon())
+                  .region(cinema.getRegion())
+                  .build();
+      } else {
+          System.out.println("영화관이 존재하지 않습니다: " + name);
+      }
+  }
+  return null;
+}
+private List<CinemaDto> analyzeTokenIsCinemaList(Set<String> next) {
+
+  System.out.println(next.toString()+" name1");
+  for (String name : next) {
+    System.out.println(name+" name");
+
+    List<CinemaEntity> cinemaDtoList = cinemaRepository.findByCinemaNameContaining(name);
+    List<CinemaDto> cinemaDtos = new ArrayList<>();
+    for (CinemaEntity cinemaEntity : cinemaDtoList) {
+      CinemaDto cinemaDto = CinemaDto.builder()
+              .cinemaName(cinemaEntity.getCinemaName())
+              .address(cinemaEntity.getAddress())
+              .lat(cinemaEntity.getLat())
+              .lon(cinemaEntity.getLon())
+              .region(cinemaEntity.getRegion())
+              .build();
+      cinemaDtos.add(cinemaDto);
+
+      System.out.println(cinemaEntity.getCinemaName() + " 영화관이름");
+    }
+    return cinemaDtos;
+  }
+
   return null;
 }
 

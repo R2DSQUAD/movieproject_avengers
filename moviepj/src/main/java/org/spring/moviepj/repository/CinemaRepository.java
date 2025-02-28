@@ -1,10 +1,15 @@
 package org.spring.moviepj.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.spring.moviepj.entity.CinemaEntity;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import org.spring.moviepj.entity.MovieEntity;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,8 +25,13 @@ public interface CinemaRepository extends JpaRepository<CinemaEntity, Long> {
     @Query(value = "SELECT * FROM cinema_tb WHERE ST_Distance_Sphere(POINT(lon, lat), POINT(:lon, :lat)) <= :radius * 1000", nativeQuery = true)
     List<CinemaEntity> findNearbyCinemas(double lat, double lon, double radius);
 
+
     public Page<CinemaEntity> findByCinemaNameContaining(String cinemaName, Pageable pageable);
 
     public Page<CinemaEntity> findByRegionContaining(String region, Pageable pageable);
+
+    List<CinemaEntity> findByCinemaNameContaining(String cinemaName);
+
+
 
 }
