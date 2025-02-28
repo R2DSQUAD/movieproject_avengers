@@ -73,12 +73,4 @@ public class MemberController {
     // return ResponseEntity.ok(members);
     // }
 
-    @GetMapping("/memberList")
-    public List<MemberDto> memberList() {
-        List<MemberEntity> members = memberRepository.findAll();
-        return members.stream()
-                .map(MemberDto::new) // DTO 변환
-                .collect(Collectors.toList());
-    }
-
 }

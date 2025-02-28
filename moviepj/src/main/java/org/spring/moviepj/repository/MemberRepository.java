@@ -3,6 +3,8 @@ package org.spring.moviepj.repository;
 import java.util.Optional;
 
 import org.spring.moviepj.entity.MemberEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,5 +18,9 @@ public interface MemberRepository extends JpaRepository<MemberEntity, String> {
     MemberEntity getWithRoles(@Param("email") String email);
 
     Optional<MemberEntity> findByEmail(String email);
+
+    Page<MemberEntity> findByEmailContaining(String email, Pageable pageable);
+
+    Page<MemberEntity> findByNicknameContaining(String nickname, Pageable pageable);
 
 }

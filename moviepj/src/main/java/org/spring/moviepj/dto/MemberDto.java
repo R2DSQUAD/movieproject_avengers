@@ -85,23 +85,4 @@ public class MemberDto extends User {
         return dataMap;
     }
 
-    // 멤버리스트 role관련
-    public MemberDto(MemberEntity member) {
-        super(
-                member.getEmail(),
-                member.getPw(),
-                member.getMemberRoleList().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())) // Enum → String 변환
-                        .collect(Collectors.toList()));
-
-        this.email = member.getEmail();
-        this.pw = member.getPw();
-        this.nickname = member.getNickname();
-        this.social = member.isSocial();
-
-        // 역할 정보를 List<String> 형태로 변환하여 저장
-        this.roleNames = member.getMemberRoleList().stream()
-                .map(Enum::name)
-                .collect(Collectors.toList());
-    }
 }

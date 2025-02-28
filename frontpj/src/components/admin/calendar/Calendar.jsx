@@ -5,6 +5,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
 
 import EventModal from "./EventModal";
+import jwtAxios from "../../../util/jwtUtil";
 
 // 공휴일 가져오기
 const fetchHolidayEvents = async () => {
@@ -36,7 +37,7 @@ const Calendar = () => {
   const fetchAllEvents = async () => {
     try {
       const [dbRes, holidayEvents] = await Promise.all([
-        axios.get("http://localhost:8090/api/calendar"),
+        jwtAxios.get("http://localhost:8090/admin/calendar"),
         fetchHolidayEvents(),
       ]);
       setHolidays(holidayEvents); // 공휴일 유지
@@ -53,9 +54,9 @@ const Calendar = () => {
   const addEvent = async () => {
     try {
       console.log("보내는 이벤트 데이터: ", newEvent);
-      await axios.post("http://localhost:8090/api/calendar", newEvent, {
+      await jwtAxios.post("http://localhost:8090/admin/calendar", newEvent, {
         headers: { "Content-Type": "application/json" },
-      });
+      });      
       await fetchAllEvents(); // 일정 추가 후 공휴일 유지
       setModalOpen(false);
       setNewEvent({ content: "", start: "", end: "" });
@@ -67,7 +68,7 @@ const Calendar = () => {
   const handleDeleteEvent = async (eventId) => {
     if (window.confirm("정말로 이 일정을 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`http://localhost:8090/api/calendar/${eventId}`);
+        await jwtAxios.delete(`http://localhost:8090/admin/calendar/${eventId}`);
         alert("일정이 삭제되었습니다.");
         await fetchAllEvents(); // 삭제 후 공휴일 유지
       } catch (error) {

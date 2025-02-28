@@ -85,6 +85,13 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
         <Link to="/movie/map" className="nav-link">
           Cinemas
         </Link>
+        {isLoggedIn && loginState.roleNames && loginState.roleNames.includes("ADMIN") && (
+        <Link to="/admin" className="nav-link">
+         ADMIN
+        </Link>
+        )}
+
+
       </nav>
       <div className="bar">
         <div className="search-container">

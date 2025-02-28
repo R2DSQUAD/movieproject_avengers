@@ -39,8 +39,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 path.startsWith("/botController") ||
                 path.startsWith("/api/cinemas") ||
                 path.startsWith("/api/calendar") ||
-                path.startsWith("/api/memberList") ||
-                path.startsWith("/admin/")) {
+                path.startsWith("/api/memberList"))
+        // path.startsWith("/admin/"))
+        {
             return true; // JWT 검증 없이 접근 허용
         }
 
