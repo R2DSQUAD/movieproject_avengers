@@ -49,7 +49,7 @@ public class ScreeningEntity extends BasicTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theater_id")
-    private TheaterEntity theaterEntity;
+    private TheaterEntity theaterEntity; // theaterEntity를 유지
 
     @Column(nullable = false)
     private LocalDate screeningDate; // 상영 날짜
@@ -63,5 +63,4 @@ public class ScreeningEntity extends BasicTime {
     @OneToMany(mappedBy = "screeningEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<CartItemEntity> cartItemEntities;
-
 }

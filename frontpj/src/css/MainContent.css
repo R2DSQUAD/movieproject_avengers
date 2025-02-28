@@ -85,6 +85,11 @@ body.light .content .main .main-con {
 }
 
 .content .main .main-con .leftBar .leftBar-con .movie-info {
-  padding: 30px;
+  padding: 20px;
   box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
 }

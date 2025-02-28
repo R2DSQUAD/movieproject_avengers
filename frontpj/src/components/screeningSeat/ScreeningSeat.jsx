@@ -6,7 +6,9 @@ import { getCookie } from "../../util/cookieUtil";
 
 const ScreeningSeat = () => {
   const location = useLocation();
-  const [movieEntity, setMovieEntity] = useState(location.state?.movieEntity || null);
+  const [movieEntity, setMovieEntity] = useState(
+    location.state?.movieEntity || null
+  );
   const { screeningId } = useParams();
   const navigate = useNavigate();
   const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -15,7 +17,6 @@ const ScreeningSeat = () => {
   const [screening, setScreening] = useState();
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [disabledSeats, setDisabledSeats] = useState([]);
-
 
   useEffect(() => {
     const memberInfo = getCookie("member");
@@ -97,7 +98,7 @@ const ScreeningSeat = () => {
     }
   };
 
-  console.log(movieEntity);
+  const audiAcc = Number(movieEntity?.audiAcc) || 0;
 
   return (
     <div className="content">
@@ -105,54 +106,65 @@ const ScreeningSeat = () => {
         <div className="main-con">
           <div className="leftBar">
             <div className="leftBar-con">
-                <img
-                  src={movieEntity.poster_path}
-                  alt={movieEntity.movieNm}
-                />
-                <div className="movie-info">
+              <img src={movieEntity.poster_path} alt={movieEntity.movieNm} />
+              <div className="movie-info">
+                <div>
                   <h3>제목</h3>
                   <span>{movieEntity.movieNm}</span>
+                </div>
+                <div>
                   <h3>개봉일</h3>
                   <span>{movieEntity.openDt}</span>
+                </div>
+                <div>
                   <h3>순위</h3>
                   <span>{movieEntity.rank}등</span>
-                  <h3>누적 관객 수</h3>
-                  {/* <span>{movieEntity.audiAcc.toLocaleString("ko-KR")}명</span> */}
-                  <h3>장르</h3>
-                  {/* <span>{screening.movieEntity.genre}</span>  아직 데이터 없음*/}
                 </div>
+                <div>
+                  <h3>누적 관객 수</h3>
+                  <span>{audiAcc.toLocaleString("ko-KR")}명</span>
+                </div>
+                <div>
+                  <h3>장르</h3>
+                  <span>{movieEntity.genres}</span>
+                </div>
+                <div>
+                  <h3>감독</h3>
+                  <span>{movieEntity.director}</span>
+                </div>
+              </div>
             </div>
           </div>
           <div className="screening-content">
             <div className="movie-title">
-              <h1>
-                {movieEntity.movieNm}
-              </h1>
+              <h1>{movieEntity.movieNm}</h1>
             </div>
             <div className="seat-selection-con">
-              <h1 className="seat-title">좌석 선택 (상영 스케줄: {screeningId})</h1>
+              <h1 className="seat-title">
+                좌석 선택 (상영 스케줄: {screeningId})
+              </h1>
               <div className="screen">SCREEN</div>
               <div className="seat-container">
                 {rows.map((row) => (
-                              <div className="row">
-            <span>{row}</span>
-                  <div key={row} className="seat-row">
-                    {cols.map((col) => {
-                      const seatNumber = `${row}${col}`;
-                      return (
-                        <>
-                        <div
-                          key={seatNumber}
-                          className={getSeatClass(seatNumber)}
-                          onClick={() => toggleSeat(seatNumber)}
-                        >
-                          {col}
-                        </div>
-                        </>
-                      );
-                    })}
-                  </div>
-                  <span>{row}</span>
+                  <div className="row">
+                    <span>{row}</span>
+                    <div key={row} className="seat-row">
+                      {cols.map((col) => {
+                        const seatNumber = `${row}${col}`;
+                        return (
+                          <>
+                            <div
+                              key={seatNumber}
+                              className={getSeatClass(seatNumber)}
+                              onClick={() => toggleSeat(seatNumber)}
+                            >
+                              {col}
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
+                    <span>{row}</span>
                   </div>
                 ))}
               </div>

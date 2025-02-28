@@ -54,7 +54,7 @@
    License: none (public domain)
 */
 
-#root > div{
+#root > .container{
 	min-height: calc(100vh - 60px - 90px - 20px);
 	box-sizing: border-box;
 }

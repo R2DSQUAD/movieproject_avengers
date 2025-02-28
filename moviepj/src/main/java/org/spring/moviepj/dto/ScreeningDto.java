@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.spring.moviepj.entity.CartItemEntity;
+import org.spring.moviepj.entity.CinemaEntity;
 import org.spring.moviepj.entity.MovieEntity;
 import org.spring.moviepj.entity.TheaterEntity;
 
@@ -30,6 +31,9 @@ public class ScreeningDto {
     private Long theaterId;
     private TheaterEntity theaterEntity;
 
+    private Long cinemaId;
+    private CinemaEntity cinemaEntity;
+   
     private LocalDate screeningDate; // 상영 날짜
 
     private LocalTime screeningTime; // 상영 시작 시간
