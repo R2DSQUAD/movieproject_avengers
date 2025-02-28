@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 const Komoran = () => {
-  const [message, setMessage] = useState('');
-  const [chatContent, setChatContent] = useState('');
-  const [response, setResponse] = useState('');
-  const [movieDetails, setMovieDetails] = useState(null);
-  const [cinemaList, setCinemaList] = useState([]); // 영화관 리스트 상태 관리
-  const [mapLoaded, setMapLoaded] = useState(false); // 지도 로딩 상태
+  const [message, setMessage] = useState('');  // 사용자 입력 메시지 상태
+  const [chatContent, setChatContent] = useState('');  // 채팅 내용 상태
+  const [response, setResponse] = useState('');  // 봇의 응답
+  const [movieDetails, setMovieDetails] = useState(null);  // 영화 세부 정보
+  const [cinemaList, setCinemaList] = useState([]);  // 영화관 리스트 상태
+  const [mapLoaded, setMapLoaded] = useState(false);  // 지도 로딩 상태
 
   // 카카오맵 API 동적으로 로드하는 함수
   const loadKakaoMapScript = () => {
@@ -29,7 +29,14 @@ const Komoran = () => {
 
   useEffect(() => {
     loadKakaoMapScript(); // 컴포넌트 로드 시 카카오맵 스크립트 로드
-  }, []);
+
+    // '안녕' 메시지 자동으로 보내기
+    const autoSendMessage = async () => {
+      await sendMessage("안녕"); // '안녕' 메시지를 바로 DB로 전송
+    };
+
+    autoSendMessage(); // 컴포넌트 로드 후 '안녕' 메시지 보내기
+  }, []);  // 빈 배열을 넣어 컴포넌트가 처음 렌더링될 때만 실행되도록 설정
 
   useEffect(() => {
     if (cinemaList.length > 0 && mapLoaded) {
@@ -37,35 +44,33 @@ const Komoran = () => {
     }
   }, [cinemaList, mapLoaded]);
 
-  const btnMsgSendClicked = () => {
+  // 버튼 클릭 시 메시지 전송 처리
+  const btnMsgSendClicked = async () => {
     const questionText = message.trim();
     if (questionText === "" || questionText.length < 2) return;
 
     sendMessage(questionText);
 
     const messageHtml = inputTagString(questionText);
-    setChatContent(prevContent => prevContent + messageHtml);
+    setChatContent(prevContent => prevContent + messageHtml); // 채팅 내용 업데이트
 
-    setMessage('');
+    setMessage(''); // 메시지 입력창 초기화
   };
 
+  // 입력한 메시지의 HTML 변환
   const inputTagString = (text) => {
     const now = new Date();
-  
-    // 시간 AM/PM 처리
     let hours = now.getHours();
     const ampm = hours >= 12 ? "오후" : "오전";
-    hours = hours % 12; // 12시간제로 변환
-    hours = hours ? hours : 12; // 0이면 12로 표시
+    hours = hours % 12;
+    hours = hours ? hours : 12;
     const minutes = now.getMinutes();
-    
-    // '00'과 같은 형식을 유지하려면, 두 자릿수로 출력되도록 분을 처리
     const time = `${ampm} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-  
+
     return ` 
       <div class="msg user flex end">
         <div class="message">
-          <div class="part" >
+          <div class="part">
             <p>${text}</p>
           </div>
           <div class="time">${time}</div>
@@ -74,6 +79,7 @@ const Komoran = () => {
     `;
   };
 
+  // 서버로 메시지 전송
   const sendMessage = async (message) => {
     try {
       const response = await fetch('http://localhost:8090/botController', {
@@ -104,6 +110,7 @@ const Komoran = () => {
     }
   };
 
+  // 봇의 응답 메시지 표시
   const showMessage = (messageHtml) => {
     setChatContent(prevContent => prevContent + messageHtml);
     const chatContentElement = document.getElementById("chat-content");
@@ -117,27 +124,26 @@ const Komoran = () => {
       return;
     }
 
-    const container = document.getElementById('map'); // 지도가 표시될 HTML 요소
+    const container = document.getElementById('map');
     const options = {
-      center: new window.kakao.maps.LatLng(cinemas[0].lat, cinemas[0].lon), // 첫 번째 영화관을 중심으로 설정
+      center: new window.kakao.maps.LatLng(cinemas[0].lat, cinemas[0].lon),
       level: 7,
     };
 
-    const map = new window.kakao.maps.Map(container, options); // 지도 객체 생성
+    const map = new window.kakao.maps.Map(container, options);
 
     cinemas.forEach(cinema => {
-      const position = new window.kakao.maps.LatLng(cinema.lat, cinema.lon); // 영화관 위치
+      const position = new window.kakao.maps.LatLng(cinema.lat, cinema.lon);
       const marker = new window.kakao.maps.Marker({
         position: position,
       });
 
-      marker.setMap(map); // 마커 지도에 표시
+      marker.setMap(map);
 
       const infowindow = new window.kakao.maps.InfoWindow({
         content: `<div style="padding:5px;">${cinema.cinemaName}<br>${cinema.address}</div>`,
       });
 
-      // 마커에 클릭 이벤트 추가
       window.kakao.maps.event.addListener(marker, 'click', () => {
         infowindow.open(map, marker);
       });
@@ -146,13 +152,14 @@ const Komoran = () => {
 
   return (
     <div>
-      <button onClick={btnMsgSendClicked}>Send</button>
       <input
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         style={{ color: 'white', backgroundColor: '#333', border: '1px solid #444', padding: '10px', borderRadius: '5px', marginBottom: '10px' }}
       />
+      <button onClick={btnMsgSendClicked} style={{ marginLeft: '10px' }}>Send</button>
+
       <div id="chat-content" dangerouslySetInnerHTML={{ __html: chatContent }} style={{ color: 'white', marginTop: '20px' }} />
 
       {/* 영화 데이터가 있을 때만 영화 정보 표시 */}
