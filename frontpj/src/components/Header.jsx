@@ -99,29 +99,26 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
           <img src="/image/search.svg" alt="search" className="search-icon" />
         </div>
         {isLoggedIn ? (
-          <div className="member-info" ref={memberInfoRef}>
+          <div className="member-info" ref={memberInfoRef} onClick={memberInfoOnClick}>
             <img
               className="member-info-img"
               src="/image/person.svg"
               alt="member-info"
-              onClick={memberInfoOnClick}
             />
-            <Link to="/member/detail">
               <span ref={memberNameRef}>{loginState.nickname}님</span>
-            </Link>
             <div className={`member-info-con ${isMemberInfoActive ? 'active' : ''}`}>
+              <Link to="/member/detail">내 정보</Link>
               <Link to="/cart/myCartList">장바구니</Link>
               <Link to="/chatroom">실시간채팅</Link>
               <span onClick={handleLogout}>로그아웃</span>
             </div>
           </div>
         ) : (
-          <div className="member-info" ref={memberInfoRef}>
+          <div className="member-info" ref={memberInfoRef} onClick={memberInfoOnClick}>
             <img
               className="member-info-img"
               src="/image/person.svg"
               alt="member-info"
-              onClick={memberInfoOnClick}
             />
             <div className={`member-info-con ${isMemberInfoActive ? 'active' : ''}`}>
               <Link to="/member/login">로그인</Link>

@@ -13,11 +13,72 @@
   gap: 20px;
 }
 
+.date_type .region_select {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.date_type .region_select button {
+  width: 100%;
+  padding: 15px 10px;
+  border-radius: 8px;
+  color: var(--color-light-text);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border:none;
+  box-sizing: border-box;
+}
+
 .date_type .left_date {
   display: flex;
   justify-content: space-between;
   width: 100%;
   gap: 10px;
+}
+
+.date_type .cinema_select {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.date_type .cinema_select button {
+  width: 100%;
+  padding: 15px 10px;
+  border-radius: 8px;
+  color: var(--color-light-text);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border:none;
+  box-sizing: border-box;
+}
+
+.date_type .left_date {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.date_type .cinema_select button.selected {
+  background-color: var(--color-main-point);
 }
 
 .date_type .left_date button {

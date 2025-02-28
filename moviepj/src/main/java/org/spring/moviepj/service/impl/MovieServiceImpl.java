@@ -46,7 +46,11 @@ public class MovieServiceImpl implements MovieService {
     private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
+<<<<<<< HEAD
     @Scheduled(cron = "0 42 16 * * THU")
+=======
+    @Scheduled(cron = "0 53 15 * * THU")
+>>>>>>> dev
     public void fetchAndSaveWeeklyBoxOffice() {
         System.out.println(">>> [스케줄 실행됨] 박스오피스 데이터 가져오기 시작");
         String targetDate = getLastSundayDate();
@@ -91,7 +95,24 @@ public class MovieServiceImpl implements MovieService {
                     JSONArray results = jsonResponse.getJSONArray("results");
 
                     if (!results.isEmpty()) {
-                        JSONObject selectedMovie = results.getJSONObject(0);
+                        JSONObject selectedMovie = null;
+                        String openDt = el.getOpenDt();
+
+                        // 개봉일이 일치하는 영화 찾기
+                        for (int i = 0; i < results.length(); i++) {
+                            JSONObject movieCandidate = results.getJSONObject(i);
+                            String releaseDate = movieCandidate.optString("release_date", "");
+                            if (releaseDate.equals(openDt)) {
+                                selectedMovie = movieCandidate;
+                                break;
+                            }
+                        }
+
+                        // 개봉일이 일치하는 영화가 없으면 첫 번째 결과 사용
+                        if (selectedMovie == null) {
+                            selectedMovie = results.getJSONObject(0);
+                        }
+
                         overview = selectedMovie.optString("overview", "줄거리 정보 없음");
                         posterPath = selectedMovie.optString("poster_path", null) != null
                                 ? TMDB_IMAGE_URL + "/w500/" + selectedMovie.optString("poster_path")
@@ -187,8 +208,7 @@ public class MovieServiceImpl implements MovieService {
 
                 for (int i = 0; i < results.length(); i++) {
                     JSONObject video = results.getJSONObject(i);
-                    if ("YouTube".equalsIgnoreCase(video.optString("site"))
-                            && "Trailer".equalsIgnoreCase(video.optString("type"))) {
+                    if ("YouTube".equalsIgnoreCase(video.optString("site"))) {
                         TrailerEntity trailer = TrailerEntity.builder()
                                 .movieEntity(movie)
                                 .name(video.optString("name"))
@@ -202,6 +222,7 @@ public class MovieServiceImpl implements MovieService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("트레일러 가져오기 실패: " + e.getMessage());
         }
         return trailers;
     }

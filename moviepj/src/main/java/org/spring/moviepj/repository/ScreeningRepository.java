@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.spring.moviepj.entity.MovieEntity;
 import org.spring.moviepj.entity.ScreeningEntity;
 import org.spring.moviepj.entity.TheaterEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,4 +37,7 @@ public interface ScreeningRepository extends JpaRepository<ScreeningEntity, Long
 
         @Query("SELECT s FROM ScreeningEntity s JOIN FETCH s.movieEntity WHERE s.id = :screeningId")
         Optional<ScreeningEntity> findByIdWithMovie(@Param("screeningId") Long screeningId);
+
+        boolean existsByTheaterEntityAndMovieEntityAndScreeningDateAndScreeningTime(TheaterEntity theater,
+            MovieEntity movie, LocalDate date, LocalTime startTime);
 }

@@ -23,8 +23,6 @@ const MyMemberInfo = () => {
     }
   };
 
-  console.log(member);
-
   useEffect(() => {
     fetchMemberInfo();
   }, []);

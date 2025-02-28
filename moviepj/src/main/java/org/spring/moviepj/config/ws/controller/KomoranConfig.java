@@ -3,6 +3,7 @@ package org.spring.moviepj.config.ws.controller;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 
+import org.spring.moviepj.repository.CinemaRepository;
 import org.spring.moviepj.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +38,8 @@ public class KomoranConfig {
   @Autowired
   MovieRepository movieRepository;
 
-
+  @Autowired
+  CinemaRepository cinemaRepository;
 
   @Bean
   Komoran komoran() {
@@ -77,10 +79,18 @@ public class KomoranConfig {
       keys.add(e.getMovieNm());
     });
 
+    cinemaRepository.findAll().forEach(e-> {
+      keys.add(e.getCinemaName());
+    });
+    
+
     //버스 노선 번호
     
     
     keys.add("안녕");
+    keys.add("영화관");
+    keys.add("영화관 조회");
+    keys.add("영화관 위치");
     keys.add("영화");
     keys.add("영화 조회");
     keys.add("조회");

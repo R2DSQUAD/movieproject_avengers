@@ -21,24 +21,29 @@
     gap: 15px;
 }
 
-.cart-item {
+.cart-container {
     padding: 15px;
     border: 1px solid #000;
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
     transition: transform 0.2s;
+    justify-content: space-between;
 }
 
-.cart-item:hover {
+.cart-container:hover {
     transform: translateY(-5px);
 }
 
+.cart-container .cart-item{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
 
-.cart-item p {
-    margin: 0;
-    font-size: 16px;
+.cart-container .cart-item .cart-item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 

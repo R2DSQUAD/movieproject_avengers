@@ -44,6 +44,8 @@ const Main = () => {
   // audiAcc 값이 없거나 숫자가 아니면 0으로 설정
   const audiAcc = useCountUp(Number(randomBoxOfficeList.audiAcc) || 0, 1500);
 
+  console.log(randomBoxOfficeList);
+
   return (
     <div className="index">
       <div className="index-con">
@@ -58,6 +60,12 @@ const Main = () => {
             <h6 className="movie-age-rating">연령 등급 (15)</h6>
             <h6 className="movie-people">
               누적 관객수: {audiAcc.toLocaleString("ko-KR")}명
+            </h6>
+            <h6 className="movie-genres">
+              장르: {randomBoxOfficeList.genres}
+            </h6>
+            <h6 className="movie-director">
+              감독: {randomBoxOfficeList.director}
             </h6>
 
             <div className="movieBtn">

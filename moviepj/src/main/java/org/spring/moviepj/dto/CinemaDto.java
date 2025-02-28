@@ -1,8 +1,6 @@
 package org.spring.moviepj.dto;
 
-import java.util.List;
-
-import org.spring.moviepj.entity.TheaterEntity;
+import org.spring.moviepj.common.BasicTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,12 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CinemaDto {
+public class CinemaDto extends BasicTime {
     private Long id;
     private String region;
     private String cinemaName;
     private double lat;
     private double lon;
     private String address;
-    private List<TheaterEntity> theaterEntities;
+
 }

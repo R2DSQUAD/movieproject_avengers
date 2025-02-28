@@ -52,6 +52,8 @@ const MovieDetail = () => {
     1500
   );
 
+  console.log(movieInfo);
+
   return (
     <div className="content">
       <div className="main">
@@ -60,16 +62,30 @@ const MovieDetail = () => {
             <div className="leftBar-con">
               <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
               <div className="movie-info">
-                <h3>제목</h3>
-                <span>{movieInfo.movieNm}</span>
-                <h3>개봉일</h3>
-                <span>{movieInfo.openDt}</span>
-                <h3>순위</h3>
-                <span>{movieInfo.rank}등</span>
-                <h3>누적 관객 수</h3>
-                <span>{audiAcc.toLocaleString("ko-KR")}명</span>
-                <h3>장르</h3>
-                <span>{movieInfo.genre}</span>
+                <div>
+                  <h3>제목</h3>
+                  <span>{movieInfo.movieNm}</span>
+                </div>
+                <div>
+                  <h3>개봉일</h3>
+                  <span>{movieInfo.openDt}</span>
+                </div>
+                <div>
+                  <h3>순위</h3>
+                  <span>{movieInfo.rank}등</span>
+                </div>
+                <div>
+                  <h3>누적 관객 수</h3>
+                  <span>{audiAcc.toLocaleString("ko-KR")}명</span>
+                </div>
+                <div>
+                  <h3>장르</h3>
+                  <span>{movieInfo.genres}</span>
+                </div>
+                <div>
+                  <h3>감독</h3>
+                  <span>{movieInfo.director}</span>
+                </div>
                 <button onClick={() => navigate(`/screening/${movieInfo.id}`)}>
                   예매하기
                 </button>
