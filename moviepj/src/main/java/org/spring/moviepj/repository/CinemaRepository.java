@@ -2,6 +2,7 @@ package org.spring.moviepj.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Optional;
 
 import org.spring.moviepj.entity.CinemaEntity;
 
@@ -31,6 +32,7 @@ public interface CinemaRepository extends JpaRepository<CinemaEntity, Long> {
     public Page<CinemaEntity> findByRegionContaining(String region, Pageable pageable);
 
     List<CinemaEntity> findByCinemaNameContaining(String cinemaName);
+
 
 
 
