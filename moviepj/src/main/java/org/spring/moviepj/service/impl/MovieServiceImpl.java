@@ -46,11 +46,7 @@ public class MovieServiceImpl implements MovieService {
     private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
-<<<<<<< HEAD
     @Scheduled(cron = "0 42 16 * * THU")
-=======
-    @Scheduled(cron = "0 53 15 * * THU")
->>>>>>> dev
     public void fetchAndSaveWeeklyBoxOffice() {
         System.out.println(">>> [스케줄 실행됨] 박스오피스 데이터 가져오기 시작");
         String targetDate = getLastSundayDate();
