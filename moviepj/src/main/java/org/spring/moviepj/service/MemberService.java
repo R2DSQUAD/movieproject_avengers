@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.spring.moviepj.dto.MemberDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.validation.BindingResult;
 import org.spring.moviepj.entity.MemberEntity;
 
 public interface MemberService {
@@ -14,6 +17,12 @@ public interface MemberService {
     MemberDto memberDetail(String email);
 
     List<MemberDto> memberList();
+
+    MemberDto updateMember(String email, MemberDto memberDto);
+
+    void deleteMember(String email);
+
+    Page<MemberDto> searchMembers(String email, String nickname, Pageable pageable);
 
     MemberDto getKakaoMember(String accessToken);
 

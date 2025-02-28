@@ -28,9 +28,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.cors(httpSecurityCorsConfiguere -> {
-            httpSecurityCorsConfiguere.configurationSource(corsConfigurationSource());
-        });
+        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
+                .configurationSource(corsConfigurationSource()));
 
         http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -42,20 +41,25 @@ public class SecurityConfig {
             config.failureHandler(new APILoginFailHandler());
         });
 
+        // JWT 필터 적용
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        // 권한별 접근 제한 설정 추가
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한만 접근 가능
+                .anyRequest().permitAll() // 그 외 요청은 허용
+        );
 
         http.exceptionHandling(config -> config.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
     }
 
-    @Bean // 시큐리티 코스에러 설정
+    @Bean // CORS 설정
     public CorsConfigurationSource corsConfigurationSource() {
-
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders((Arrays.asList("Authorization", "Cache-Control", "Content-Type")));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -68,5 +72,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
