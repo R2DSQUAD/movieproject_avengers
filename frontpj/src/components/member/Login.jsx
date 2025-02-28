@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginPostAsync } from "../../slices/loginSlice";
 import "../../css/Login.css";
+import KakaoLogin from "./KakaoLogin";
 
 const initState = {
   email: "",
@@ -116,6 +117,7 @@ const Login = () => {
         </div>
         <div className="btn">
           <button onClick={handleClickLogin}>로그인</button>
+          <KakaoLogin />
           <Link to="/member/join">회원가입</Link>
         </div>
       </div>
