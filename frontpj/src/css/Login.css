@@ -89,7 +89,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 10px;
+  gap: 20px;
 }
 
 .login .login-con .btn > button{
