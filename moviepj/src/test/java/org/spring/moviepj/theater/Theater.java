@@ -56,7 +56,8 @@ public class Theater {
 
                 // 같은 영화관 내에서 해당 이름이 존재하는지 확인하여 중복 방지
                 if (theaterRepository.existsByNameAndCinemaEntity(theaterName, cinema)) {
-                    System.out.println("영화관 : " + cinema.getCinemaName() + " | " + " 상영관 : " + theaterName + " 는 이미 존재합니다.");
+                    System.out.println(
+                            "영화관 : " + cinema.getCinemaName() + " | " + " 상영관 : " + theaterName + " 는 이미 존재합니다.");
                     continue;
                 }
 

@@ -49,9 +49,8 @@ public class CartController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/cart/myCartList")
     public ResponseEntity<?> myCartList(@AuthenticationPrincipal MemberDto memberDto) {
-
         try {
-            List<CartItemDto> cartItemDtos = cartServiceImpl.myCartList(memberDto.getEmail(), 0);
+            List<CartItemDto> cartItemDtos = cartServiceImpl.myCartList(memberDto.getEmail());
             return ResponseEntity.status(HttpStatus.OK).body(cartItemDtos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

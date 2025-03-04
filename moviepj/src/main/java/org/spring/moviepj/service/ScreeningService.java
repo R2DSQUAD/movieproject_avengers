@@ -12,6 +12,10 @@ public interface ScreeningService {
 
     void createScreenings(int daysToAdd);
 
+    // void createScreeningsForExistingMovies(int daysToAdd);
+
+    // void createScreeningsForNewMovies(LocalDate startDate, int daysToAdd);
+
     List<ScreeningDto> getScreeningsByMovieId(Long movieId);
 
     ScreeningDto getScreeningById(Long screeningId);

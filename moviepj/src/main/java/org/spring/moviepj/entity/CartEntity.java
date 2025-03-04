@@ -43,16 +43,7 @@ public class CartEntity extends BasicTime {
     @JsonIgnore
     private MemberEntity memberEntity;
 
-    @Column(nullable = false)
-    private int status;
-
-    @Column(nullable = false)
-    private int totalPrice;
-
     @OneToMany(mappedBy = "cartEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<CartItemEntity> cartItemEntities;
-
-    @OneToOne(mappedBy = "cartEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private PaymentEntity paymentEntity;
 
 }

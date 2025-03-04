@@ -141,8 +141,12 @@ const ScreeningSeat = () => {
             </div>
             <div className="seat-selection-con">
               <h1 className="seat-title">
-                좌석 선택 (상영 스케줄: {screeningId})
+                좌석 선택 (영화관: {screening?.theaterEntity?.cinemaEntity?.cinemaName} /
+                상영관: {screening?.theaterEntity?.name}) /
+                상영 날짜/시간: {screening?.screeningDate} {screening?.screeningTime}
               </h1>
+
+
               <div className="screen">SCREEN</div>
               <div className="seat-container">
                 {rows.map((row) => (

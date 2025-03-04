@@ -8,14 +8,12 @@
 // @Component
 // @RequiredArgsConstructor
 // public class CrawlRunner implements CommandLineRunner {
-//     private final CinemaServiceImpl cinemaServiceImpl;
+// private final CinemaServiceImpl cinemaServiceImpl;
 
-//     @Override
-//     public void run(String... args) throws Exception {
-//         cinemaServiceImpl.crawlTheaterSchedule();
-//     }
+// @Override
+// public void run(String... args) throws Exception {
+// cinemaServiceImpl.crawlTheaterSchedule();
+// }
 // }
 
-
-
-//최초 실행 후 데이터가 있으면 실행되지 않게끔 제작 예정
+// // // 최초 실행 후 데이터가 있으면 실행되지 않게끔 제작 예정
