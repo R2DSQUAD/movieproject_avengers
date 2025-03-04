@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import "../../css/Screening.css";
@@ -12,11 +12,27 @@ const Screening = () => {
   const [allDates, setAllDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedScreening, setSelectedScreening] = useState(null);
-  const [cinemas, setCinemas] = useState([]); // 영화관 목록
-  const [selectedCinema, setSelectedCinema] = useState(""); // 선택된 영화관
-  const [regions, setRegions] = useState([]); // 추가된 부분
-  const [selectedRegion, setSelectedRegion] = useState(""); // 추가된 부분
+  const [cinemas, setCinemas] = useState([]);
+  const [selectedCinema, setSelectedCinema] = useState("");
+  const [regions, setRegions] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [showCinemas, setShowCinemas] = useState(false);
+  const [showDates, setShowDates] = useState(false);
+  const [showTimes, setShowTimes] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
   const navigate = useNavigate();
+
+  const regionOrder = [
+    "서울",
+    "경기",
+    "인천",
+    "강원",
+    "대전/충청/세종",
+    "대구/경상",
+    "광주/전라",
+    "부산",
+    "제주",
+  ];
 
   const getFormattedDate = (dateString) => {
     const date = new Date(dateString);
@@ -26,127 +42,143 @@ const Screening = () => {
     return `${month}/${day} (${dayOfWeek})`;
   };
 
+  // 이전 선택값을 저장하는 ref
+  const prevSelectedRegionRef = useRef(selectedRegion);
+  const prevSelectedCinemaRef = useRef(selectedCinema);
+
   useEffect(() => {
-    const fetchScreenings = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8090/api/screening/${movieId}`
-        );
+    const fetchDataAndFilter = async () => {
+      // 데이터는 한 번만 패칭
+      if (!dataFetched) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8090/api/screening/${movieId}`
+          );
+          const screeningData = Array.isArray(response.data)
+            ? response.data
+            : [];
 
-        const today = new Date().toISOString().split("T")[0];
-        const upcomingDates = Array.isArray(response.data)
-          ? [...new Set(response.data.map((item) => item.screeningDate))].filter(
-              (date) => date >= today
-            )
-          : [];
-        setAllDates(upcomingDates); // 모든 날짜 저장
+          const today = new Date().toISOString().split("T")[0];
+          const upcomingDates = [
+            ...new Set(screeningData.map((item) => item.screeningDate)),
+          ].filter((date) => date >= today);
 
-        setScreenings(Array.isArray(response.data) ? response.data : []); // 배열인지 확인
+          setAllDates(upcomingDates);
+          setScreenings(screeningData);
 
-        // 영화관 목록을 추출합니다.
-        const cinemaList = [
+          // 지역(영화) 목록 정렬
+          const regionList = [
+            ...new Set(
+              screeningData.map(
+                (item) => item.theaterEntity.cinemaEntity.region
+              )
+            ),
+          ];
+          const sortedRegions = regionOrder.filter((region) =>
+            regionList.includes(region)
+          );
+
+          setRegions(sortedRegions);
+          if (sortedRegions.length > 0 && !selectedRegion) {
+            setSelectedRegion(sortedRegions[0]);
+            setShowCinemas(true);
+          }
+
+          setDataFetched(true);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+
+      // 필터링 로직
+      if (selectedRegion && screenings.length > 0) {
+        // 지역이 바뀌었을 때만 초기화
+        if (prevSelectedRegionRef.current !== selectedRegion) {
+          setSelectedCinema("");
+          setSelectedDate("");
+          setFilteredScreenings([]);
+          prevSelectedRegionRef.current = selectedRegion;
+        }
+
+        const filteredCinemas = [
           ...new Set(
-            Array.isArray(response.data)
-              ? response.data.map(
-                  (item) => item.theaterEntity.cinemaEntity.cinemaName
-                )
-              : []
+            screenings
+              .filter(
+                (item) =>
+                  item.theaterEntity.cinemaEntity.region === selectedRegion
+              )
+              .map((item) => item.theaterEntity.cinemaEntity.cinemaName)
           ),
         ];
-        setCinemas(cinemaList);
-        //지역목록 추출
-        const regionList = [
-          ...new Set(
-            Array.isArray(response.data)
-              ? response.data.map(
-                  (item) => item.theaterEntity.cinemaEntity.region
-                )
-              : []
-          ),
-        ];
-        setRegions(regionList);
+        setCinemas(filteredCinemas);
+        setShowCinemas(true);
+        setShowDates(false);
+        setShowTimes(false);
+      }
 
-        // 초기 선택된 지역을 설정합니다.
-        if (regionList.length > 0) {
-          setSelectedRegion(regionList[0]);
+      if (selectedCinema && screenings.length > 0) {
+        // 영화관이 바뀌었을 때만 초기화
+        if (prevSelectedCinemaRef.current !== selectedCinema) {
+          setSelectedDate("");
+          setFilteredScreenings([]);
+          prevSelectedCinemaRef.current = selectedCinema;
         }
-        // 초기값 설정
-         if(upcomingDates.length > 0 && cinemaList.length > 0){
-          setSelectedDate(upcomingDates[0]);
-          setSelectedCinema(cinemaList[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching screening data:", error);
+
+        const cinemaDates = [
+          ...new Set(
+            screenings
+              .filter(
+                (item) =>
+                  item.theaterEntity.cinemaEntity.cinemaName === selectedCinema
+              )
+              .map((item) => item.screeningDate)
+          ),
+        ].filter((date) => allDates.includes(date));
+
+        setDates(cinemaDates);
+        setShowDates(true);
+        setShowTimes(false);
+      }
+
+      if (selectedDate && selectedCinema && screenings.length > 0) {
+        const now = new Date();
+        const filtered = screenings
+          .filter((item) => item.screeningDate === selectedDate)
+          .filter(
+            (item) =>
+              item.theaterEntity.cinemaEntity.cinemaName === selectedCinema
+          )
+          .filter((item) => {
+            const screeningTime = new Date(
+              `${item.screeningDate}T${item.screeningTime}`
+            );
+            return screeningTime >= now;
+          });
+
+        setFilteredScreenings(filtered);
+        setShowTimes(true);
       }
     };
-    fetchScreenings();
-  }, [movieId]);
 
-  useEffect(() => {
-    if (selectedRegion && screenings.length > 0) {
-      filterCinemasByRegion(selectedRegion);
-    }
-  }, [selectedRegion, screenings]);
-
-  const filterCinemasByRegion = (region) => {
-    const filteredCinemas = [
-      ...new Set(
-        screenings
-          .filter(
-            (item) => item.theaterEntity.cinemaEntity.region === region
-          )
-          .map((item) => item.theaterEntity.cinemaEntity.cinemaName)
-      ),
-    ];
-    setCinemas(filteredCinemas);
-      if(filteredCinemas.length > 0){
-        setSelectedCinema(filteredCinemas[0]);
-      }
-  };
-
-  useEffect(() => {
-    if (selectedDate && selectedCinema) {
-      filterScreenings(selectedDate, selectedCinema);
-    }
-  }, [selectedDate, selectedCinema, screenings]);
-
-  const filterScreenings = (date, cinema) => {
-    const now = new Date();
-    const filtered = screenings
-      .filter((item) => item.screeningDate === date)
-      .filter((item) => item.theaterEntity.cinemaEntity.cinemaName === cinema)
-      .filter((item) => {
-        const screeningTime = new Date(
-          `${item.screeningDate}T${item.screeningTime}`
-        );
-        return screeningTime >= now;
-      });
-    // 필터링된 결과가 없을 경우, 이전의 필터링 된 값으로 대체
-    setFilteredScreenings(filtered.length > 0 ? filtered : filteredScreenings);
-  };
-
-  const handleSelectScreening = (screeningId) => {
-    navigate(`/seatSelection/${screeningId}`, {
-      state: { movieEntity: screenings[0]?.movieEntity },
-    });
-  };
+    // 의존성: movieId, selectedRegion, selectedCinema, selectedDate, dataFetched
+    fetchDataAndFilter();
+  }, [movieId, selectedRegion, selectedCinema, selectedDate, dataFetched]);
 
   const handleRegionClick = (region) => {
     setSelectedRegion(region);
   };
-    const handleCinemaClick = (cinema) => {
-        setSelectedCinema(cinema);
-        // 선택된 영화관에 맞는 날짜 필터링
-        const cinemaDates = [
-            ...new Set(
-                screenings
-                    .filter((item) => item.theaterEntity.cinemaEntity.cinemaName === cinema)
-                    .map((item) => item.screeningDate)
-            ),
-        ].filter((date) => allDates.includes(date)) ;
-        setDates(cinemaDates);
-        setSelectedDate(cinemaDates[0]);//첫번째 날짜로 설정
-    };
+  const handleCinemaClick = (cinema) => {
+    setSelectedCinema(cinema);
+  };
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+  };
+  const handleSelectScreening = (screeningId) => {
+    setSelectedScreening(screeningId);
+    navigate(`/seatSelection/${screeningId}`, {
+      state: { movieEntity: screenings[0]?.movieEntity },
+    });
+  };
 
   const audiAcc = useCountUp(
     Number(screenings[0]?.movieEntity?.audiAcc) || 0,
@@ -157,6 +189,7 @@ const Screening = () => {
     <div className="content">
       <div className="main">
         <div className="main-con">
+          
           <div className="leftBar">
             <div className="leftBar-con">
               {screenings.length > 0 && screenings[0]?.movieEntity ? (
@@ -197,15 +230,14 @@ const Screening = () => {
               )}
             </div>
           </div>
-          <div className="screening-content">
-            <div className="movie-title">
-              <h1>
-                {screenings.length > 0 && screenings[0]?.movieEntity?.movieNm}
-              </h1>
-            </div>
+         
 
+          {/* 4개 컬럼 레이아웃 */}
+          <div className="screening-content">
             <div className="date_type">
+              {/* 지역(Region) */}
               <div className="region_select">
+                <h2>지역</h2>
                 {regions.map((region) => (
                   <button
                     key={region}
@@ -216,57 +248,77 @@ const Screening = () => {
                   </button>
                 ))}
               </div>
+
+              {/* (Cinema) */}
               <div className="cinema_select">
-                {cinemas.map((cinema) => (
-                  <button
-                    key={cinema}
-                    className={selectedCinema === cinema ? "selected" : ""}
-                    onClick={() => handleCinemaClick(cinema)}
-                  >
-                    {cinema}
-                  </button>
-                ))}
-              </div>
-              <div className="left_date">
-                {dates.map((date) => (
-                  <button
-                    key={date}
-                    className={selectedDate === date ? "selected" : ""}
-                    onClick={() => {
-                      setSelectedDate(date);
-                    }}
-                  >
-                    {getFormattedDate(date)}
-                  </button>
-                ))}
+                <h2>영화관</h2>
+                {showCinemas ? (
+                  cinemas.map((cinema) => (
+                    <button
+                      key={cinema}
+                      className={selectedCinema === cinema ? "selected" : ""}
+                      onClick={() => handleCinemaClick(cinema)}
+                    >
+                      {cinema}
+                    </button>
+                  ))
+                ) : (
+                  <p>영화관을 선택하세요.</p>
+                )}
               </div>
 
-              <div className="right_time">
-                {filteredScreenings.length === 0 ? (
-                  <p>상영 정보가 없습니다.</p>
+              {/* 날짜(Date) */}
+              <div className="date_select">
+                <h2>날짜</h2>
+                {showDates ? (
+                  dates.length > 0 ? (
+                    dates.map((date) => (
+                      <button
+                        key={date}
+                        className={selectedDate === date ? "selected" : ""}
+                        onClick={() => handleDateClick(date)}
+                      >
+                        {getFormattedDate(date)}
+                      </button>
+                    ))
+                  ) : (
+                    <p>상영날짜가 없습니다.</p>
+                  )
                 ) : (
-                  <ul>
-                    {filteredScreenings.map((screening) => (
-                      <li key={screening.id}>
-                        <button
-                          className={
-                            selectedScreening === screening.id ? "selected" : ""
-                          }
-                          onClick={() => handleSelectScreening(screening.id)}
-                        >
-                          <span> {screening.theaterEntity.name}</span>
-                          <span>
-                            {" "}
-                            {getFormattedDate(screening.screeningDate)}
-                          </span>
-                          <span>
-                            {screening.screeningTime} ~{" "}
-                            {screening.screeningEndTime}
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                  <p>날짜를 선택하세요.</p>
+                )}
+              </div>
+
+              {/* 시간(Time) */}
+              <div className="time_select">
+                <h2>시간</h2>
+                {showTimes ? (
+                  filteredScreenings.length === 0 ? (
+                    <p>상영 정보가 없습니다.</p>
+                  ) : (
+                    <ul>
+                      {filteredScreenings.map((screening) => (
+                        <li key={screening.id}>
+                          <button
+                            className={
+                              selectedScreening === screening.id
+                                ? "selected"
+                                : ""
+                            }
+                            onClick={() => handleSelectScreening(screening.id)}
+                          >
+                            <span>{screening.theaterEntity.name}</span>
+                            <span>{getFormattedDate(screening.screeningDate)}</span>
+                            <span>
+                              {screening.screeningTime} ~ {screening.screeningEndTime}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                ) : (
+                  <p>시간을 선택하세요.</p>
                 )}
               </div>
             </div>

@@ -151,7 +151,9 @@ public class ScreeningServiceImpl implements ScreeningService {
                 .map(el -> ScreeningDto.builder().id(el.getId()).movieEntity(el.getMovieEntity())
                         .theaterEntity(el.getTheaterEntity()).screeningDate(el.getScreeningDate())
                         .screeningTime(el.getScreeningTime()).screeningEndTime(el.getScreeningEndTime())
-                        .createTime(el.getCreateTime()).updateTime(el.getUpdateTime()).build())
+                        .createTime(el.getCreateTime()).updateTime(el.getUpdateTime())
+                        .cinemaName(el.getTheaterEntity().getCinemaEntity().getCinemaName())
+                        .build())
                 .collect(Collectors.toList());
     }
 

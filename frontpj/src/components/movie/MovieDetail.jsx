@@ -9,50 +9,86 @@ const MovieDetail = () => {
   const { movieCd } = useParams();
   const [trailers, setTrailers] = useState([]);
   const [movieInfo, setMovieInfo] = useState({});
-  const [selectedTrailerId, setSelectedTrailerId] = useState(null); // 클릭된 영상 ID 상태 관리
+  const [selectedTrailerId, setSelectedTrailerId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        const response = await axios.get(
+        // 1. 우선 트레일러 리스트를 조회하여 해당 영화의 데이터 필터링
+        const trailerResponse = await axios.get(
           "http://localhost:8090/api/trailerList"
         );
-        const trailerData = response.data;
-
-        // ID에 해당하는 트레일러 필터링
-        const filtered = trailerData.filter(
+        const trailerData = trailerResponse.data;
+        const filteredTrailers = trailerData.filter(
           (trailer) => trailer.movieEntity.movieCd.toString() === movieCd
         );
 
-        setMovieInfo(filtered[0]?.movieEntity || {});
-        setTrailers(filtered);
+        // 첫번째 트레일러의 movieEntity를 movieData로 사용 (존재하지 않으면 undefined)
+        let movieData = filteredTrailers[0]?.movieEntity;
 
-        const dataCount = filtered.length; // 예: 데이터 개수가 10이라면
-        const gridContainer = document.querySelector(".thumbnailImg");
-        gridContainer.style.gridTemplateColumns = `repeat(${dataCount}, 1fr)`;
+        // movieData가 존재하고 movieNm 등의 필수 정보가 있다면
+        if (movieData && movieData.movieNm) {
+          setMovieInfo(movieData);
+          setTrailers(filteredTrailers);
 
-        // 첫 번째 트레일러를 기본적으로 선택
-        if (filtered.length > 0) {
-          setSelectedTrailerId(filtered[0].url);
+          // 첫 번째 트레일러를 기본 선택
+          if (filteredTrailers.length > 0) {
+            setSelectedTrailerId(filteredTrailers[0].url);
+          }
+        } else {
+          // movieData가 없거나 부족한 경우 boxOfficeList API를 통해 데이터를 다시 조회
+          try {
+            const boxOfficeListResponse = await axios.get(
+              "http://localhost:8090/api/boxOfficeList"
+            );
+            const boxOfficeData = boxOfficeListResponse.data;
+
+            // movieCd가 일치하는 항목을 찾음
+            const matchedItem = boxOfficeData.find(
+              (item) => item.movieCd === movieCd
+            );
+
+            movieData = matchedItem || {};
+            setMovieInfo(movieData);
+            // 트레일러 정보는 그대로 설정 (없을 수도 있음)
+            setTrailers(filteredTrailers);
+          } catch (screeningError) {
+            setError("영화 정보를 불러오는데 실패했습니다.");
+            console.error(
+              "Error fetching movie info from screening:",
+              screeningError
+            );
+            return;
+          }
         }
       } catch (err) {
-        console.error(err);
+        setError("트레일러 정보를 불러오는데 실패했습니다.");
+        console.error("Error fetching trailers:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchData();
-  }, [movieCd]); // ✅ movieCd 변경 시 실행
 
-  // 썸네일 클릭 시 해당 ID를 상태에 저장
+    fetchData();
+  }, [movieCd]);
+
   const handleThumbnailClick = (id) => {
     setSelectedTrailerId(id);
   };
 
-  const audiAcc = useCountUp(
-    Number(movieInfo.audiAcc) || 0, // 숫자가 아니면 0 사용
-    1500
-  );
+  const audiAcc = useCountUp(Number(movieInfo.audiAcc) || 0, 1500);
 
-  console.log(movieInfo);
+  if (isLoading) {
+    return <div className="content">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="content">Error: {error}</div>;
+  }
 
   return (
     <div className="content">
@@ -60,7 +96,9 @@ const MovieDetail = () => {
         <div className="main-con">
           <div className="leftBar">
             <div className="leftBar-con">
-              <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
+              {movieInfo && movieInfo.poster_path && (
+                <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
+              )}
               <div className="movie-info">
                 <div>
                   <h3>제목</h3>
@@ -96,26 +134,28 @@ const MovieDetail = () => {
           <div className="moviedetail-content">
             <span>줄거리</span>
             <p>{movieInfo.overview}</p>
-            {/* 상단에 고정된 영상 플레이어 */}
             {selectedTrailerId && (
               <div className="video-container">
                 <LiteYoutubeEmbed
-                  key={selectedTrailerId} // key 추가
+                  key={selectedTrailerId}
                   id={selectedTrailerId}
                   mute={false}
                   params="controls=1&rel=0"
                 />
               </div>
             )}
-            {/* 썸네일들 */}
-            <ul className="thumbnailImg">
+            <ul
+              className="thumbnailImg"
+              style={{
+                gridTemplateColumns: `repeat(${trailers.length}, 1fr)`,
+              }}
+            >
               {trailers.map((el, idx) => (
                 <li className="thumbnailImg-con" key={idx}>
                   <img
-                    key={idx}
                     src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
                     alt={el.name}
-                    onClick={() => handleThumbnailClick(el.url, idx)} // 클릭된 썸네일 ID 저장
+                    onClick={() => handleThumbnailClick(el.url)}
                     className={selectedTrailerId === el.url ? "selected" : ""}
                   />
                   <span>

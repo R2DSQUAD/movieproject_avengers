@@ -1,7 +1,7 @@
 /* Komoran.css */
 .komoran-container {
   position: fixed;
-  bottom: 80px;
+  bottom: -480px;
   right: 20px;
   width: 350px;
   height: 450px;
@@ -20,10 +20,6 @@
 
 .komoran-container.open {
   bottom: 80px;
-}
-
-.komoran-container.minimized {
-  height: 40px;
 }
 
 .komoran-header {
