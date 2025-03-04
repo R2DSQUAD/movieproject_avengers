@@ -38,7 +38,6 @@ body.dark .moviedetail-content {
   position: relative;
 }
 
-
 .moviedetail-content>ul>li {
   display: flex;
   box-sizing: border-box;

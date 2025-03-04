@@ -33,6 +33,8 @@ public class ScreeningDto {
 
     private Long cinemaId;
     private CinemaEntity cinemaEntity;
+
+    private String cinemaName;
    
     private LocalDate screeningDate; // 상영 날짜
 
