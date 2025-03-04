@@ -10,7 +10,6 @@ import org.spring.moviepj.service.impl.CalendarServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(value = "/api", produces = "application/json")
+@RequestMapping(value = "/admin/calendar", produces = "application/json")
 @RequiredArgsConstructor
 public class CalendarController {
 
@@ -33,18 +32,18 @@ public class CalendarController {
         return eventDtoList;
     }
 
-    @PostMapping("/calendar")
+    @PostMapping("")
     public List<CalendarDto> setCalendar(@RequestBody CalendarDto dto) {
         calendarService.setCalendar(dto);
         return calendarService.eventListAll();
     }
 
-    @GetMapping("/calendar")
+    @GetMapping("")
     public List<CalendarDto> getCalendar() {
         return calendarService.eventListAll();
     }
 
-    @DeleteMapping("/calendar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         Optional<CalendarEntity> event = calendarRepository.findById(id);
         if (event.isPresent()) {
@@ -54,5 +53,4 @@ public class CalendarController {
             return ResponseEntity.notFound().build(); // 404 Not Found
         }
     }
-
 }

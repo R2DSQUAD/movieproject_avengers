@@ -38,10 +38,9 @@ public class ScreeningServiceImpl implements ScreeningService {
     private static final int NUMBER_OF_THEATERS = 10;
     private static final List<LocalTime> SCREENING_TIMES = List.of(
             LocalTime.of(7, 0), LocalTime.of(10, 0), LocalTime.of(13, 0),
-            LocalTime.of(16, 0), LocalTime.of(19, 0), LocalTime.of(22, 0)
-    );
+            LocalTime.of(16, 0), LocalTime.of(19, 0), LocalTime.of(22, 0));
 
-    @Scheduled(cron = "05 16 16 * * *") // 매일 오전 1시에 실행
+    @Scheduled(cron = "0 3 15 * * *") // 매일 실행
     public void updateScreenings() {
         log.debug("[자동 실행] 상영 일정 추가 작업 시작");
         try {
@@ -93,7 +92,8 @@ public class ScreeningServiceImpl implements ScreeningService {
                     log.warn("⚠ {} 시네마의 상영관의 수가 {}개가 아닙니다. 다시 확인해주세요.", cinema.getCinemaName(), NUMBER_OF_THEATERS);
                     return;
                 }
-                for (LocalDate currentScreeningDate = startDate; !currentScreeningDate.isAfter(endDate); currentScreeningDate = currentScreeningDate.plusDays(1)) {
+                for (LocalDate currentScreeningDate = startDate; !currentScreeningDate
+                        .isAfter(endDate); currentScreeningDate = currentScreeningDate.plusDays(1)) {
                     createTheaterScreenings(cinema, theaters, latestMovies, currentScreeningDate);
                 }
             }
@@ -103,7 +103,8 @@ public class ScreeningServiceImpl implements ScreeningService {
         }
     }
 
-    private void createTheaterScreenings(CinemaEntity cinema, List<TheaterEntity> theaters, List<MovieEntity> movies, LocalDate currentScreeningDate) {
+    private void createTheaterScreenings(CinemaEntity cinema, List<TheaterEntity> theaters, List<MovieEntity> movies,
+            LocalDate currentScreeningDate) {
         for (int i = 0; i < theaters.size(); i++) {
             TheaterEntity theater = theaters.get(i);
             MovieEntity movie = movies.get(i % movies.size()); // 영화가 부족하면 반복 사용
@@ -117,7 +118,7 @@ public class ScreeningServiceImpl implements ScreeningService {
                 } catch (Exception e) {
                     log.warn("영화 런타임 정보가 올바르지 않습니다. 기본값 120분으로 설정합니다. : {}", runTimeStr);
                 }
-                LocalTime endTime = startTime.plusMinutes(runTime); //영화 런타임 적용
+                LocalTime endTime = startTime.plusMinutes(runTime); // 영화 런타임 적용
                 if (isScreeningTimeAvailable(theater, currentScreeningDate, startTime, endTime)) {
 
                     ScreeningEntity screening = ScreeningEntity.builder()
@@ -135,7 +136,8 @@ public class ScreeningServiceImpl implements ScreeningService {
         }
     }
 
-    private boolean isScreeningTimeAvailable(TheaterEntity theater, LocalDate date, LocalTime startTime, LocalTime endTime) {
+    private boolean isScreeningTimeAvailable(TheaterEntity theater, LocalDate date, LocalTime startTime,
+            LocalTime endTime) {
         if (date.isBefore(LocalDate.now()) || (date.isEqual(LocalDate.now()) && startTime.isBefore(LocalTime.now()))) {
             log.warn("과거 시간의 상영 스케줄을 생성할 수 없습니다. : {} | {} | {}", date, startTime, endTime);
             return false;

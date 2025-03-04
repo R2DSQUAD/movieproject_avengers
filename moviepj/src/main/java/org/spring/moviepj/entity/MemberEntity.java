@@ -77,11 +77,4 @@ public class MemberEntity extends BasicTime {
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CalendarEntity> calendarEntities;
 
-    // role추가
-    public List<String> getRoleNames() {
-        return memberRoleList.stream()
-                .map(Enum::name) // Enum을 문자열로 변환
-                .collect(Collectors.toList());
-    }
-
 }

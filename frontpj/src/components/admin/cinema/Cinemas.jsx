@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../../css/admin/Cinemas.css";
+import jwtAxios from "../../../util/jwtUtil";
 
 const Cinemas = () => {
   const [cinemas, setCinemas] = useState([]);
@@ -14,33 +15,43 @@ const Cinemas = () => {
     address: ""
   });
 
-  // 검색과 페이징 관련 상태
-  const [searchType, setSearchType] = useState("cinemaName"); // 검색 기준 (영화관 이름 또는 지역)
-  const [searchValue, setSearchValue] = useState(""); // 검색어
+  
+  const [searchType, setSearchType] = useState("cinemaName"); 
+  const [searchValue, setSearchValue] = useState(""); 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const size = 10; // 한 페이지당 10개씩 표시
+  const size = 10; 
 
   useEffect(() => {
     fetchCinemas();
   }, [page, searchType, searchValue]); // 페이지, 검색 기준, 검색어에 따라 영화관 데이터 재조회
 
-  // 검색 엔드포인트를 호출하여 페이징 처리된 데이터를 가져옵니다.
+  
   const fetchCinemas = async () => {
     try {
-      const response = await axios.get("http://localhost:8090/admin/cinemas/search", {
+      const response = await jwtAxios.get("http://localhost:8090/admin/cinemas/search", {
         params: {
           page: page,
           size: size,
-          [searchType]: searchValue, // 동적으로 검색 기준을 선택하여 보내기
+          [searchType]: searchValue,  
         },
       });
-      setCinemas(response.data.content);
-      setTotalPages(response.data.totalPages);
+    
+      if (response.data && response.data.content) {
+        setCinemas(response.data.content);
+        setTotalPages(response.data.totalPages);
+      } else {
+      
+        setCinemas([]);
+        setTotalPages(0);
+      }
     } catch (error) {
       console.error("영화관 데이터 가져오기 실패:", error);
+      // 에러 발생 시 빈 배열 설정하여 map 에러 방지
+      setCinemas([]);
     }
   };
+  
 
   // 검색 폼 핸들러
   const handleSearchSubmit = (e) => {
@@ -49,7 +60,7 @@ const Cinemas = () => {
     fetchCinemas();
   };
 
-  // 수정 버튼 클릭 시 해당 영화관의 데이터를 모달에 세팅
+  // 수정 버튼
   const handleEditClick = (cinema) => {
     setSelectedCinema(cinema);
     setFormData({
@@ -76,7 +87,7 @@ const Cinemas = () => {
         lat: formData.lat === "null" ? null : parseFloat(formData.lat),
         lon: formData.lon === "null" ? null : parseFloat(formData.lon)
       };
-      await axios.post(`http://localhost:8090/admin/update/${selectedCinema.id}`, updatedData);
+      await jwtAxios.post(`http://localhost:8090/admin/update/${selectedCinema.id}`, updatedData);
       fetchCinemas();
       setShowModal(false);
     } catch (error) {
@@ -87,7 +98,7 @@ const Cinemas = () => {
   // 삭제 API 호출
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8090/admin/delete/${selectedCinema.id}`);
+      await jwtAxios.delete(`http://localhost:8090/admin/delete/${selectedCinema.id}`);
       fetchCinemas();
       setShowModal(false);
     } catch (error) {

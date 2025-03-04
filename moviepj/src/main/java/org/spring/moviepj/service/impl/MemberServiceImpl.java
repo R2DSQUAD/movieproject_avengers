@@ -4,6 +4,7 @@ import java.lang.reflect.Member;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 import org.spring.moviepj.common.Role;
@@ -12,6 +13,8 @@ import org.spring.moviepj.dto.movie.results;
 import org.spring.moviepj.entity.MemberEntity;
 import org.spring.moviepj.repository.MemberRepository;
 import org.spring.moviepj.service.MemberService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -141,6 +144,49 @@ public class MemberServiceImpl implements MemberService {
                 return memberEntity;
         }
 
-        // 수정,삭제 나중에 추가예정
+        @Override
+        public MemberDto updateMember(String email, MemberDto memberDto) {
+                MemberEntity memberEntity = memberRepository.findByEmail(email)
+                                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+                // 수정할 필드 업데이트 (비밀번호는 입력된 경우에만 업데이트)
+                memberEntity.setNickname(memberDto.getNickname());
+                if (memberDto.getPw() != null && !memberDto.getPw().isEmpty()) {
+                        memberEntity.setPw(passwordEncoder.encode(memberDto.getPw()));
+                }
+                memberEntity.setSocial(memberDto.isSocial());
 
+                MemberEntity updatedEntity = memberRepository.save(memberEntity);
+                return new MemberDto(
+                                updatedEntity.getEmail(),
+                                updatedEntity.getPw(),
+                                updatedEntity.getNickname(),
+                                updatedEntity.isSocial(),
+                                updatedEntity.getMemberRoleList().stream().map(Enum::name).toList());
+        }
+
+        @Override
+        public void deleteMember(String email) {
+                MemberEntity memberEntity = memberRepository.findByEmail(email)
+                                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+                memberRepository.delete(memberEntity);
+        }
+
+        @Override
+        public Page<MemberDto> searchMembers(String email, String nickname, Pageable pageable) {
+                Page<MemberEntity> memberPage;
+                if (email != null && !email.isEmpty()) {
+                        memberPage = memberRepository.findByEmailContaining(email, pageable);
+                } else if (nickname != null && !nickname.isEmpty()) {
+                        memberPage = memberRepository.findByNicknameContaining(nickname, pageable);
+                } else {
+                        memberPage = memberRepository.findAll(pageable);
+                }
+                return memberPage.map(memberEntity -> new MemberDto(
+                                memberEntity.getEmail(),
+                                memberEntity.getPw(),
+                                memberEntity.getNickname(),
+                                memberEntity.isSocial(),
+                                memberEntity.getMemberRoleList().stream().map(Enum::name)
+                                                .collect(Collectors.toList())));
+        }
 }

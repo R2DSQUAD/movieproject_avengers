@@ -1,6 +1,8 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+
+
 const Loading = <div className="loading">Loading...</div>;
 const MainLayout = lazy(() => import("../layout/MainLayout"));
 const MainPage = lazy(() => import("../pages/MainPage"));
@@ -136,7 +138,7 @@ const root = createBrowserRouter([
         path: "admin",
         element: (
           <Suspense fallback={Loading}>
-            <AdminLayout />
+            <AdminLayout /> 
           </Suspense>
         ),
         children: [
@@ -144,7 +146,7 @@ const root = createBrowserRouter([
             path: "",
             element: (
               <Suspense fallback={Loading}>
-                <AdminPage />
+                <TestPage />
               </Suspense>
             ),
           },
