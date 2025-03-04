@@ -1,46 +1,36 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import jwtAxios from '../../util/jwtUtil';
-import '../../css/Payment.css'
+import '../../css/Payment.css';
 
 const Payment = () => {
     const [paymentItems, setPaymentItems] = useState([]);
-    const [paymentMethod, setPaymentMethod] = useState();
+    const [paymentMethod, setPaymentMethod] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    const cartItemIds = location.state?.cartItemIds || [];
+
+    console.log("전달된 cartItemIds:", cartItemIds);
 
     useEffect(() => {
         const fetchPaymentItems = async () => {
             try {
-                const response = await jwtAxios.get('http://localhost:8090/api/payment/orderSettlement');
+                const response = await jwtAxios.post(
+                    "http://localhost:8090/api/payment/orderSettlement",
+                    cartItemIds,
+                    { withCredentials: true }
+                );
+                console.log("결제 정보:", response.data);
                 setPaymentItems(response.data);
-            } catch (err) {
-                console.log(err);
+            } catch (error) {
+                console.error(" 결제 정보 가져오기 오류:", error);
             }
         };
-        fetchPaymentItems();
-    }, []);
 
-    // 영화, 상영 날짜, 상영 시간을 기준으로 그룹화 -> 좌석번호만 다를경우 같이 묶음
-    const groupedItems = paymentItems.reduce((acc, item) => {
-        const key = `${item.movieNm}-${item.screeningDate}-${item.screeningTime}`;
-        if (!acc[key]) {
-            acc[key] = {
-                movieNm: item.movieNm,
-                screeningDate: item.screeningDate,
-                screeningTime: item.screeningTime,
-                theaterName: item.theaterName,
-                poster_path: item.poster_path,
-                seats: [],
-                totalPrice: 0
-            };
+        if (cartItemIds.length > 0) {
+            fetchPaymentItems();
         }
-        acc[key].seats.push(item.seatNumber);
-        acc[key].totalPrice += item.price;
-        return acc;
-    }, {});
-
-    const totalPrice = Object.values(groupedItems).reduce((acc, group) => acc + group.totalPrice, 0);
-
+    }, [cartItemIds]);
 
     const paymentGo = () => {
         if (!paymentMethod) {
@@ -53,79 +43,98 @@ const Payment = () => {
 
     }
 
+
+    const groupedItems = paymentItems.reduce((acc, item) => {
+        const key = `${item.movieNm}-${item.theaterName}-${item.screeningDate}-${item.screeningTime}`;
+
+        if (!acc[key]) {
+            acc[key] = {
+                ...item,
+                seatNumbers: [item.seatNumber]
+            };
+        } else {
+            acc[key].seatNumbers.push(item.seatNumber);
+        }
+
+        return acc;
+    }, {});
+
+    const groupedList = Object.values(groupedItems);
+
+    const totalPrice = groupedList.reduce((total, item) => {
+        return total + item.price * item.seatNumbers.length;
+    }, 0);
+
     return (
-        <>
+        <div className="payment">
             <h1>결제 페이지</h1>
-            <div className="payment">
-                <div className="payment-con">
-                    <div className="reservation">
-                        <div className="reservation-info-top">
-                            <h5>예매정보</h5>
-                        </div>
-                        <div className="reservation-info">
-                            <ul>
-                                {Object.values(groupedItems).length > 0 ? (
-                                    Object.values(groupedItems).map((group, index) => (
-                                        <li key={index}>
-                                            <img src={group.poster_path} alt={group.movieNm} style={{ width: '100px', height: 'auto', borderRadius: '5px' }} />
-                                            <p>영화: {group.movieNm}</p>
-                                            <p>상영 날짜: {group.screeningDate}</p>
-                                            <p>상영 시간: {group.screeningTime}</p>
-                                            <p>상영관: {group.theaterName}</p>
-                                            <p>좌석 번호: {group.seats.join(', ')}</p>
-                                            <p>총 가격: {group.totalPrice.toLocaleString()}원</p>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <p>예매된 내역이 없습니다.</p>
-                                )}
-                            </ul>
-                        </div>
+            <div className="payment-con">
+
+                <div className="reservation">
+                    <h5>예매 정보</h5>
+                    {groupedList.length > 0 ? (
+                        groupedList.map((item, index) => (
+                            <div key={index} className="payment-item">
+                                <img
+                                    src={item.poster_path}
+                                    alt={item.movieNm}
+                                    style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
+                                />
+                                <p> 영화: {item.movieNm}</p>
+                                <p> 상영 날짜: {item.screeningDate}</p>
+                                <p> 상영 시간: {item.screeningTime}</p>
+                                <p> 상영관: {item.theaterName}</p>
+                                <p> 좌석 번호: {item.seatNumbers.join(', ')}</p>
+                                <p> 가격: {(item.price * item.seatNumbers.length).toLocaleString()} 원</p>
+                                <p> 영화관: {item.cinemaName}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>결제할 항목이 없습니다.</p>
+                    )}
+                </div>
+
+                <div className="payment-selection">
+                    <div className="payment-method-top">
+                        <h5>결제수단</h5>
                     </div>
+                    <div className="payment-method">
 
-                    <div className="payment-selection">
-                        <div className="payment-method-top">
-                            <h5>결제수단</h5>
-                        </div>
-                        <div className="payment-method">
+                        <button
+                            className={paymentMethod === 'credit_card' ? 'selected' : ''}
+                            onClick={() => setPaymentMethod('credit_card')}
+                        >
+                            신용카드
+                        </button>
 
-                            <button
-                                className={paymentMethod === 'credit_card' ? 'selected' : ''}
-                                onClick={() => setPaymentMethod('credit_card')}
-                            >
-                                신용카드
-                            </button>
+                        <button
+                            className={paymentMethod === 'kakao_pay' ? 'selected' : ''}
+                            onClick={() => setPaymentMethod('kakao_pay')}
+                        >
+                            카카오페이
+                        </button>
 
-                            <button
-                                className={paymentMethod === 'kakao_pay' ? 'selected' : ''}
-                                onClick={() => setPaymentMethod('kakao_pay')}
-                            >
-                                카카오페이
-                            </button>
+                        <button
+                            className={paymentMethod === 'mobile' ? 'selected' : ''}
+                            onClick={() => setPaymentMethod('mobile')}
+                        >
+                            휴대폰
+                        </button>
 
-                            <button
-                                className={paymentMethod === 'mobile' ? 'selected' : ''}
-                                onClick={() => setPaymentMethod('mobile')}
-                            >
-                                휴대폰
-                            </button>
-
-                        </div>
-                    </div>
-                    <div className="payment-go">
-                        <div className="payment-go-top">
-                            <h5>결제하기</h5>
-                        </div>
-                        <div className="total-price">
-                            <h2>결제 금액:{totalPrice.toLocaleString()} 원</h2>
-                        </div>
-                        <button onClick={paymentGo}>결제하기</button>
                     </div>
                 </div>
+                <div className="payment-go">
+                    <div className="payment-go-top">
+                        <h5>결제하기</h5>
+                    </div>
+                    <div className="total-price">
+                        <h2>결제 금액: {totalPrice.toLocaleString()} 원</h2>
+                    </div>
+                    <button onClick={paymentGo}>결제하기</button>
+                </div>
             </div>
+        </div>
+    );
+};
 
-        </>
-    )
-}
-
-export default Payment
+export default Payment;

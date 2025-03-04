@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CartRepository extends JpaRepository<CartEntity, Long> {
 
-    Optional<CartEntity> findByMemberEntityAndStatus(MemberEntity memberEntity, int status);
+    Optional<CartEntity> findByMemberEntity(MemberEntity memberEntity);
 
 }

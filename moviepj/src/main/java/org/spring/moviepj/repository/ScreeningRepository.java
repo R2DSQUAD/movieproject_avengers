@@ -38,6 +38,11 @@ public interface ScreeningRepository extends JpaRepository<ScreeningEntity, Long
         @Query("SELECT s FROM ScreeningEntity s JOIN FETCH s.movieEntity WHERE s.id = :screeningId")
         Optional<ScreeningEntity> findByIdWithMovie(@Param("screeningId") Long screeningId);
 
-        boolean existsByTheaterEntityAndMovieEntityAndScreeningDateAndScreeningTime(TheaterEntity theater,
-            MovieEntity movie, LocalDate date, LocalTime startTime);
+        // @Query("SELECT COUNT(s) > 0 FROM ScreeningEntity s WHERE s.theaterEntity =
+        // :theater AND s.screeningDate = :date AND s.screeningTime = :startTime")
+        // boolean existsByTheaterEntityAndScreeningDateAndScreeningTime(
+        // @Param("theater") TheaterEntity theater,
+        // @Param("date") LocalDate date,
+        // @Param("startTime") LocalTime startTime);
+
 }
