@@ -44,10 +44,9 @@ const Cart = () => {
 
   const handleSelectAll = () => {
     if (selectedItems.size === cartItems.length) {
-        setSelectedItems(new Set(cartItems.map((item) => item.id))); // 전체 선택
-      
+      setSelectedItems(new Set()); // 모든 선택 해제
     } else {
-        setSelectedItems(new Set()); // 모든 선택 해제
+      setSelectedItems(new Set(cartItems.map((item) => item.id))); // 전체 선택
     }
   };
 
@@ -80,14 +79,21 @@ const Cart = () => {
       alert("결제할 티켓을 선택하세요.");
       return;
     }
-  
-    // 선택한 상품만 필터링하여 결제 페이지로 전달
-    const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.id));
-  
-    navigate("/payment/orderSettlement", { state: { selectedCartItems } });
+
+    const selectedCartItemIds = Array.from(selectedItems); // 선택된 ID 배열
+
+    console.log("선택된 장바구니 ID:", selectedCartItemIds); // 디버깅용 콘솔 로그 추가
+
+    // 선택한 항목 ID만 Payment 페이지로 전달
+    navigate("/payment/orderSettlement", { state: { cartItemIds: selectedCartItemIds } });
   };
 
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
+
+
+  const totalPrice = cartItems
+    .filter((item) => selectedItems.has(item.id)) // 선택된 항목만 계산
+    .reduce((acc, item) => acc + item.price, 0);
+
   const allSelected = cartItems.length > 0 && selectedItems.size === cartItems.length;
 
   return (
@@ -119,6 +125,7 @@ const Cart = () => {
                     <span>상영 시간: {item.screeningTime}</span>
                     <span>상영관: {item.theaterName}</span>
                     <span>영화: {item.movieNm}</span>
+                    <span>영화관: {item.cinemaName}</span>
                   </div>
                 </div>
                 <input

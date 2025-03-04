@@ -25,15 +25,8 @@ public class CartDto {
     private Long memberId;
     private MemberEntity memberEntity;
 
-    private int status;
-
-    private int totalPrice;
-
     private Long cartItemId;
     private List<CartItemEntity> cartItemEntities;
-
-    private Long paymentId;
-    private PaymentEntity paymentEntity;
 
     private LocalDateTime createTime;
 

@@ -43,6 +43,7 @@ public class TheaterEntity extends BasicTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinema_id")
     private CinemaEntity cinemaEntity;
+
     @OneToMany(mappedBy = "theaterEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ScreeningEntity> screeningEntities;

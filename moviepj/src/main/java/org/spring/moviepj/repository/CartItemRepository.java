@@ -16,4 +16,8 @@ public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> 
 
     boolean existsByScreeningEntityAndSeatNumber(ScreeningEntity screeningEntity, String seat);
 
+    List<CartItemEntity> findByCartEntityIdAndStatus(Long id, int i);
+
+    List<CartItemEntity> findByIdInAndCartEntity_MemberEntity_Email(List<Long> cartItemIds, String email);
+
 }

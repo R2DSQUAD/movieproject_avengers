@@ -33,8 +33,8 @@ public class PaymentEntity extends BasicTime {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "cart_id", nullable = false)
-    private CartEntity cartEntity;
+    @JoinColumn(name = "cartItem_id", nullable = false)
+    private CartItemEntity cartItemEntity;
 
     @Column(nullable = false)
     private int totalAmount;
