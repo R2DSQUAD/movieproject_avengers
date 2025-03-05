@@ -32,6 +32,5 @@ public interface CinemaRepository extends JpaRepository<CinemaEntity, Long> {
 
     List<CinemaEntity> findByCinemaNameContaining(String cinemaName);
 
-
-
+    boolean existsByCinemaName(String cinemaName);
 }
