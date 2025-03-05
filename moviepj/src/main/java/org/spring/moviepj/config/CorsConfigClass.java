@@ -12,12 +12,14 @@ public class CorsConfigClass implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(DEVELOP_FRONT_ADDRESS, "https://online-payment.kakaopay.com/**")
+                .allowedOrigins(
+                        DEVELOP_FRONT_ADDRESS,
+
+                        "https://api.iamport.kr")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .maxAge(300)
                 .exposedHeaders("location")
                 .allowedHeaders("Authorization", "Cache-Control", "Content-Type")
                 .allowCredentials(true);
     }
-
 }

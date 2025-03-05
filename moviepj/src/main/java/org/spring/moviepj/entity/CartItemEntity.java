@@ -30,6 +30,7 @@ public class CartItemEntity extends BasicTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_item_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,7 +47,7 @@ public class CartItemEntity extends BasicTime {
     @JoinColumn(name = "screening_id", nullable = false)
     private ScreeningEntity screeningEntity;
 
-    @OneToOne(mappedBy = "cartItemEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "cartItemEntity", fetch = FetchType.LAZY)
     private PaymentEntity paymentEntity;
 
     @Column(nullable = false)

@@ -1,6 +1,7 @@
 package org.spring.moviepj.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.spring.moviepj.entity.CartItemEntity;
 import org.spring.moviepj.entity.ScreeningEntity;

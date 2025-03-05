@@ -31,162 +31,162 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-        private final MemberRepository memberRepository;
-        private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-        @Override
-        public void insertMember(MemberDto memberDto) {
-                memberRepository.save(MemberEntity.builder()
-                                .email(memberDto.getEmail())
-                                .pw(passwordEncoder.encode(memberDto.getPw()))
-                                .nickname(memberDto.getNickname())
-                                .memberRoleList(Collections.singletonList(Role.USER)) // 기본 역할을 USER로 설정
-                                .build());
+    @Override
+    public void insertMember(MemberDto memberDto) {
+        memberRepository.save(MemberEntity.builder()
+                .email(memberDto.getEmail())
+                .pw(passwordEncoder.encode(memberDto.getPw()))
+                .nickname(memberDto.getNickname())
+                .memberRoleList(Collections.singletonList(Role.USER)) // 기본 역할을 USER로 설정
+                .build());
+    }
+
+    @Override
+    public MemberDto memberDetail(String email) {
+        MemberEntity memberEntity = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+
+        return new MemberDto(
+                memberEntity.getEmail(),
+                memberEntity.getPw(),
+                memberEntity.getNickname(),
+                memberEntity.isSocial(),
+                memberEntity.getMemberRoleList().stream()
+                        .map(Enum::name)
+                        .toList());
+    }
+
+    @Override
+    public List<MemberDto> memberList() {
+        List<MemberEntity> memberEntities = memberRepository.findAll();
+        if (memberEntities.isEmpty()) {
+            throw new IllegalStateException("조회할 회원목록이 없습니다"); //
         }
 
-        @Override
-        public MemberDto memberDetail(String email) {
-                MemberEntity memberEntity = memberRepository.findByEmail(email)
-                                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+        return memberEntities.stream()
+                .map(memberEntity -> new MemberDto(
+                        memberEntity.getEmail(),
+                        memberEntity.getPw(),
+                        memberEntity.getNickname(),
+                        memberEntity.isSocial(),
+                        memberEntity.getMemberRoleList().stream()
+                                .map(Enum::name)
+                                .toList()))
+                .toList();
+    }
 
-                return new MemberDto(
-                                memberEntity.getEmail(),
-                                memberEntity.getPw(),
-                                memberEntity.getNickname(),
-                                memberEntity.isSocial(),
-                                memberEntity.getMemberRoleList().stream()
-                                                .map(Enum::name)
-                                                .toList());
+    @Override
+    public MemberDto getKakaoMember(String accessToken) {
+
+        String email = getEmailFromKakaoAccessToken(accessToken);
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(email);
+        // 기존회원
+        if (optionalMemberEntity.isPresent()) {
+            MemberDto memberDto = entityToDto(optionalMemberEntity.get());
+            return memberDto;
+        }
+        // 기존회원아니면
+        MemberEntity memberEntity = makeSocialMember(email);
+        memberRepository.save(memberEntity);
+        MemberDto memberDto = entityToDto(memberEntity);
+
+        return memberDto;
+    }
+
+    private String getEmailFromKakaoAccessToken(String accessToken) {
+        String kakaoGetUserURL = "https://kapi.kakao.com/v2/user/me";
+        if (accessToken == null) {
+            throw new RuntimeException("Access Token is null");
         }
 
-        @Override
-        public List<MemberDto> memberList() {
-                List<MemberEntity> memberEntities = memberRepository.findAll();
-                if (memberEntities.isEmpty()) {
-                        throw new IllegalStateException("조회할 회원목록이 없습니다"); //
-                }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-                return memberEntities.stream()
-                                .map(memberEntity -> new MemberDto(
-                                                memberEntity.getEmail(),
-                                                memberEntity.getPw(),
-                                                memberEntity.getNickname(),
-                                                memberEntity.isSocial(),
-                                                memberEntity.getMemberRoleList().stream()
-                                                                .map(Enum::name)
-                                                                .toList()))
-                                .toList();
+        UriComponents uriBuilder = UriComponentsBuilder.fromHttpUrl(kakaoGetUserURL).build();
+
+        ResponseEntity<LinkedHashMap> response = restTemplate.exchange(uriBuilder.toString(), HttpMethod.GET,
+                entity, LinkedHashMap.class);
+        LinkedHashMap<String, LinkedHashMap> bodyMap = response.getBody();
+        LinkedHashMap<String, String> kakaoAccount = bodyMap.get("kakao_account");
+
+        return kakaoAccount.get("email");
+
+    }
+
+    // 비밀번호 임의생성하는 매소드
+    private String makeTempPassword() {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < 10; i++) {
+            stringBuffer.append((char) ((int) (Math.random() * 55) + 65));
         }
+        return stringBuffer.toString();
+    }
 
-        @Override
-        public MemberDto getKakaoMember(String accessToken) {
+    private MemberEntity makeSocialMember(String email) {
+        String tempPassword = makeTempPassword();
+        String nickname = "소셜회원";
 
-                String email = getEmailFromKakaoAccessToken(accessToken);
-                Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(email);
-                // 기존회원
-                if (optionalMemberEntity.isPresent()) {
-                        MemberDto memberDto = entityToDto(optionalMemberEntity.get());
-                        return memberDto;
-                }
-                // 기존회원아니면
-                MemberEntity memberEntity = makeSocialMember(email);
-                memberRepository.save(memberEntity);
-                MemberDto memberDto = entityToDto(memberEntity);
+        MemberEntity memberEntity = MemberEntity.builder()
+                .email(email)
+                .pw(passwordEncoder.encode(tempPassword))
+                .nickname(nickname)
+                .social(true)
+                .build();
 
-                return memberDto;
+        memberEntity.addRole(Role.USER);
+
+        return memberEntity;
+    }
+
+    @Override
+    public MemberDto updateMember(String email, MemberDto memberDto) {
+        MemberEntity memberEntity = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+        // 수정할 필드 업데이트 (비밀번호는 입력된 경우에만 업데이트)
+        memberEntity.setNickname(memberDto.getNickname());
+        if (memberDto.getPw() != null && !memberDto.getPw().isEmpty()) {
+            memberEntity.setPw(passwordEncoder.encode(memberDto.getPw()));
         }
+        memberEntity.setSocial(memberDto.isSocial());
 
-        private String getEmailFromKakaoAccessToken(String accessToken) {
-                String kakaoGetUserURL = "https://kapi.kakao.com/v2/user/me";
-                if (accessToken == null) {
-                        throw new RuntimeException("Access Token is null");
-                }
+        MemberEntity updatedEntity = memberRepository.save(memberEntity);
+        return new MemberDto(
+                updatedEntity.getEmail(),
+                updatedEntity.getPw(),
+                updatedEntity.getNickname(),
+                updatedEntity.isSocial(),
+                updatedEntity.getMemberRoleList().stream().map(Enum::name).toList());
+    }
 
-                RestTemplate restTemplate = new RestTemplate();
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("Authorization", "Bearer " + accessToken);
-                headers.add("Content-Type", "application/x-www-form-urlencoded");
-                HttpEntity<String> entity = new HttpEntity<>(headers);
+    @Override
+    public void deleteMember(String email) {
+        MemberEntity memberEntity = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+        memberRepository.delete(memberEntity);
+    }
 
-                UriComponents uriBuilder = UriComponentsBuilder.fromHttpUrl(kakaoGetUserURL).build();
-
-                ResponseEntity<LinkedHashMap> response = restTemplate.exchange(uriBuilder.toString(), HttpMethod.GET,
-                                entity, LinkedHashMap.class);
-                LinkedHashMap<String, LinkedHashMap> bodyMap = response.getBody();
-                LinkedHashMap<String, String> kakaoAccount = bodyMap.get("kakao_account");
-
-                return kakaoAccount.get("email");
-
+    @Override
+    public Page<MemberDto> searchMembers(String email, String nickname, Pageable pageable) {
+        Page<MemberEntity> memberPage;
+        if (email != null && !email.isEmpty()) {
+            memberPage = memberRepository.findByEmailContaining(email, pageable);
+        } else if (nickname != null && !nickname.isEmpty()) {
+            memberPage = memberRepository.findByNicknameContaining(nickname, pageable);
+        } else {
+            memberPage = memberRepository.findAll(pageable);
         }
-
-        // 비밀번호 임의생성하는 매소드
-        private String makeTempPassword() {
-                StringBuffer stringBuffer = new StringBuffer();
-                for (int i = 0; i < 10; i++) {
-                        stringBuffer.append((char) ((int) (Math.random() * 55) + 65));
-                }
-                return stringBuffer.toString();
-        }
-
-        private MemberEntity makeSocialMember(String email) {
-                String tempPassword = makeTempPassword();
-                String nickname = "소셜회원";
-
-                MemberEntity memberEntity = MemberEntity.builder()
-                                .email(email)
-                                .pw(passwordEncoder.encode(tempPassword))
-                                .nickname(nickname)
-                                .social(true)
-                                .build();
-
-                memberEntity.addRole(Role.USER);
-
-                return memberEntity;
-        }
-
-        @Override
-        public MemberDto updateMember(String email, MemberDto memberDto) {
-                MemberEntity memberEntity = memberRepository.findByEmail(email)
-                                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
-                // 수정할 필드 업데이트 (비밀번호는 입력된 경우에만 업데이트)
-                memberEntity.setNickname(memberDto.getNickname());
-                if (memberDto.getPw() != null && !memberDto.getPw().isEmpty()) {
-                        memberEntity.setPw(passwordEncoder.encode(memberDto.getPw()));
-                }
-                memberEntity.setSocial(memberDto.isSocial());
-
-                MemberEntity updatedEntity = memberRepository.save(memberEntity);
-                return new MemberDto(
-                                updatedEntity.getEmail(),
-                                updatedEntity.getPw(),
-                                updatedEntity.getNickname(),
-                                updatedEntity.isSocial(),
-                                updatedEntity.getMemberRoleList().stream().map(Enum::name).toList());
-        }
-
-        @Override
-        public void deleteMember(String email) {
-                MemberEntity memberEntity = memberRepository.findByEmail(email)
-                                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
-                memberRepository.delete(memberEntity);
-        }
-
-        @Override
-        public Page<MemberDto> searchMembers(String email, String nickname, Pageable pageable) {
-                Page<MemberEntity> memberPage;
-                if (email != null && !email.isEmpty()) {
-                        memberPage = memberRepository.findByEmailContaining(email, pageable);
-                } else if (nickname != null && !nickname.isEmpty()) {
-                        memberPage = memberRepository.findByNicknameContaining(nickname, pageable);
-                } else {
-                        memberPage = memberRepository.findAll(pageable);
-                }
-                return memberPage.map(memberEntity -> new MemberDto(
-                                memberEntity.getEmail(),
-                                memberEntity.getPw(),
-                                memberEntity.getNickname(),
-                                memberEntity.isSocial(),
-                                memberEntity.getMemberRoleList().stream().map(Enum::name)
-                                                .collect(Collectors.toList())));
-        }
+        return memberPage.map(memberEntity -> new MemberDto(
+                memberEntity.getEmail(),
+                memberEntity.getPw(),
+                memberEntity.getNickname(),
+                memberEntity.isSocial(),
+                memberEntity.getMemberRoleList().stream().map(Enum::name)
+                        .collect(Collectors.toList())));
+    }
 }

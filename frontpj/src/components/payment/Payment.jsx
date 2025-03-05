@@ -6,11 +6,27 @@ import '../../css/Payment.css';
 const Payment = () => {
     const [paymentItems, setPaymentItems] = useState([]);
     const [paymentMethod, setPaymentMethod] = useState(null);
+    const [userInfo, setUserInfo] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
     const cartItemIds = location.state?.cartItemIds || [];
 
-    console.log("전달된 cartItemIds:", cartItemIds);
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await jwtAxios.get("http://localhost:8090/api/myinfo/detail", {
+                    withCredentials: true
+                });
+                console.log(" 사용자 정보:", response.data);
+                setUserInfo(response.data);
+            } catch (error) {
+                console.error(" 사용자 정보 가져오기 오류:", error);
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
 
     useEffect(() => {
         const fetchPaymentItems = async () => {
@@ -20,10 +36,10 @@ const Payment = () => {
                     cartItemIds,
                     { withCredentials: true }
                 );
-                console.log("결제 정보:", response.data);
+                console.log(" 결제 정보:", response.data);
                 setPaymentItems(response.data);
             } catch (error) {
-                console.error(" 결제 정보 가져오기 오류:", error);
+                console.error("결제 정보 가져오기 오류:", error);
             }
         };
 
@@ -31,18 +47,6 @@ const Payment = () => {
             fetchPaymentItems();
         }
     }, [cartItemIds]);
-
-    const paymentGo = () => {
-        if (!paymentMethod) {
-            alert('결제수단을 선택하세요')
-            return
-        }
-
-        alert(`결제 진행: ${paymentMethod}`);  //카카오페이만 허용
-        navigate("/")  //아직 안만듦
-
-    }
-
 
     const groupedItems = paymentItems.reduce((acc, item) => {
         const key = `${item.movieNm}-${item.theaterName}-${item.screeningDate}-${item.screeningTime}`;
@@ -65,11 +69,107 @@ const Payment = () => {
         return total + item.price * item.seatNumbers.length;
     }, 0);
 
+    const paymentGo = async () => {
+        if (!paymentMethod) {
+            alert("결제 수단을 선택하세요.");
+            return;
+        }
+
+        if (!userInfo) {
+            alert("로그인 정보가 없습니다. 다시 로그인하세요.");
+            return;
+        }
+
+        if (cartItemIds.length === 0) {
+            alert("결제할 항목이 없습니다.");
+            return;
+        }
+
+        console.log(" 장바구니 항목 ID:", cartItemIds);
+
+        const { IMP } = window;
+        IMP.init("imp06751501");
+
+        let pgProvider = "";
+        switch (paymentMethod) {
+            case "kakaopay":
+                pgProvider = "kakaopay.TC0ONETIME";
+                break;
+            case "credit_card":
+                pgProvider = "html5_inicis.INIBillTst";
+                break;
+            case "tosspay":
+                pgProvider = "uplus.tlgdacomxpay";
+                break;
+            case "mobile":
+                pgProvider = "danal_tpay.9810030929";
+                break;
+            default:
+                alert("올바른 결제 수단을 선택하세요.");
+                return;
+        }
+
+        console.log(" 선택한 PG사:", pgProvider);
+
+        const merchantUid = `order_${new Date().getTime()}`;
+
+        IMP.request_pay(
+            {
+                pg: pgProvider,
+                pay_method: "card",
+                merchant_uid: merchantUid,
+                name: "영화 예매",
+                amount: totalPrice,
+                buyer_email: userInfo.email,
+                buyer_name: userInfo.nickname,
+            },
+            async (response) => {
+                if (response.success) {
+                    console.log(" 결제 성공:", response);
+
+                    try {
+                        console.log(" 결제 검증 요청 시작:", response.imp_uid);
+                        const verifyResponse = await jwtAxios.post("http://localhost:8090/api/payment/verify", {
+                            imp_uid: response.imp_uid,
+                            amount: totalPrice,
+                        }, { withCredentials: true }); // ★ 이 설정이 없으면 CORS 에러 가능
+
+
+                        console.log(" 결제 검증 결과:", verifyResponse.data);
+
+                        if (verifyResponse.data === "결제 검증 성공") {
+                            console.log(" 결제 정보 저장 요청 시작");
+                            const saveResponse = await jwtAxios.post("http://localhost:8090/api/payment/save", {
+                                cartItemIds: cartItemIds,
+                                paymentMethod: paymentMethod,
+                                totalPrice: totalPrice,
+                            });
+
+                            console.log(" 결제 저장 결과:", saveResponse.data);
+                            alert("결제가 완료되었습니다.");
+                            navigate("/");
+                        } else {
+                            alert(" 결제 검증 실패");
+                        }
+                    } catch (error) {
+                        console.error(" 결제 검증 또는 저장 오류:", error);
+                        alert("결제 처리 중 오류가 발생했습니다.");
+                    }
+                } else {
+                    console.error(" 결제 실패:", response.error_msg);
+                    alert(`결제 실패: ${response.error_msg}`);
+                }
+            }
+        );
+    };
+
+
+
+
     return (
         <div className="payment">
             <h1>결제 페이지</h1>
             <div className="payment-con">
-
                 <div className="reservation">
                     <h5>예매 정보</h5>
                     {groupedList.length > 0 ? (
@@ -99,7 +199,6 @@ const Payment = () => {
                         <h5>결제수단</h5>
                     </div>
                     <div className="payment-method">
-
                         <button
                             className={paymentMethod === 'credit_card' ? 'selected' : ''}
                             onClick={() => setPaymentMethod('credit_card')}
@@ -108,10 +207,17 @@ const Payment = () => {
                         </button>
 
                         <button
-                            className={paymentMethod === 'kakao_pay' ? 'selected' : ''}
-                            onClick={() => setPaymentMethod('kakao_pay')}
+                            className={paymentMethod === 'kakaopay' ? 'selected' : ''}
+                            onClick={() => setPaymentMethod('kakaopay')}
                         >
                             카카오페이
+                        </button>
+
+                        <button
+                            className={paymentMethod === 'tosspay' ? 'selected' : ''}
+                            onClick={() => setPaymentMethod('tosspay')}
+                        >
+                            토스페이
                         </button>
 
                         <button
@@ -120,9 +226,9 @@ const Payment = () => {
                         >
                             휴대폰
                         </button>
-
                     </div>
                 </div>
+
                 <div className="payment-go">
                     <div className="payment-go-top">
                         <h5>결제하기</h5>
