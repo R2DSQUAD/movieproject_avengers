@@ -3,7 +3,9 @@ package org.spring.moviepj.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.spring.moviepj.dto.PaymentDto;
 import org.spring.moviepj.dto.PaymentRequestDto;
 import org.spring.moviepj.entity.CartItemEntity;
 import org.spring.moviepj.entity.MemberEntity;
@@ -106,26 +108,26 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Transactional
+    @Override
     public void paymentSave(PaymentRequestDto paymentRequestDto, String email) {
-        System.out.println("📌 [결제 저장] 결제 정보 저장 시작");
+        System.out.println(" [결제 저장] 결제 정보 저장 시작");
 
         MemberEntity memberEntity = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("❌ [결제 저장] 회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(" [결제 저장] 회원 정보를 찾을 수 없습니다."));
 
         List<CartItemEntity> cartItems = cartItemRepository.findAllById(paymentRequestDto.getCartItemIds());
 
         if (cartItems.isEmpty()) {
-            throw new RuntimeException("❌ [결제 저장] 선택한 장바구니 항목을 찾을 수 없습니다.");
+            throw new RuntimeException(" [결제 저장] 선택한 장바구니 항목을 찾을 수 없습니다.");
         }
 
         for (CartItemEntity cartItem : cartItems) {
-            System.out.println("✅ [결제 저장] 장바구니 항목 ID: " + cartItem.getId());
-            System.out.println("✅ [결제 저장] 해당 장바구니의 Cart ID: "
+            System.out.println(" [결제 저장] 장바구니 항목 ID: " + cartItem.getId());
+            System.out.println(" [결제 저장] 해당 장바구니의 Cart ID: "
                     + (cartItem.getCartEntity() != null ? cartItem.getCartEntity().getId() : "NULL"));
 
-            // ✅ cartEntity가 NULL이면 예외 발생
             if (cartItem.getCartEntity() == null) {
-                throw new RuntimeException("❌ [결제 저장] cartItem에 cartEntity가 없습니다.");
+                throw new RuntimeException(" [결제 저장] cartItem에 cartEntity가 없습니다.");
             }
 
             cartItem.setStatus(1); // 장바구니 아이템 상태 변경 (결제 완료)
@@ -138,12 +140,36 @@ public class PaymentServiceImpl implements PaymentService {
                     .build();
 
             paymentRepository.save(paymentEntity);
-            System.out.println("✅ [결제 저장] 결제 정보 저장 완료: " + paymentEntity.getId());
+            System.out.println(" [결제 저장] 결제 정보 저장 완료: " + paymentEntity.getId());
 
-            // ✅ CartItemEntity에 PaymentEntity 설정 후 저장
+            // CartItemEntity에 PaymentEntity 설정 후 저장
             cartItem.setPaymentEntity(paymentEntity);
             cartItemRepository.save(cartItem);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<PaymentDto> myPaymentList(String email) {
+        List<PaymentEntity> paymentEntities = paymentRepository.findByMemberEntityEmail(email);
+
+        return paymentEntities.stream()
+                .map(el -> PaymentDto.builder()
+                        .seatNumber(el.getCartItemEntity().getSeatNumber())
+                        .screeningDate(el.getCartItemEntity().getScreeningEntity().getScreeningDate().toString())
+                        .screeningTime(el.getCartItemEntity().getScreeningEntity().getScreeningTime().toString())
+                        .screeningEndTime(el.getCartItemEntity().getScreeningEntity().getScreeningEndTime().toString())
+                        .theaterName(el.getCartItemEntity().getScreeningEntity().getTheaterEntity().getName())
+                        .cinemaName(el.getCartItemEntity().getScreeningEntity().getTheaterEntity().getCinemaEntity()
+                                .getCinemaName())
+                        .movieNm(el.getCartItemEntity().getScreeningEntity().getMovieEntity().getMovieNm())
+                        .posterPath(el.getCartItemEntity().getScreeningEntity().getMovieEntity().getPoster_path())
+                        .totalAmount(el.getTotalAmount())
+                        .paymentMethod(el.getPaymentMethod())
+                        .createTime(el.getCreateTime())
+                        .updateTime(el.getUpdateTime())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

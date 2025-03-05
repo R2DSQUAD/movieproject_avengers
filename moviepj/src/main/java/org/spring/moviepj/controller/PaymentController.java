@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.spring.moviepj.dto.CartItemDto;
 import org.spring.moviepj.dto.MemberDto;
+import org.spring.moviepj.dto.PaymentDto;
 import org.spring.moviepj.dto.PaymentRequestDto;
+import org.spring.moviepj.entity.PaymentEntity;
 import org.spring.moviepj.service.impl.CartServiceImpl;
 import org.spring.moviepj.service.impl.PaymentServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -54,28 +56,28 @@ public class PaymentController {
             @AuthenticationPrincipal MemberDto memberDto,
             @RequestBody Map<String, Object> request) {
 
-        System.out.println("📌 [결제 검증 요청] 요청이 들어옴");
+        System.out.println(" [결제 검증 요청] 요청이 들어옴");
 
         if (memberDto == null || memberDto.getEmail() == null) {
-            System.out.println("❌ [결제 검증] 인증된 사용자가 없음");
+            System.out.println(" [결제 검증] 인증된 사용자가 없음");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보가 없습니다.");
         }
 
-        System.out.println("✅ [결제 검증] 요청한 사용자: " + memberDto.getEmail());
+        System.out.println(" [결제 검증] 요청한 사용자: " + memberDto.getEmail());
 
         String impUid = (String) request.get("imp_uid");
         int amount = (int) request.get("amount");
 
-        System.out.println("📌 [결제 검증] imp_uid: " + impUid);
-        System.out.println("📌 [결제 검증] amount: " + amount);
+        System.out.println(" [결제 검증] imp_uid: " + impUid);
+        System.out.println(" [결제 검증] amount: " + amount);
 
         boolean isValid = paymentServiceImpl.verifyPayment(impUid, amount);
 
         if (isValid) {
-            System.out.println("✅ [결제 검증] 성공");
+            System.out.println(" [결제 검증] 성공");
             return ResponseEntity.ok("결제 검증 성공");
         } else {
-            System.out.println("❌ [결제 검증] 실패");
+            System.out.println(" [결제 검증] 실패");
             return ResponseEntity.badRequest().body("결제 검증 실패");
         }
     }
@@ -97,4 +99,23 @@ public class PaymentController {
         }
     }
 
+    @GetMapping("/payment/myPaymentList")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> myPaymentList(@AuthenticationPrincipal MemberDto memberDto) {
+        String email = memberDto.getEmail();
+
+        try {
+
+            List<PaymentDto> paymentList = paymentServiceImpl.myPaymentList(email);
+
+            // 결제 내역이 없다면 빈 리스트 반환
+            if (paymentList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.OK).body("결제 내역이 없습니다.");
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(paymentList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결제 내역 조회 오류: " + e.getMessage());
+        }
+    }
 }
