@@ -9,8 +9,11 @@ const Komoran = () => {
   const [cinemaList, setCinemaList] = useState([]);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isKomoranOpen, setIsKomoranOpen] = useState(true);
-  const [isMapModalOpen, setIsMapModalOpen] = useState(false); // 모달 상태 추가
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [mapInstance, setMapInstance] = useState(false);
+  
   const bodyRef = useRef(null);
+  const mapRef = useRef(null); // Add map ref
 
   // ✅ 카카오맵 API 동적 로드
   useEffect(() => {
@@ -26,12 +29,6 @@ const Komoran = () => {
 
     autoSendMessage();
   }, []);
-
-  // useEffect(() => { //✅ 불필요한 useEffect 제거
-  //   if (cinemaList.length > 0 && mapLoaded) {
-  //     loadMap(cinemaList);
-  //   }
-  // }, [cinemaList, mapLoaded]);
 
   // ✅ 카카오맵 API 로드
   const loadKakaoMapScript = () => {
@@ -54,14 +51,16 @@ const Komoran = () => {
   };
 
   useEffect(() => {
-    loadKakaoMapScript(); // 컴포넌트 로드 시 카카오맵 스크립트 로드
-  }, []);
-
-  useEffect(() => {
     if (bodyRef.current) {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
     }
   }, [chatContent]);
+
+  useEffect(() => {
+    if (isMapModalOpen && cinemaList.length > 0 && mapLoaded) {
+      loadMap(cinemaList);
+    }
+  }, [isMapModalOpen, cinemaList, mapLoaded]);
 
   const btnMsgSendClicked = async () => {
     const questionText = message.trim();
@@ -76,16 +75,8 @@ const Komoran = () => {
   };
 
   // ✅ 모달 열기
-  const openMapModal = () => {
-    setIsMapModalOpen(true);
-    if (cinemaList.length > 0 && mapLoaded) {
-      loadMap(cinemaList);
-    }
-  };
-
-  // ✅ 모달 닫기
-  const closeMapModal = () => {
-    setIsMapModalOpen(false);
+  const toggleMapModal = () => {
+    setIsMapModalOpen((prev) => !prev);
   };
 
   // ✅ 채팅 메시지 HTML 생성
@@ -100,7 +91,7 @@ const Komoran = () => {
     const minutes = now.getMinutes();
     const time = `${ampm} ${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
 
-    return ` 
+    return `
       <div class="msg user flex end">
         <div class="message">
           <div class="part">
@@ -128,7 +119,6 @@ const Komoran = () => {
       const responseData = await response.json();
       setResponse(responseData.answer.content);
 
-      // ✅ 조건문 수정: cinemaList가 있고 길이가 0보다 클 때
       if (
         responseData.answer.cinemaList &&
         responseData.answer.cinemaList.length > 0
@@ -154,7 +144,6 @@ const Komoran = () => {
         return newContent;
       });
 
-      // chatContentElement를 찾는 대신 bodyRef를 사용
       if (bodyRef.current) {
         bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
       }
@@ -168,28 +157,29 @@ const Komoran = () => {
       return;
     }
 
-    const container = document.querySelector("#map"); // 지도가 표시될 HTML 요소
+    const container = mapRef.current;
     if (!container) return;
+
     const options = {
-      center: new window.kakao.maps.LatLng(cinemas[0].lat, cinemas[0].lon), // 첫 번째 영화관을 중심으로 설정
+      center: new window.kakao.maps.LatLng(cinemas[0].lat, cinemas[0].lon),
       level: 7,
     };
 
-    const map = new window.kakao.maps.Map(container, options); // 지도 객체 생성
+    const map = new window.kakao.maps.Map(container, options);
+    setMapInstance(map); // Store the map instance.
 
     cinemas.forEach((cinema) => {
-      const position = new window.kakao.maps.LatLng(cinema.lat, cinema.lon); // 영화관 위치
+      const position = new window.kakao.maps.LatLng(cinema.lat, cinema.lon);
       const marker = new window.kakao.maps.Marker({
         position: position,
       });
 
-      marker.setMap(map); // 마커 지도에 표시
+      marker.setMap(map);
 
       const infowindow = new window.kakao.maps.InfoWindow({
         content: `<div style="padding:5px;">${cinema.cinemaName}<br>${cinema.address}</div>`,
       });
 
-      // 마커에 클릭 이벤트 추가
       window.kakao.maps.event.addListener(marker, "click", () => {
         infowindow.open(map, marker);
       });
@@ -220,13 +210,11 @@ const Komoran = () => {
             style={{ color: "white", marginTop: "20px" }}
           ></div>
 
-          {/* 영화 데이터가 있을 때만 영화 정보 표시 */}
           {movieDetails && movieDetails.movieNm && (
             <div
               className="movie-details"
               style={{ color: "white", marginTop: "20px" }}
             >
-              {/* 이미지가 없을 경우 대체 이미지 제공 */}
               <img
                 src={
                   movieDetails.poster_path
@@ -252,22 +240,18 @@ const Komoran = () => {
             </div>
           )}
 
-          {/* 영화관 데이터가 있을 때만 영화관 정보 표시 */}
-
           {cinemaList.length > 0 && (
             <>
-              <button className="map-modal-button" onClick={openMapModal}>
+              <button className="map-modal-button" onClick={toggleMapModal}>
                 영화관 정보
               </button>
               {isMapModalOpen && (
                 <>
+                  <div className="modal-overlay" onClick={toggleMapModal} />
                   <div className="map-modal">
                     <div className="map-modal-header">
-                      <button className="close-button" onClick={closeMapModal}>
-                        X
-                      </button>
                     </div>
-                    <div id="map" />
+                    <div id="map" ref={mapRef} />
                   </div>
                 </>
               )}
