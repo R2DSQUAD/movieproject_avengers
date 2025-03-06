@@ -12,6 +12,10 @@ const ScreeningSeatPage = lazy(() => import("../pages/screeningSeat/ScreeningSea
 const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
 const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
+const BoardPage = lazy(() => import("../pages/board/BoardPage"));
+const BoardInsertPage = lazy(() => import("../pages/board/BoardInsertPage"));
+const BoardUpdatePage = lazy(() => import("../pages/board/BoardUpdatePage"));
+const BoardDetailPage = lazy(() => import("../pages/board/BoardDetailPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 const CartPage = lazy(() => import("../pages/cart/CartPage"));
@@ -59,6 +63,38 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <MapPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board/insert",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardInsertPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board/detail/:id",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardDetailPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board/update/:id",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardUpdatePage />
           </Suspense>
         ),
       },

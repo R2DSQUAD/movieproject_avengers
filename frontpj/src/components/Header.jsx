@@ -76,8 +76,8 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
         <Link to="" className="nav-link">
           Home
         </Link>
-        <Link to="" className="nav-link">
-          Series
+        <Link to="/board" className="nav-link">
+          Board
         </Link>
         <Link to="" className="nav-link">
           Movies
