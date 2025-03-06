@@ -21,4 +21,6 @@ public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> 
 
     List<CartItemEntity> findByIdInAndCartEntity_MemberEntity_Email(List<Long> cartItemIds, String email);
 
+    List<CartItemEntity> findByIdInAndStatus(List<Long> cartItemIds, int i);
+
 }

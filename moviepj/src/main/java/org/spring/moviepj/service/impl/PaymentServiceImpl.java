@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
@@ -52,9 +53,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
 
-        System.out.println(" [포트원] 토큰 요청 응답: " + response.getBody());
-
-        if (response.getStatusCode() == HttpStatus.OK) {
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             Map<String, Object> responseData = response.getBody();
             return (String) ((Map<String, Object>) responseData.get("response")).get("access_token");
         }
@@ -65,11 +64,7 @@ public class PaymentServiceImpl implements PaymentService {
     public boolean verifyPayment(String impUid, int amount) {
 
         String token = getAccessToken();
-
-        System.out.println(" [포트원] 발급된 토큰: " + token);
-
         if (token == null) {
-            System.out.println(" [포트원] 토큰 발급 실패!");
             return false;
         }
 
@@ -82,55 +77,37 @@ public class PaymentServiceImpl implements PaymentService {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            Map<String, Object> responseData = response.getBody();
-            if (responseData == null || !responseData.containsKey("response")) {
-                System.out.println(" [포트원] 응답 데이터가 비어 있음");
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            Map<String, Object> paymentResponse = (Map<String, Object>) response.getBody().get("response");
+            if (paymentResponse == null)
                 return false;
-            }
 
-            Map<String, Object> paymentResponse = (Map<String, Object>) responseData.get("response");
             int responseAmount = Integer.parseInt(paymentResponse.get("amount").toString());
             String responsePgProvider = (String) paymentResponse.get("pg_provider");
 
-            // PG사가 일치하는지 검증
-            if (!responsePgProvider.equals("kakaopay") && !responsePgProvider.equals("html5_inicis") &&
-                    !responsePgProvider.equals("tosspay") && !responsePgProvider.equals("danal")) {
-                System.out.println(" [포트원] PG사 불일치: " + responsePgProvider);
-                return false;
-            }
-
-            return responseAmount == amount; // 결제 금액이 일치하는지 검증
+            return responseAmount == amount;
         }
 
-        System.out.println(" [포트원] 결제 검증 실패, 응답 상태 코드: " + response.getStatusCode());
         return false;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void paymentSave(PaymentRequestDto paymentRequestDto, String email) {
-        System.out.println(" [결제 저장] 결제 정보 저장 시작");
 
         MemberEntity memberEntity = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException(" [결제 저장] 회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
-        List<CartItemEntity> cartItems = cartItemRepository.findAllById(paymentRequestDto.getCartItemIds());
+        // 상태가 0(미결제)인 cartItem만 가져옴
+        List<CartItemEntity> cartItems = cartItemRepository.findByIdInAndStatus(paymentRequestDto.getCartItemIds(), 0);
 
         if (cartItems.isEmpty()) {
-            throw new RuntimeException(" [결제 저장] 선택한 장바구니 항목을 찾을 수 없습니다.");
+            throw new RuntimeException("결제할 장바구니 항목을 찾을 수 없습니다.");
         }
 
-        for (CartItemEntity cartItem : cartItems) {
-            System.out.println(" [결제 저장] 장바구니 항목 ID: " + cartItem.getId());
-            System.out.println(" [결제 저장] 해당 장바구니의 Cart ID: "
-                    + (cartItem.getCartEntity() != null ? cartItem.getCartEntity().getId() : "NULL"));
-
-            if (cartItem.getCartEntity() == null) {
-                throw new RuntimeException(" [결제 저장] cartItem에 cartEntity가 없습니다.");
-            }
-
-            cartItem.setStatus(1); // 장바구니 아이템 상태 변경 (결제 완료)
+        // PaymentEntity를 생성하여 한 번에 저장 (Batch Insert)
+        List<PaymentEntity> payments = cartItems.stream().map(cartItem -> {
+            cartItem.setStatus(1); // 결제 완료 상태 변경
 
             PaymentEntity paymentEntity = PaymentEntity.builder()
                     .cartItemEntity(cartItem)
@@ -139,17 +116,16 @@ public class PaymentServiceImpl implements PaymentService {
                     .totalAmount(paymentRequestDto.getTotalPrice())
                     .build();
 
-            paymentRepository.save(paymentEntity);
-            System.out.println(" [결제 저장] 결제 정보 저장 완료: " + paymentEntity.getId());
-
-            // CartItemEntity에 PaymentEntity 설정 후 저장
             cartItem.setPaymentEntity(paymentEntity);
-            cartItemRepository.save(cartItem);
-        }
+            return paymentEntity;
+        }).collect(Collectors.toList());
+
+        paymentRepository.saveAll(payments);
+        cartItemRepository.saveAll(cartItems);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PaymentDto> myPaymentList(String email) {
         List<PaymentEntity> paymentEntities = paymentRepository.findByMemberEntityEmail(email);
 
@@ -171,5 +147,4 @@ public class PaymentServiceImpl implements PaymentService {
                         .build())
                 .collect(Collectors.toList());
     }
-
 }

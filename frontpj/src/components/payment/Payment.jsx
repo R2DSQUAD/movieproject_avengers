@@ -48,26 +48,7 @@ const Payment = () => {
         }
     }, [cartItemIds]);
 
-    const groupedItems = paymentItems.reduce((acc, item) => {
-        const key = `${item.movieNm}-${item.theaterName}-${item.screeningDate}-${item.screeningTime}`;
-
-        if (!acc[key]) {
-            acc[key] = {
-                ...item,
-                seatNumbers: [item.seatNumber]
-            };
-        } else {
-            acc[key].seatNumbers.push(item.seatNumber);
-        }
-
-        return acc;
-    }, {});
-
-    const groupedList = Object.values(groupedItems);
-
-    const totalPrice = groupedList.reduce((total, item) => {
-        return total + item.price * item.seatNumbers.length;
-    }, 0);
+    const totalPrice = paymentItems.reduce((total, item) => total + item.price, 0);
 
     const paymentGo = async () => {
         if (!paymentMethod) {
@@ -132,7 +113,7 @@ const Payment = () => {
                         const verifyResponse = await jwtAxios.post("http://localhost:8090/api/payment/verify", {
                             imp_uid: response.imp_uid,
                             amount: totalPrice,
-                        }, { withCredentials: true }); // ★ 이 설정이 없으면 CORS 에러 가능
+                        }, { withCredentials: true }); //  이 설정이 없으면 CORS 에러 가능
 
 
                         console.log(" 결제 검증 결과:", verifyResponse.data);
@@ -172,8 +153,8 @@ const Payment = () => {
             <div className="payment-con">
                 <div className="reservation">
                     <h5>예매 정보</h5>
-                    {groupedList.length > 0 ? (
-                        groupedList.map((item, index) => (
+                    {paymentItems.length > 0 ? (
+                        paymentItems.map((item, index) => (
                             <div key={index} className="payment-item">
                                 <img
                                     src={item.poster_path}
@@ -184,8 +165,8 @@ const Payment = () => {
                                 <p> 상영 날짜: {item.screeningDate}</p>
                                 <p> 상영 시간: {item.screeningTime}</p>
                                 <p> 상영관: {item.theaterName}</p>
-                                <p> 좌석 번호: {item.seatNumbers.join(', ')}</p>
-                                <p> 가격: {(item.price * item.seatNumbers.length).toLocaleString()} 원</p>
+                                <p> 좌석 번호: {item.seatNumber}</p>
+                                <p> 가격: {item.price.toLocaleString()} 원</p>
                                 <p> 영화관: {item.cinemaName}</p>
                             </div>
                         ))
