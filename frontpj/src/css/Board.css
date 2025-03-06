@@ -1,0 +1,28 @@
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  /* 현재 페이지에 해당하는 버튼 스타일 */
+  .pagination button.active {
+    background-color: #007bff; /* 파란색 배경 */
+    color: white; /* 흰색 글자 */
+    font-weight: bold; /* 글자 굵게 */
+  }
+  
+  /* 비활성화된 버튼 스타일 */
+  .pagination button:disabled {
+    background-color: #f0f0f0;
+    color: #ccc;
+    cursor: not-allowed;
+  }
+
+  button.active-category {
+    background-color: #ff0000; /* 선택된 버튼에 파란색 배경 */
+    color: white; /* 글씨 색을 흰색으로 변경 */
+    font-weight: bold; /* 글씨를 굵게 */
+  }
+  
