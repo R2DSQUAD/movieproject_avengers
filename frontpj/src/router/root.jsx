@@ -25,6 +25,8 @@ const ChatRoomPage = lazy(() => import("../pages/ws/ChatRoomPage"));
 const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
 const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 const KakaoRedirectPage = lazy(() => import("../pages/member/KakaoRedirectPage"));
+const SearchPage = lazy(() => import("../pages/search/SearchPage"));
+
 
 
 const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
@@ -174,7 +176,7 @@ const root = createBrowserRouter([
         path: "admin",
         element: (
           <Suspense fallback={Loading}>
-            <AdminLayout /> 
+            <AdminLayout />
           </Suspense>
         ),
         children: [
@@ -233,6 +235,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <ChatRoomPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/movie/search",
+        element: (
+          <Suspense fallback={Loading}>
+            <SearchPage />
           </Suspense>
         ),
       },

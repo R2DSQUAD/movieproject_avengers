@@ -5,15 +5,13 @@ import jwtAxios from "../../util/jwtUtil";
 
 const MyMemberInfo = () => {
   const [member, setMember] = useState(null);
-  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [groupedPayments, setGroupedPayments] = useState({});
+  const [expandedGroup, setExpandedGroup] = useState(null);
   const navigate = useNavigate();
-
 
   const fetchMemberInfo = async () => {
     try {
-      const response = await jwtAxios.get(
-        "http://localhost:8090/api/myinfo/detail"
-      );
+      const response = await jwtAxios.get("http://localhost:8090/api/myinfo/detail");
       setMember(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -25,19 +23,26 @@ const MyMemberInfo = () => {
     }
   };
 
-
   const fetchPaymentHistory = async () => {
     try {
-      const response = await jwtAxios.get(
-        "http://localhost:8090/api/payment/myPaymentList",
-        { withCredentials: true }
-      );
-      setPaymentHistory(Array.isArray(response.data) ? response.data : []); // 배열이 아닐 경우 빈 배열로 설정
+      const response = await jwtAxios.get("http://localhost:8090/api/payment/myPaymentList", { withCredentials: true });
+      const payments = Array.isArray(response.data) ? response.data : [];
+
+
+      const grouped = payments.reduce((acc, payment) => {
+        const key = payment.createTime.substring(0, 19);
+        if (!acc[key]) {
+          acc[key] = { representativePayment: payment, payments: [] };
+        }
+        acc[key].payments.push(payment);
+        return acc;
+      }, {});
+
+      setGroupedPayments(grouped);
     } catch (error) {
       console.error("결제 내역 가져오는 중 오류 발생:", error);
     }
   };
-
 
   useEffect(() => {
     fetchMemberInfo();
@@ -72,24 +77,44 @@ const MyMemberInfo = () => {
 
       <div className="paymentHistory">
         <h3>결제 내역</h3>
-        {paymentHistory.length > 0 ? (
+        {Object.keys(groupedPayments).length > 0 ? (
           <div className="paymentList">
-            {paymentHistory.map((payment, index) => (
-              <div key={index} className="paymentItem">
-                <img
-                  src={payment.posterPath}
-                  alt={payment.movieNm}
-                  style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
-                />
-                <div>영화명: {payment.movieNm}</div>
-                <div>영화관: {payment.cinemaName}</div>
-                <div>상영관: {payment.theaterName}</div>
-                <div>좌석 번호: {payment.seatNumber}</div>
-                <div>상영 날짜: {payment.screeningDate}</div>
-                <div>상영 시간: {payment.screeningTime}~{payment.screeningEndTime}</div>
-                <div>결제 금액: {payment.totalAmount.toLocaleString()} 원</div>
-                <div>결제 방법: {payment.paymentMethod}</div>
-                <div>결제 일시: {payment.createTime}</div>
+            {Object.entries(groupedPayments).map(([time, group], index) => (
+              <div key={index} className="paymentGroup">
+                <div className="paymentHeader" onClick={() => setExpandedGroup(expandedGroup === time ? null : time)}>
+                  <span>{new Date(time).toLocaleDateString()} 결제</span>
+                  <span className="totalAmount">{group.representativePayment.totalAmount.toLocaleString()} 원</span>
+                </div>
+
+                {expandedGroup === time && (
+                  <div className="paymentDetails">
+                    {group.payments.map((payment, idx) => (
+                      <div key={idx} className="paymentItem">
+                        <img src={payment.posterPath} alt={payment.movieNm} className="poster" />
+                        <div className="paymentInfo">
+                          <div>
+                            <strong>영화명:</strong> {payment.movieNm}
+                          </div>
+                          <div>
+                            <strong>영화관:</strong> {payment.cinemaName}
+                          </div>
+                          <div>
+                            <strong>상영관:</strong> {payment.theaterName}
+                          </div>
+                          <div>
+                            <strong>좌석:</strong> {payment.seatNumber}
+                          </div>
+                          <div>
+                            <strong>상영일:</strong> {payment.screeningDate} {payment.screeningTime} ~ {payment.screeningEndTime}
+                          </div>
+                          <div>
+                            <strong>결제 방법:</strong> {payment.paymentMethod}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -97,7 +122,7 @@ const MyMemberInfo = () => {
           <span>결제 내역이 없습니다.</span>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
