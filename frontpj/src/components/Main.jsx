@@ -44,8 +44,6 @@ const Main = () => {
   // audiAcc 값이 없거나 숫자가 아니면 0으로 설정
   const audiAcc = useCountUp(Number(randomBoxOfficeList.audiAcc) || 0, 1500);
 
-  console.log(randomBoxOfficeList);
-
   return (
     <div className="index">
       <div className="index-con">

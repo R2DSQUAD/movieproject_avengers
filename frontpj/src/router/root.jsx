@@ -12,6 +12,10 @@ const ScreeningSeatPage = lazy(() => import("../pages/screeningSeat/ScreeningSea
 const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
 const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
+const BoardPage = lazy(() => import("../pages/board/BoardPage"));
+const BoardInsertPage = lazy(() => import("../pages/board/BoardInsertPage"));
+const BoardUpdatePage = lazy(() => import("../pages/board/BoardUpdatePage"));
+const BoardDetailPage = lazy(() => import("../pages/board/BoardDetailPage"));
 const LoginPage = lazy(() => import("../pages/member/LoginPage"));
 const MyMemberInfoPage = lazy(() => import("../pages/member/MyMemberInfoPage"));
 const CartPage = lazy(() => import("../pages/cart/CartPage"));
@@ -21,6 +25,8 @@ const ChatRoomPage = lazy(() => import("../pages/ws/ChatRoomPage"));
 const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
 const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 const KakaoRedirectPage = lazy(() => import("../pages/member/KakaoRedirectPage"));
+const SearchPage = lazy(() => import("../pages/search/SearchPage"));
+
 
 
 const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
@@ -59,6 +65,38 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <MapPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board/insert",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardInsertPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board/detail/:id",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardDetailPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "board/update/:id",
+        element: (
+          <Suspense fallback={Loading}>
+            <BoardUpdatePage />
           </Suspense>
         ),
       },
@@ -138,7 +176,7 @@ const root = createBrowserRouter([
         path: "admin",
         element: (
           <Suspense fallback={Loading}>
-            <AdminLayout /> 
+            <AdminLayout />
           </Suspense>
         ),
         children: [
@@ -197,6 +235,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <ChatRoomPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/movie/search",
+        element: (
+          <Suspense fallback={Loading}>
+            <SearchPage />
           </Suspense>
         ),
       },

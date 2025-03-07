@@ -1,0 +1,46 @@
+/* 모달 오버레이 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* 모달 컨텐츠 */
+  .modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+  }
+  
+  /* 버튼 스타일 */
+  .modal-buttons {
+    margin-top: 20px;
+  }
+  
+  .modal-confirm-button,
+  .modal-cancel-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .modal-confirm-button {
+    background-color: #28a745;
+    color: #fff;
+    margin-right: 10px;
+  }
+  
+  .modal-cancel-button {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  

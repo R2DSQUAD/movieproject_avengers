@@ -3,6 +3,7 @@ package org.spring.moviepj.dto;
 import java.time.LocalDateTime;
 
 import org.spring.moviepj.entity.CartEntity;
+import org.spring.moviepj.entity.PaymentEntity;
 import org.spring.moviepj.entity.ScreeningEntity;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +22,6 @@ public class CartItemDto {
     private Long id;
 
     private Long cartId;
-    private int totalPrice;
     private CartEntity cartEntity;
 
     private String seatNumber;
@@ -36,6 +36,12 @@ public class CartItemDto {
     private String poster_path;
     private String movieNm;
     private String theaterName;
+    private String cinemaName;
+
+    private Long paymentId;
+    private PaymentEntity paymentEntity;
+
+    private int status;
 
     private LocalDateTime createTime;
 

@@ -40,14 +40,14 @@ public class ScreeningServiceImpl implements ScreeningService {
             LocalTime.of(7, 0), LocalTime.of(10, 0), LocalTime.of(13, 0),
             LocalTime.of(16, 0), LocalTime.of(19, 0), LocalTime.of(22, 0));
 
-    @Scheduled(cron = "0 3 15 * * *") // 매일 실행
+    @Scheduled(cron = "0 21 17 * * *")
     public void updateScreenings() {
         log.debug("[자동 실행] 상영 일정 추가 작업 시작");
         try {
             log.info("스케줄링 작업 실행");
             boolean hasExistingData = screeningRepository.count() > 0;
             if (!hasExistingData) {
-                log.info(" [초기 실행] 영화 데이터 기반 5일치 상영 스케줄 생성");
+                log.info("[초기 실행] 영화 데이터 기반 5일치 상영 스케줄 생성");
                 createScreenings(5);
             } else {
                 log.info("[일일 실행] 하루치 상영 스케줄 추가");
@@ -69,29 +69,34 @@ public class ScreeningServiceImpl implements ScreeningService {
                 log.warn("등록된 시네마 정보가 없습니다. 상영 스케줄을 생성할 수 없습니다.");
                 return;
             }
+
             Optional<LocalDate> latestMovieDateOpt = movieRepository.findLatestUpdateDate();
             if (latestMovieDateOpt.isEmpty()) {
                 log.warn("최신 영화 업데이트 날짜를 찾을 수 없습니다.");
                 return;
             }
             LocalDate latestMovieDate = latestMovieDateOpt.get();
+
+            // 새로운 영화만 가져오기 (기존 영화 제외)
             List<MovieEntity> latestMovies = movieRepository.findByUpdateDate(latestMovieDate);
             if (latestMovies.isEmpty()) {
                 log.warn("최신 영화 데이터가 없습니다.");
                 return;
             }
+
             Optional<LocalDate> latestScreeningDateOpt = screeningRepository.findLatestScreeningDate();
             LocalDate startDate = latestScreeningDateOpt.map(date -> date.plusDays(1)).orElse(LocalDate.now());
             LocalDate endDate = startDate.plusDays(daysToAdd - 1);
 
-            log.info("스케줄 생성 시작: {} ~ {}", startDate, endDate);
+            log.info("새로운 영화 스케줄 생성 시작: {} ~ {}", startDate, endDate);
 
             for (CinemaEntity cinema : allCinemas) {
                 List<TheaterEntity> theaters = theaterRepository.findByCinemaEntity(cinema);
                 if (theaters.size() != NUMBER_OF_THEATERS) {
-                    log.warn("⚠ {} 시네마의 상영관의 수가 {}개가 아닙니다. 다시 확인해주세요.", cinema.getCinemaName(), NUMBER_OF_THEATERS);
+                    log.warn("⚠ {} 시네마의 상영관 수가 {}개가 아닙니다. 다시 확인해주세요.", cinema.getCinemaName(), NUMBER_OF_THEATERS);
                     return;
                 }
+
                 for (LocalDate currentScreeningDate = startDate; !currentScreeningDate
                         .isAfter(endDate); currentScreeningDate = currentScreeningDate.plusDays(1)) {
                     createTheaterScreenings(cinema, theaters, latestMovies, currentScreeningDate);
@@ -107,7 +112,7 @@ public class ScreeningServiceImpl implements ScreeningService {
             LocalDate currentScreeningDate) {
         for (int i = 0; i < theaters.size(); i++) {
             TheaterEntity theater = theaters.get(i);
-            MovieEntity movie = movies.get(i % movies.size()); // 영화가 부족하면 반복 사용
+            MovieEntity movie = movies.get(i % movies.size()); // 새로운 영화만 사용
             List<ScreeningEntity> newScreenings = new ArrayList<>();
 
             for (LocalTime startTime : SCREENING_TIMES) {
@@ -118,7 +123,7 @@ public class ScreeningServiceImpl implements ScreeningService {
                 } catch (Exception e) {
                     log.warn("영화 런타임 정보가 올바르지 않습니다. 기본값 120분으로 설정합니다. : {}", runTimeStr);
                 }
-                LocalTime endTime = startTime.plusMinutes(runTime); // 영화 런타임 적용
+                LocalTime endTime = startTime.plusMinutes(runTime);
                 if (isScreeningTimeAvailable(theater, currentScreeningDate, startTime, endTime)) {
 
                     ScreeningEntity screening = ScreeningEntity.builder()
@@ -132,7 +137,7 @@ public class ScreeningServiceImpl implements ScreeningService {
                 }
             }
             screeningRepository.saveAll(newScreenings);
-            log.info("상영관 {}에 상영 일정 저장 완료. 총 {}개", theater.getName(), newScreenings.size());
+            log.info("상영관 {}에 새로운 영화의 상영 일정 저장 완료. 총 {}개", theater.getName(), newScreenings.size());
         }
     }
 
@@ -148,20 +153,30 @@ public class ScreeningServiceImpl implements ScreeningService {
     @Override
     public List<ScreeningDto> getScreeningsByMovieId(Long movieId) {
         return screeningRepository.findByMovieEntity_Id(movieId).stream()
-                .map(el -> ScreeningDto.builder().id(el.getId()).movieEntity(el.getMovieEntity())
-                        .theaterEntity(el.getTheaterEntity()).screeningDate(el.getScreeningDate())
-                        .screeningTime(el.getScreeningTime()).screeningEndTime(el.getScreeningEndTime())
-                        .createTime(el.getCreateTime()).updateTime(el.getUpdateTime()).build())
+                .map(el -> ScreeningDto.builder()
+                        .id(el.getId())
+                        .movieEntity(el.getMovieEntity())
+                        .theaterEntity(el.getTheaterEntity())
+                        .screeningDate(el.getScreeningDate())
+                        .screeningTime(el.getScreeningTime())
+                        .screeningEndTime(el.getScreeningEndTime())
+                        .createTime(el.getCreateTime())
+                        .updateTime(el.getUpdateTime()).build())
                 .collect(Collectors.toList());
     }
 
     @Override
     public ScreeningDto getScreeningById(Long screeningId) {
         return screeningRepository.findByIdWithMovie(screeningId)
-                .map(el -> ScreeningDto.builder().id(el.getId()).movieEntity(el.getMovieEntity())
-                        .theaterEntity(el.getTheaterEntity()).screeningDate(el.getScreeningDate())
-                        .screeningTime(el.getScreeningTime()).screeningEndTime(el.getScreeningEndTime())
-                        .createTime(el.getCreateTime()).updateTime(el.getUpdateTime()).build())
+                .map(el -> ScreeningDto.builder()
+                        .id(el.getId())
+                        .movieEntity(el.getMovieEntity())
+                        .theaterEntity(el.getTheaterEntity())
+                        .screeningDate(el.getScreeningDate())
+                        .screeningTime(el.getScreeningTime())
+                        .screeningEndTime(el.getScreeningEndTime())
+                        .createTime(el.getCreateTime())
+                        .updateTime(el.getUpdateTime()).build())
                 .orElse(null);
     }
 }

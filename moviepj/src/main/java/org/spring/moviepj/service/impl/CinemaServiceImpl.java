@@ -8,6 +8,8 @@ import org.spring.moviepj.entity.CinemaEntity;
 import org.spring.moviepj.repository.CinemaRepository;
 import org.spring.moviepj.service.CinemaService;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -19,30 +21,31 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CinemaServiceImpl implements CinemaService {
 
     private final CinemaRepository cinemaRepository;
     private final String KAKAO_API_KEY = "8523756c5dd763794f96e865862528dc";
 
     // 각 지역별 최대 저장 개수
-    private static final Map<String, Integer> REGION_MAX_COUNT = new HashMap<>() {{
-        put("서울", 5);
-        put("제주", 3);
-        put("경기", 4);
-        put("인천", 4);
-        put("대전/충청/세종", 4);
-        put("부산/대구/경상", 4);
-        put("광주/전라", 4);
-        put("강원", 4);
-    }};
+    private static final Map<String, Integer> REGION_MAX_COUNT = new HashMap<>() {
+        {
+            put("서울", 5);
+            put("제주", 3);
+            put("경기", 4);
+            put("인천", 4);
+            put("대전/충청/세종", 4);
+            put("부산/대구/경상", 4);
+            put("광주/전라", 4);
+            put("강원", 4);
+        }
+    };
 
     @Override
     public void crawlTheaterSchedule() {
@@ -53,67 +56,50 @@ public class CinemaServiceImpl implements CinemaService {
                     .get();
 
             Elements regionElements = doc.select("div.theater-place > ul > li");
-            // bulk insert/update를 위한 엔티티 누적 리스트
             List<CinemaEntity> cinemasToSave = new ArrayList<>();
-
-            //각 지역별로 저장된 개수 카운트
             Map<String, Integer> regionCounts = new HashMap<>();
-            //전체 regions 리스트
-            List<String> regions = Arrays.asList("강원","경기","광주/전라","부산/대구/경상","서울","인천","제주","대전/충청/세종");
+            List<String> regions = Arrays.asList("강원", "경기", "광주/전라", "부산/대구/경상", "서울", "인천", "제주", "대전/충청/세종");
 
-             //전체 regions 를 탐색
-            for(String region : regions){
-                //웹 크롤링
-                 Elements theaterElements = regionElements.stream()
-                         .filter(el->el.select("button.sel-city").text().trim().equals(region))
-                         .findFirst()
-                         .map(el->el.select("div.theater-list > ul > li"))
-                         .orElse(new Elements());
+            for (String region : regions) {
+                Elements theaterElements = regionElements.stream()
+                        .filter(el -> el.select("button.sel-city").text().trim().equals(region))
+                        .findFirst()
+                        .map(el -> el.select("div.theater-list > ul > li"))
+                        .orElse(new Elements());
 
-                //각 지역별 카운트를 초기화
-                regionCounts.put(region,0);
+                regionCounts.put(region, 0);
 
-                 for (Element theaterElement : theaterElements) {
-
-                     //각 지역별 최대 저장 개수를 가져옵니다.
+                for (Element theaterElement : theaterElements) {
                     int maxCount = REGION_MAX_COUNT.getOrDefault(region, 4);
-
-                     //이미 최대 저장 개수를 넘었다면 스킵합니다.
-                    if(regionCounts.get(region) >= maxCount) continue;
+                    if (regionCounts.get(region) >= maxCount)
+                        continue;
 
                     String cinemaName = theaterElement.select("a").text().trim();
+
+                    // ✅ 중복 체크: 이미 존재하는 영화관 이름이면 건너뜁니다.
+                    if (cinemaRepository.existsByCinemaName(cinemaName)) {
+                        System.out.println("이미 존재하는 영화관입니다 : " + cinemaName);
+                        continue; // 이미 존재하면 건너뜁니다.
+                    }
+
                     double[] latLon = getLatLonFromKakaoMap("메가박스 " + cinemaName);
                     double lat = latLon[0];
                     double lon = latLon[1];
 
-                    // 도로명주소 가져오기
                     String address = getAddressFromKakaoMap("메가박스 " + cinemaName);
 
-                    CinemaEntity existing = cinemaRepository.findByCinemaName(cinemaName);
-                    if (existing != null) {
-                        existing.setRegion(region);
-                        existing.setLat(lat);
-                        existing.setLon(lon);
-                        existing.setAddress(address); // 도로명주소 저장
-                        cinemasToSave.add(existing);
-                    } else {
-                        CinemaEntity cinemaEntity = CinemaEntity.builder()
-                                .region(region)
-                                .cinemaName(cinemaName)
-                                .lat(lat)
-                                .lon(lon)
-                                .address(address) // 도로명주소 저장
-                                .build();
+                    CinemaEntity cinemaEntity = CinemaEntity.builder()
+                            .region(region)
+                            .cinemaName(cinemaName)
+                            .lat(lat)
+                            .lon(lon)
+                            .address(address)
+                            .build();
 
-                        cinemasToSave.add(cinemaEntity);
-                    }
-
-                     //각 지역별 저장한 개수 추가
-                    regionCounts.put(region, regionCounts.get(region)+1);
-
+                    cinemasToSave.add(cinemaEntity);
+                    regionCounts.put(region, regionCounts.get(region) + 1);
                 }
             }
-
 
             // 누적된 엔티티들을 bulk insert/update 방식으로 저장
             if (!cinemasToSave.isEmpty()) {
@@ -183,5 +169,11 @@ public class CinemaServiceImpl implements CinemaService {
             e.printStackTrace();
         }
         return new double[] { 0.0, 0.0 };
+    }
+
+    // ✅ CinemaEntity 데이터 존재 여부 확인
+    public boolean isCinemaDataExists() {
+        // 데이터가 하나라도 있으면 true, 없으면 false 반환
+        return cinemaRepository.count() > 0;
     }
 }

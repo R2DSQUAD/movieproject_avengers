@@ -76,19 +76,19 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
         <Link to="" className="nav-link">
           Home
         </Link>
-        <Link to="" className="nav-link">
-          Series
+        <Link to="/board" className="nav-link">
+          Board
         </Link>
-        <Link to="" className="nav-link">
-          Movies
+        <Link to="/movie/search" className="nav-link">
+          Search
         </Link>
         <Link to="/movie/map" className="nav-link">
           Cinemas
         </Link>
         {isLoggedIn && loginState.roleNames && loginState.roleNames.includes("ADMIN") && (
-        <Link to="/admin" className="nav-link">
-         ADMIN
-        </Link>
+          <Link to="/admin" className="nav-link">
+            ADMIN
+          </Link>
         )}
 
 
@@ -105,7 +105,7 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
               src="/image/person.svg"
               alt="member-info"
             />
-              <span ref={memberNameRef}>{loginState.nickname}님</span>
+            <span ref={memberNameRef}>{loginState.nickname}님</span>
             <div className={`member-info-con ${isMemberInfoActive ? 'active' : ''}`}>
               <Link to="/member/detail">내 정보</Link>
               <Link to="/cart/myCartList">장바구니</Link>

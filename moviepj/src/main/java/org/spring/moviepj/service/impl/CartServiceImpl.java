@@ -39,7 +39,8 @@ public class CartServiceImpl implements CartService {
         MemberEntity memberEntity = memberRepository.findById(email)
                 .orElseThrow(() -> new IllegalArgumentException("회원정보를 찾을 수 없습니다"));
 
-        Optional<CartEntity> optionalCartEntity = cartRepository.findByMemberEntityAndStatus(memberEntity, 0);
+        // 기존 장바구니 조회 (status 없이 단순히 멤버 기준)
+        Optional<CartEntity> optionalCartEntity = cartRepository.findByMemberEntity(memberEntity);
 
         CartEntity cartEntity;
         if (optionalCartEntity.isPresent()) {
@@ -47,13 +48,8 @@ public class CartServiceImpl implements CartService {
         } else {
             cartEntity = cartRepository.save(CartEntity.builder()
                     .memberEntity(memberEntity)
-                    .status(0)
-                    .totalPrice(0)
                     .build());
-            System.out.println("Cart ID: " + cartEntity.getId());
         }
-
-        int totalPrice = 0;
 
         for (String seat : cartItemRequestDto.getSeats()) {
             ScreeningEntity screeningEntity = screeningRepository.findById(cartItemRequestDto.getScreeningId())
@@ -70,31 +66,28 @@ public class CartServiceImpl implements CartService {
                     .seatNumber(seat)
                     .price(15000)
                     .screeningEntity(screeningEntity)
+                    .status(0) // 미결제 상태로 추가
                     .build();
             cartItemRepository.save(cartItemEntity);
-
-            totalPrice += 15000;
         }
-
-        cartEntity.setTotalPrice(cartEntity.getTotalPrice() + totalPrice);
-        cartRepository.save(cartEntity);
     }
 
     @Override
-    public List<CartItemDto> myCartList(String email, int status) {
+    public List<CartItemDto> myCartList(String email) {
         MemberEntity memberEntity = memberRepository.findById(email).orElseThrow(IllegalArgumentException::new);
 
-        Optional<CartEntity> optionalCartEntity = cartRepository.findByMemberEntityAndStatus(memberEntity, status);
+        Optional<CartEntity> optionalCartEntity = cartRepository.findByMemberEntity(memberEntity);
         if (optionalCartEntity.isEmpty()) {
             throw new IllegalArgumentException("장바구니가 존재하지 않습니다");
         }
 
         CartEntity cartEntity = optionalCartEntity.get();
-        List<CartItemEntity> cartItemEntities = cartItemRepository.findByCartEntityId(cartEntity.getId());
+
+        // 결제되지 않은 항목만 조회
+        List<CartItemEntity> cartItemEntities = cartItemRepository.findByCartEntityIdAndStatus(cartEntity.getId(), 0);
 
         return cartItemEntities.stream().map(el -> CartItemDto.builder()
                 .id(el.getId())
-                .totalPrice(cartEntity.getTotalPrice())
                 .seatNumber(el.getSeatNumber())
                 .price(el.getPrice())
                 .screeningDate(el.getScreeningEntity().getScreeningDate().toString())
@@ -102,10 +95,11 @@ public class CartServiceImpl implements CartService {
                 .movieNm(el.getScreeningEntity().getMovieEntity().getMovieNm())
                 .poster_path(el.getScreeningEntity().getMovieEntity().getPoster_path())
                 .theaterName(el.getScreeningEntity().getTheaterEntity().getName())
+                .cinemaName(el.getScreeningEntity().getTheaterEntity().getCinemaEntity().getCinemaName())
+                .status(el.getStatus())
                 .createTime(el.getCreateTime())
                 .updateTime(el.getUpdateTime())
                 .build()).collect(Collectors.toList());
-
     }
 
     @Override
@@ -113,18 +107,32 @@ public class CartServiceImpl implements CartService {
         MemberEntity memberEntity = memberRepository.findById(email)
                 .orElseThrow(() -> new IllegalArgumentException("회원정보를 찾을 수 없습니다"));
 
-        CartEntity cartEntity = cartRepository.findByMemberEntityAndStatus(memberEntity, 0)
+        CartEntity cartEntity = cartRepository.findByMemberEntity(memberEntity)
                 .orElseThrow(() -> new IllegalArgumentException("장바구니가 존재하지 않습니다"));
 
         List<CartItemEntity> itemsToDelete = cartItemRepository.findAllById(ids);
 
-        int totalPriceToRemove = itemsToDelete.stream().mapToInt(CartItemEntity::getPrice).sum();
-
         cartItemRepository.deleteAll(itemsToDelete);
+    }
 
-        // 총 가격 업데이트 (삭제했으니까 장바구니 총가격 변동)
-        cartEntity.setTotalPrice(cartEntity.getTotalPrice() - totalPriceToRemove);
-        cartRepository.save(cartEntity);
+    @Override
+    public List<CartItemDto> getSelectedCartItems(List<Long> cartItemIds, String email) {
+        return cartItemRepository.findByIdInAndCartEntity_MemberEntity_Email(cartItemIds, email)
+                .stream()
+                .map(cartItem -> CartItemDto.builder()
+                        .id(cartItem.getId())
+                        .seatNumber(cartItem.getSeatNumber())
+                        .price(cartItem.getPrice())
+                        .screeningDate(cartItem.getScreeningEntity().getScreeningDate().toString())
+                        .screeningTime(cartItem.getScreeningEntity().getScreeningTime().toString())
+                        .poster_path(cartItem.getScreeningEntity().getMovieEntity().getPoster_path())
+                        .movieNm(cartItem.getScreeningEntity().getMovieEntity().getMovieNm())
+                        .theaterName(cartItem.getScreeningEntity().getTheaterEntity().getName())
+                        .cinemaName(cartItem.getScreeningEntity().getTheaterEntity().getCinemaEntity().getCinemaName())
+                        .createTime(cartItem.getCreateTime())
+                        .updateTime(cartItem.getUpdateTime())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

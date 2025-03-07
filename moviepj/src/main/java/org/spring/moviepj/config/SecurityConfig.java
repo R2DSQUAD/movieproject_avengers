@@ -45,7 +45,9 @@ public class SecurityConfig {
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);
 
         // 권한별 접근 제한 설정 추가
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한만 접근 가능
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/payment/verify").permitAll()
+                .requestMatchers("/api/payment/save").permitAll()
                 .anyRequest().permitAll() // 그 외 요청은 허용
         );
 
