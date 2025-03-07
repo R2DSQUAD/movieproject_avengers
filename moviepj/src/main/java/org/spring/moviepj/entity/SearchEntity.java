@@ -1,6 +1,9 @@
+
 package org.spring.moviepj.entity;
 
 import java.util.List;
+
+import org.spring.moviepj.common.BasicTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -25,7 +28,7 @@ import lombok.Setter;
 @Entity
 @Builder
 @Table(name = "search_tb")
-public class SearchEntity {
+public class SearchEntity extends BasicTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

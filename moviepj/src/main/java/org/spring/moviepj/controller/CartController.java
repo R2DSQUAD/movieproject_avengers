@@ -74,11 +74,28 @@ public class CartController {
     }
 
     // 프론트에서 사용하기 위함
+    // @GetMapping("/cart/disabledSeats/{screeningId}")
+    // public ResponseEntity<List<String>> getDisabledSeats(@PathVariable Long
+    // screeningId) {
+    // System.out.println(">>> Screening ID: " + screeningId);
+
+    // List<String> disabledSeats =
+    // cartItemRepository.findByScreeningEntityId(screeningId).stream()
+    // .map(CartItemEntity::getSeatNumber)
+    // .collect(Collectors.toList());
+
+    // System.out.println(">>> Disabled seats: " + disabledSeats);
+
+    // return ResponseEntity.ok(disabledSeats);
+    // }
+
     @GetMapping("/cart/disabledSeats/{screeningId}")
     public ResponseEntity<List<String>> getDisabledSeats(@PathVariable Long screeningId) {
         System.out.println(">>> Screening ID: " + screeningId);
 
-        List<String> disabledSeats = cartItemRepository.findByScreeningEntityId(screeningId).stream()
+        // 장바구니(status = 0) + 결제 완료(status = 1) 좌석 조회
+        List<String> disabledSeats = cartItemRepository.findByScreeningEntityIdAndStatusIn(screeningId, List.of(0, 1))
+                .stream()
                 .map(CartItemEntity::getSeatNumber)
                 .collect(Collectors.toList());
 

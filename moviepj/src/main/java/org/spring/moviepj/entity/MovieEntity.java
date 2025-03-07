@@ -57,6 +57,9 @@ public class MovieEntity extends BasicTime {
     private String audiAcc;
 
     @Column(nullable = false)
+    private String watchGradeNm;
+
+    @Column(nullable = false)
     private String director; // tmdb디테일
 
     @Column(nullable = false)

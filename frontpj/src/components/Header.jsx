@@ -13,6 +13,8 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
   const loginState = useSelector((state) => state.loginSlice);
   const isLoggedIn = !!loginState.email;
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   const handleLogout = () => {
     dispatch(logout());
     alert("로그아웃되었습니다");
@@ -62,6 +64,14 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
     };
   }, [loginState.nickname, setIsMemberInfoActive]); // setIsMemberInfoActive 추가
 
+
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      navigate(`/movie/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  }
+
   return (
     <header>
       <nav className="nav">
@@ -95,7 +105,9 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
       </nav>
       <div className="bar">
         <div className="search-container">
-          <input type="text" name="search" id="search" placeholder="search" />
+          <input type="text" name="search" id="search" placeholder="search"
+            value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch} />
           <img src="/image/search.svg" alt="search" className="search-icon" />
         </div>
         {isLoggedIn ? (
