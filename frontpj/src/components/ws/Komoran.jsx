@@ -334,7 +334,7 @@ const Komoran = () => {
               if (e.key === "Enter") {
                 handleSendMessage(message);
               }
-            }}
+            }} autofocus
           />
           <button onClick={handleButtonClick}>전송</button>
         </div>

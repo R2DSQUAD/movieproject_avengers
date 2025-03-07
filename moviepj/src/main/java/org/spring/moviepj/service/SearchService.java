@@ -8,6 +8,6 @@ public interface SearchService {
 
     void searchAndSaveMovies(String query);
 
-    List<SearchDto> searchMovieList(String query);
+    List<SearchDto> searchMovieList(String query, String SearchType);
 
 }

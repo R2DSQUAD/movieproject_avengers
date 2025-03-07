@@ -4,6 +4,7 @@ package org.spring.moviepj.entity;
 import java.util.List;
 
 import org.spring.moviepj.common.BasicTime;
+import org.spring.moviepj.util.HangulUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -14,12 +15,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.Index;
 
 @Getter
 @Setter
@@ -27,7 +31,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "search_tb")
+@Table(name = "search_tb", indexes = {
+    @Index(name = "idx_movie_cd", columnList = "movieCd"),
+    @Index(name = "idx_movie_nm", columnList = "movieNm"),
+    @Index(name = "idx_movie_nm_chosung", columnList = "movieNmChosung")
+})
 public class SearchEntity extends BasicTime {
 
     @Id
@@ -40,6 +48,8 @@ public class SearchEntity extends BasicTime {
 
     @Column(nullable = false)
     private String movieNm; // 영화진흥원 영화목록
+
+    private String movieNmChosung; // 영화 초성
 
     private String openDt; // 영화진흥원 영화목록
 
@@ -61,4 +71,13 @@ public class SearchEntity extends BasicTime {
     @OneToMany(mappedBy = "searchEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<SearchTrailerEntity> searchTrailerEntities; // tmdb트레일러 -> movieNm,openDt 비교해서 가져오기
+
+    //영화 이름 초성으로 저장
+    @PrePersist
+    @PreUpdate
+    public void updateChosung() {
+        if (this.movieNm != null && !this.movieNm.trim().isEmpty()) {
+            this.movieNmChosung = HangulUtils.getChosung(this.movieNm); // 초성 변환 후 저장
+        }
+    }
 }

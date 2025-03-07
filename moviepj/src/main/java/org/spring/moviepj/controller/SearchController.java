@@ -21,12 +21,11 @@ public class SearchController {
     private final SearchServiceImpl searchServiceImpl;
 
     @GetMapping("/search")
-    public ResponseEntity<List<SearchDto>> searchMovies(@RequestParam(name = "query") String query) {
+    public ResponseEntity<List<SearchDto>> searchMovies(@RequestParam(name = "query") String query, @RequestParam(name = "searchType", defaultValue = "normal") String searchType) { // defaultValue 변경
 
         searchServiceImpl.searchAndSaveMovies(query);
 
-        List<SearchDto> searchDtos = searchServiceImpl.searchMovieList(query);
-
+        List<SearchDto> searchDtos = searchServiceImpl.searchMovieList(query,searchType);
         return ResponseEntity.status(HttpStatus.OK).body(searchDtos);
     }
 }
