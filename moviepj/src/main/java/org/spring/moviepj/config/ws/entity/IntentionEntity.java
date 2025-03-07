@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 import jakarta.persistence.*;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,11 +22,18 @@ public class IntentionEntity {
 
   private String name;
 
-  @JoinColumn
   @ManyToOne
+  @JoinColumn(name = "answer_no")
   private AnswerEntity answer;
 
-  @JoinColumn
   @ManyToOne
   private IntentionEntity upper;
+
+  // 기존 생성자에 AnswerEntity를 포함
+  public IntentionEntity(Long no, String name, AnswerEntity answer, IntentionEntity upper) {
+    this.no = no;
+    this.name = name;
+    this.answer = answer;
+    this.upper = upper;
+  }
 }
