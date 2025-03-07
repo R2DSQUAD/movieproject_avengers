@@ -49,7 +49,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public void searchAndSaveMovies(String query) {
         try {
-            String apiUrl = String.format(KOBIS_MOVIE_LIST_API, query); // 인코딩 없이 전달
+            String apiUrl = String.format(KOBIS_MOVIE_LIST_API, query);
 
             ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
@@ -61,9 +61,14 @@ public class SearchServiceImpl implements SearchService {
                     JSONObject movie = movies.getJSONObject(i);
                     String movieCd = movie.getString("movieCd");
 
+                    // 기존에 저장된 영화인지 확인
+                    if (searchRepository.existsByMovieCd(movieCd)) {
+                        System.out.println("이미 존재하는 영화: " + movieCd + " (저장하지 않음)");
+                        continue; // 이미 있으면 저장하지 않고 넘어감
+                    }
+
                     SearchEntity searchEntity = fetchMovieDetails(movieCd, movie);
                     searchRepository.save(searchEntity);
-
                 }
             }
 
@@ -126,12 +131,32 @@ public class SearchServiceImpl implements SearchService {
                 JSONArray results = jsonResponse.getJSONArray("results");
 
                 if (!results.isEmpty()) {
-                    JSONObject selectedMovie = results.getJSONObject(0);
+                    String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt()); // 개봉일 변환
+
+                    // TMDb 검색 결과 중에서 개봉일이 일치하는 영화 찾기
+                    JSONObject selectedMovie = null;
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject movie = results.getJSONObject(i);
+                        String releaseDate = movie.optString("release_date", "");
+
+                        if (releaseDate.equals(formattedOpenDt)) { // 개봉일이 정확히 일치하는 경우
+                            selectedMovie = movie;
+                            break;
+                        }
+                    }
+
+                    // 개봉일이 일치하는 영화가 없으면 첫 번째 결과 사용 (이전 방식)
+                    if (selectedMovie == null) {
+                        selectedMovie = results.getJSONObject(0);
+                    }
+
                     Integer tmdbId = selectedMovie.getInt("id");
                     searchEntity.setOverview(selectedMovie.optString("overview", "줄거리 정보 없음"));
                     searchEntity.setPoster_path(TMDB_IMAGE_URL + "/w500/" + selectedMovie.optString("poster_path"));
                     searchEntity.setBackdrop_path(
                             TMDB_IMAGE_URL + "/w1920_and_h800_multi_faces/" + selectedMovie.optString("backdrop_path"));
+
+                    // 영화 러닝타임 및 예고편 정보 추가
                     searchEntity = fetchMovieRuntime(searchEntity, tmdbId);
                     fetchAndSaveTrailers(searchEntity, tmdbId);
                 }
