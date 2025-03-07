@@ -104,6 +104,8 @@ public class KomoranConfig {
     keys.add("조회");
     keys.add("목록");
     keys.add("도움말");
+    keys.add("괜찮아");
+    keys.add("힘내라");
 
     //저장된 명단을 고유명사로 파일에 등록
     try {

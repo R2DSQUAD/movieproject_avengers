@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +19,7 @@ import org.spring.moviepj.repository.MovieRepository;
 import org.spring.moviepj.repository.SearchRepository;
 import org.spring.moviepj.repository.SearchTrailerRepository;
 import org.spring.moviepj.service.SearchService;
+import org.spring.moviepj.util.HangulUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,11 +27,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SearchServiceImpl implements SearchService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     private final MovieRepository movieRepository;
     private final SearchRepository searchRepository;
@@ -47,34 +50,54 @@ public class SearchServiceImpl implements SearchService {
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=3faa3953bb1d0746b8d7294bd106d787&language=ko-KR";
 
     @Override
-    public void searchAndSaveMovies(String query) {
-        try {
-            String apiUrl = String.format(KOBIS_MOVIE_LIST_API, query);
+public void searchAndSaveMovies(String query) {
+    try {
+        String apiUrl = String.format(KOBIS_MOVIE_LIST_API, query);
 
-            ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                JSONObject jsonResponse = new JSONObject(response.getBody());
-                JSONArray movies = jsonResponse.getJSONObject("movieListResult").getJSONArray("movieList");
+        if (response.getStatusCode().is2xxSuccessful()) {
+            JSONObject jsonResponse = new JSONObject(response.getBody());
+            JSONArray movies = jsonResponse.getJSONObject("movieListResult").getJSONArray("movieList");
 
-                for (int i = 0; i < movies.length(); i++) {
-                    JSONObject movie = movies.getJSONObject(i);
-                    String movieCd = movie.getString("movieCd");
+            for (int i = 0; i < movies.length(); i++) {
+                JSONObject movie = movies.getJSONObject(i);
+                String movieCd = movie.getString("movieCd");
 
-                    // 기존에 저장된 영화인지 확인
-                    if (searchRepository.existsByMovieCd(movieCd)) {
-                        System.out.println("이미 존재하는 영화: " + movieCd + " (저장하지 않음)");
-                        continue; // 이미 있으면 저장하지 않고 넘어감
-                    }
+                // 개봉일 필터링: 2000년도 이후의 영화만 저장
+                String openDt = movie.optString("openDt", "");
+                if (!isAfter2000(openDt)) {
+                    continue; // 2000년 이후 영화가 아니면 저장하지 않음
+                }
 
-                    SearchEntity searchEntity = fetchMovieDetails(movieCd, movie);
+                // 기존에 저장된 영화인지 확인
+                if (searchRepository.existsByMovieCd(movieCd)) {
+                    logger.info("이미 존재하는 영화: {} (저장하지 않음)", movieCd);
+                    continue; // 이미 있으면 저장하지 않고 넘어감
+                }
+
+                SearchEntity searchEntity = fetchMovieDetails(movieCd, movie);
+                if (searchEntity != null) {
                     searchRepository.save(searchEntity);
                 }
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            updateChosungForExistingData(); // 기존 데이터 초성 업데이트
         }
+
+    } catch (Exception e) {
+        logger.error("Error occurred while searching and saving movies: {}", e.getMessage());
+        e.printStackTrace();
+    }
+}
+
+    // movieNmChosung이 비어있을경우 값을 추가해주는 로직
+    @Transactional
+    public void updateChosungForExistingData() {
+        List<SearchEntity> entitiesToUpdate = searchRepository.findByMovieNmChosungIsNull(); // 비어있을경우
+        for (SearchEntity entity : entitiesToUpdate) {
+            entity.setMovieNmChosung(HangulUtils.getChosung(entity.getMovieNm()));
+        }
+        searchRepository.saveAll(entitiesToUpdate);
     }
 
     private SearchEntity fetchMovieDetails(String movieCd, JSONObject movie) {
@@ -96,7 +119,7 @@ public class SearchServiceImpl implements SearchService {
                 }
                 directors = String.join(", ", directorNames);
 
-                System.out.println(" 변환된 directors: " + directors);
+                logger.info(" 변환된 directors: {}", directors);
 
                 JSONArray audits = movieInfo.getJSONArray("audits");
                 if (!audits.isEmpty()) {
@@ -107,6 +130,7 @@ public class SearchServiceImpl implements SearchService {
             SearchEntity searchEntity = SearchEntity.builder()
                     .movieCd(movieCd)
                     .movieNm(movie.getString("movieNm"))
+                    .movieNmChosung(HangulUtils.getChosung(movie.getString("movieNm")))
                     .openDt(movie.optString("openDt", ""))
                     .directors(directors)
                     .genreAlt(movie.optString("genreAlt", ""))
@@ -115,6 +139,7 @@ public class SearchServiceImpl implements SearchService {
 
             return fetchTMDbDetails(searchEntity);
         } catch (Exception e) {
+            logger.error("Error fetching movie details for movieCd {}: {}", movieCd, e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -162,6 +187,7 @@ public class SearchServiceImpl implements SearchService {
                 }
             }
         } catch (Exception e) {
+            logger.error("Error fetching TMDb details: {}", e.getMessage());
             e.printStackTrace();
         }
         return searchEntity;
@@ -176,6 +202,7 @@ public class SearchServiceImpl implements SearchService {
                 searchEntity.setRunTime(jsonResponse.optInt("runtime") + "분");
             }
         } catch (Exception e) {
+            logger.error("Error fetching movie runtime for tmdbId {}: {}", tmdbId, e.getMessage());
             e.printStackTrace();
         }
         return searchEntity;
@@ -203,17 +230,29 @@ public class SearchServiceImpl implements SearchService {
                 searchTrailerRepository.saveAll(trailers);
             }
         } catch (Exception e) {
+            logger.error("Error fetching and saving trailers for tmdbId {}: {}", tmdbId, e.getMessage());
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<SearchDto> searchMovieList(String query) {
+    public List<SearchDto> searchMovieList(String query, String searchType) {
+        // 검색어 정규화 (띄어쓰기 및 특수문자 제거)
+        String normalizedQuery = query.replaceAll("[^a-zA-Z0-9가-힣]", "").trim();
+        // 초성 변환
+        String chosungQuery = HangulUtils.getChosung(query).trim();
 
-        String normalizedQuery = query.replaceAll("[^a-zA-Z0-9가-힣]", "").trim(); // 띄어쓰기문제
+        List<SearchEntity> searchEntities;
 
-        List<SearchEntity> searchEntities = searchRepository.findByMovieNmContaining(normalizedQuery);
+        if ("chosung".equals(searchType)) {
+            // 초성 검색
+            searchEntities = searchRepository.findByMovieNmChosungContaining(chosungQuery);
+        } else {
+            // 일반 검색
+            searchEntities = searchRepository.findByMovieNmContaining(normalizedQuery);
+        }
 
+        // `searchEntities`에서 `MovieEntity` 조회 후 `SearchDto` 변환
         List<MovieEntity> movieEntities = searchEntities.stream()
                 .map(searchEntity -> {
                     String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
@@ -225,15 +264,13 @@ public class SearchServiceImpl implements SearchService {
 
         return searchEntities.stream()
                 .map(searchEntity -> {
-                    // `MovieEntity`가 존재하면 `MovieEntity` 데이터 사용, 없으면 `SearchEntity` 데이터 사용
                     String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
                     Optional<MovieEntity> movieEntityOpt = movieRepository
                             .findByMovieNmAndOpenDt(searchEntity.getMovieNm(), formattedOpenDt);
 
                     if (movieEntityOpt.isPresent()) {
                         MovieEntity movie = movieEntityOpt.get();
-
-                        System.out.println(" [MovieEntity 사용] " + movie.getMovieNm() + " (" + movie.getMovieCd() + ")");
+                        logger.info("[MovieEntity 사용] {} ({})", movie.getMovieNm(), movie.getMovieCd());
 
                         return SearchDto.builder()
                                 .movieCd(movie.getMovieCd())
@@ -248,8 +285,7 @@ public class SearchServiceImpl implements SearchService {
                                 .backdrop_path(movie.getBackdrop_path())
                                 .build();
                     } else {
-                        System.out.println(" [SearchEntity 사용] " + searchEntity.getMovieNm() + " ("
-                                + searchEntity.getMovieCd() + ")");
+                        logger.info("[SearchEntity 사용] {} ({})", searchEntity.getMovieNm(), searchEntity.getMovieCd());
 
                         return SearchDto.builder()
                                 .movieCd(searchEntity.getMovieCd())
@@ -280,4 +316,11 @@ public class SearchServiceImpl implements SearchService {
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
+    private boolean isAfter2000(String openDt) {
+        if (openDt == null || openDt.length() != 8) {
+            return false; // openDt가 없거나 형식이 맞지 않으면 false 반환
+        }
+        int year = Integer.parseInt(openDt.substring(0, 4)); // openDt에서 연도만 추출
+        return year >= 2000;
+    }
 }

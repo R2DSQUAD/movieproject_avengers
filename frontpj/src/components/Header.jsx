@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../slices/loginSlice";
 import PropTypes from 'prop-types';
+import * as Hangul from 'es-hangul'; // 수정된 import 방식
+
 
 export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, setIsMemberInfoActive }) { // props 추가
   const dispatch = useDispatch();
@@ -14,6 +16,13 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
   const isLoggedIn = !!loginState.email;
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  // 초성 여부 판단 함수
+  const isChosungOnly = (text) => {
+    // 정규 표현식: ㄱ-ㅎ, ㄳ, ㄵ, ㄶ, ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, ㅄ
+    const chosungRegex = /^[ㄱ-ㅎ]+$/;
+    return chosungRegex.test(text);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -68,7 +77,17 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
-      navigate(`/movie/search?query=${encodeURIComponent(searchQuery.trim())}`);
+       const trimmedSearchQuery = searchQuery.trim().replace(/\s/g, ""); // 검색어 공백 제거
+      const isChosung = isChosungOnly(trimmedSearchQuery);
+      let queryToUse = trimmedSearchQuery;
+      let searchType = "normal"; // 기본값은 전체 검색
+
+      if (isChosung) {
+        queryToUse = Hangul.getChoseong(trimmedSearchQuery); // 초성으로 변환 //수정
+        searchType = "chosung"; // 초성 검색으로 변경
+      }
+
+      navigate(`/movie/search?query=${encodeURIComponent(queryToUse)}&searchType=${searchType}`);
     }
   }
 
