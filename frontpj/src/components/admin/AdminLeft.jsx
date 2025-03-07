@@ -8,7 +8,7 @@ const AdminLeft = () => {
       <h2 className="admin-title">관리자 메뉴</h2>
       <ul className="admin-menu">
         <li>
-          <Link to="/admin">대시보드</Link>
+          <Link to="/admin">관리자 홈</Link>
         </li>
         <li>
           <Link to="/admin/memberList">회원 관리</Link>
@@ -18,6 +18,9 @@ const AdminLeft = () => {
         </li>
         <li>
           <Link to="/admin/calendar">일정 관리</Link>
+        </li>
+        <li>
+          <Link to="/admin/chatbot">챗봇 관리</Link>
         </li>
       </ul>
     </div>

@@ -40,7 +40,7 @@ public class ScreeningServiceImpl implements ScreeningService {
             LocalTime.of(7, 0), LocalTime.of(10, 0), LocalTime.of(13, 0),
             LocalTime.of(16, 0), LocalTime.of(19, 0), LocalTime.of(22, 0));
 
-    @Scheduled(cron = "50 39 11 * * *")
+    @Scheduled(cron = "50 8 13 * * *")
     public void updateScreenings() {
         log.debug("[자동 실행] 상영 일정 추가 작업 시작");
         try {

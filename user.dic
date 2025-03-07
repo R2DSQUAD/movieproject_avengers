@@ -2,6 +2,7 @@
 조회	NNP
 마곡	NNP
 수원스타필드	NNP
+영화관을 검색하시려면 '영화관 [영화관 이름] '라고 입력해주세요.	NNP
 부산대	NNP
 대전	NNP
 안녕	NNP
@@ -25,6 +26,7 @@
 양산	NNP
 영화 조회	NNP
 창원	NNP
+괜찮아 괜찮아 괜찮아! 	NNP
 성남모란	NNP
 해운대(장산)	NNP
 신촌	NNP
@@ -36,8 +38,10 @@
 대구이시아	NNP
 수원인계	NNP
 이수	NNP
+첫 번째 키스	NNP
 금정AK플라자	NNP
 진천	NNP
+힘내라 대한민국	NNP
 원주혁신	NNP
 목동	NNP
 홍대	NNP
@@ -64,8 +68,10 @@ ARTNINE	NNP
 홍성내포	NNP
 영화	NNP
 영화관 조회	NNP
+도움말	NNP
 상봉	NNP
 강동	NNP
+이찬원 콘서트 찬가: 디어 마이 찬스	NNP
 수원남문	NNP
 대전유성	NNP
 세종청사	NNP
@@ -83,6 +89,7 @@ ARTNINE	NNP
 파주금촌	NNP
 창원내서	NNP
 사상	NNP
+영화를 검색하시려면 '영화 [영화 제목] '라고 입력해주세요.	NNP
 전주혁신	NNP
 대전현대아울렛	NNP
 김포한강신도시	NNP
@@ -100,10 +107,12 @@ ARTNINE	NNP
 미사강변	NNP
 인천학익	NNP
 파주운정	NNP
+컴플리트 언노운	NNP
 화명	NNP
 영화 이상한 과자 가게 전천당	NNP
 경북도청	NNP
 서면대한	NNP
+미키 17	NNP
 공주	NNP
 킨텍스	NNP
 광명AK플라자	NNP

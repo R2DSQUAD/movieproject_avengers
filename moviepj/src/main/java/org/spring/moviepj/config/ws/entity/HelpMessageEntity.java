@@ -18,7 +18,7 @@ public class HelpMessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String message;
 
     public HelpMessageEntity(String message) {
