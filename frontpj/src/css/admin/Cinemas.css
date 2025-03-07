@@ -31,11 +31,29 @@
     padding: 20px;
     width: 400px;
     border-radius: 5px;
+    position: relative; 
   }
   
+  .modal-close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
   .modal-actions {
     margin-top: 15px;
     display: flex;
     justify-content: space-between;
+  }
+  .modal-content h3 {
+    color: black; 
+  }
+  
+  .modal-content label {
+    display: block; 
+    margin-top: 10px;
   }
   
