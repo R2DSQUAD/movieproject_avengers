@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import org.spring.moviepj.config.ws.entity.HelpMessageEntity;
 import org.spring.moviepj.dto.CinemaDto;
 import org.spring.moviepj.dto.MovieDto;
 
@@ -25,6 +26,7 @@ public class AnswerDto {
   private List<MovieDto> movieList;  // 영화 정보
   private CinemaDto cinema;
   private List<CinemaDto> cinemaList;
+  private List<HelpMessageEntity> message;  // 메시지 추가
 
 
   public AnswerDto movie(MovieDto movie){
@@ -41,6 +43,12 @@ public class AnswerDto {
   }
   public AnswerDto cinemaDto(CinemaDto cinema){
     this.cinema=cinema;
+    return this;
+  }
+
+  // 메시지 설정 메서드
+  public AnswerDto message(List<HelpMessageEntity> message) {
+    this.message = message;
     return this;
   }
 

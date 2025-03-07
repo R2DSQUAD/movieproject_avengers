@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Komoran from '../components/ws/Komoran';
+import React, { useEffect, useState, useCallback } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import Komoran from "../components/ws/Komoran";
+import "../css/main.css";
 
+ 
 const MainLayout = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMemberInfoActive, setIsMemberInfoActive] = useState(false);
@@ -28,8 +30,7 @@ const MainLayout = () => {
       isMainPage && !scrolled
         ? "var(--color-dark-text)"
         : "var(--color-light-text)";
-    const imgFilter =
-      isMainPage && !scrolled ? "invert(100%)" : "invert(0%)";
+    const imgFilter = isMainPage && !scrolled ? "invert(100%)" : "invert(0%)";
     const spanColor = isLightMode ? textColor : "var(--color-dark-text)";
 
     const header = document.querySelector("header");
@@ -41,9 +42,7 @@ const MainLayout = () => {
       .forEach((el) => {
         switch (el.tagName) {
           case "A":
-            el.style.color = isLightMode
-              ? textColor
-              : "var(--color-dark-text)";
+            el.style.color = isLightMode ? textColor : "var(--color-dark-text)";
             break;
           case "IMG":
             el.style.filter = isLightMode ? imgFilter : "invert(100%)";
@@ -67,7 +66,7 @@ const MainLayout = () => {
     };
 
     handleScroll();
-    updateHeaderStyle()
+    updateHeaderStyle();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isDarkMode, location.pathname, updateHeaderStyle, isHeaderActive]);
@@ -90,11 +89,15 @@ const MainLayout = () => {
       </div>
       <Footer />
       {/* 채팅 창 */}
-       {/*isChatOpen이 true일 때만 렌더링 */}
-        {isChatOpen && <Komoran isOpen={isChatOpen} onClose={toggleChat} />}
+      {isChatOpen && <Komoran isOpen={isChatOpen} onClose={toggleChat} />}
+
       {/* 채팅 버튼 */}
       <div className="chat-float-button" onClick={toggleChat}>
-        <img src='/image/chat.svg' alt="채팅" />
+        <img
+          className="chat-icon"
+          src={isChatOpen ? "/image/close.svg" : "/image/chat.svg"}
+          alt={isChatOpen ? "닫기" : "채팅"}
+        />
       </div>
     </>
   );

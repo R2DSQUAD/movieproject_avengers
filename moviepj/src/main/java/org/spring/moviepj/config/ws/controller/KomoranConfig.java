@@ -3,6 +3,7 @@ package org.spring.moviepj.config.ws.controller;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 
+import org.spring.moviepj.config.ws.repository.HelpMessageRepository;
 import org.spring.moviepj.repository.CinemaRepository;
 import org.spring.moviepj.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class KomoranConfig {
 
   @Autowired
   CinemaRepository cinemaRepository;
+
+  @Autowired
+  HelpMessageRepository helpMessageRepository;
 
   @Bean
   Komoran komoran() {
@@ -82,6 +86,10 @@ public class KomoranConfig {
     cinemaRepository.findAll().forEach(e-> {
       keys.add(e.getCinemaName());
     });
+
+    helpMessageRepository.findAll().forEach(e-> {
+      keys.add(e.getMessage());
+    });
     
 
     //버스 노선 번호
@@ -95,6 +103,7 @@ public class KomoranConfig {
     keys.add("영화 조회");
     keys.add("조회");
     keys.add("목록");
+    keys.add("도움말");
 
     //저장된 명단을 고유명사로 파일에 등록
     try {
