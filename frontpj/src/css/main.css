@@ -1,0 +1,3 @@
+.chat-float-button img {
+  transition: opacity 0.5s ease; /* opacity만 0.5초 동안 부드럽게 변환 */
+}
