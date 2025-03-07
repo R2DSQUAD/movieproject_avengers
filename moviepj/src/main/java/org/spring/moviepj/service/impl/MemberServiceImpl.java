@@ -148,12 +148,22 @@ public class MemberServiceImpl implements MemberService {
     public MemberDto updateMember(String email, MemberDto memberDto) {
         MemberEntity memberEntity = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+
         // 수정할 필드 업데이트 (비밀번호는 입력된 경우에만 업데이트)
         memberEntity.setNickname(memberDto.getNickname());
         if (memberDto.getPw() != null && !memberDto.getPw().isEmpty()) {
             memberEntity.setPw(passwordEncoder.encode(memberDto.getPw()));
         }
-        memberEntity.setSocial(memberDto.isSocial());
+        // 소셜 로그인, 이메일은 수정할 수 없으므로 업데이트하지 않음
+
+        // **권한 업데이트 추가**
+        if (memberDto.getRoleNames() != null && !memberDto.getRoleNames().isEmpty()) {
+            // 전달된 roleNames를 Role enum 타입으로 변환 후 업데이트
+            List<Role> roles = memberDto.getRoleNames().stream()
+                    .map(roleName -> Role.valueOf(roleName))
+                    .collect(Collectors.toList());
+            memberEntity.setMemberRoleList(roles);
+        }
 
         MemberEntity updatedEntity = memberRepository.save(memberEntity);
         return new MemberDto(

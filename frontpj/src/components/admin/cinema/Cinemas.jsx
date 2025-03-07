@@ -246,9 +246,10 @@ const Cinemas = () => {
               />
             </label>
             <div className="modal-actions">
-              <button onClick={handleUpdate}>수정 완료</button>
-              <button onClick={handleDelete}>삭제</button>
-              <button onClick={() => setShowModal(false)}>취소</button>
+            <button onClick={handleDelete}>영화관 삭제</button>
+              <button onClick={handleUpdate}>수정 완료</button>  
+              <button className="modal-close-btn" onClick={() => setShowModal(false)}>✖</button>
+
             </div>
           </div>
         </div>

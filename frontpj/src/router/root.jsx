@@ -34,6 +34,7 @@ const CalendarPage = lazy(() => import("../pages/calendar/CalendarPage"));
 const AdminLayout = lazy(() => import("../components/admin/AdminLayout"));
 const MemberList = lazy(() => import("../components/admin/member/MemberList"));
 const Cinemas = lazy(() => import("../components/admin/cinema/Cinemas"));
+const AdminChatBot = lazy(() => import("../components/admin/chatbot/AdminChatBot"));
 
 const root = createBrowserRouter([
   {
@@ -209,6 +210,14 @@ const root = createBrowserRouter([
             element: (
               <Suspense fallback={Loading}>
                 <Cinemas />
+              </Suspense>
+            ),
+          },
+          {
+            path: "chatbot",
+            element: (
+              <Suspense fallback={Loading}>
+                <AdminChatBot />
               </Suspense>
             ),
           },
