@@ -39,6 +39,7 @@ public class MovieServiceImpl implements MovieService {
 
     private static final String KOBIS_API_KEY = "1d713276de7baae34e9d5c43f2f0c4b3";
     private static final String KOBIS_API_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json";
+    private static final String KOBIS_MOVIE_INFO_API = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=1d713276de7baae34e9d5c43f2f0c4b3&movieCd=%s";
 
     private static final String TMDB_API_KEY = "3faa3953bb1d0746b8d7294bd106d787";
     private static final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=%s&language=ko-KR";
@@ -124,6 +125,8 @@ public class MovieServiceImpl implements MovieService {
                 e.printStackTrace();
             }
 
+            String watchGradeNm = fetchWatchGradeNm(el.getMovieCd());
+
             MovieEntity movie = MovieEntity.builder()
                     .movieCd(el.getMovieCd())
                     .movieNm(el.getMovieNm())
@@ -133,6 +136,7 @@ public class MovieServiceImpl implements MovieService {
                     .overview(overview)
                     .poster_path(posterPath)
                     .backdrop_path(backdropPath)
+                    .watchGradeNm(watchGradeNm)
                     .build();
 
             if (tmdbId != null) {
@@ -148,6 +152,24 @@ public class MovieServiceImpl implements MovieService {
                 }
             }
         }
+    }
+
+    private String fetchWatchGradeNm(String movieCd) {
+        try {
+            String url = String.format(KOBIS_MOVIE_INFO_API, movieCd);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                JSONObject jsonResponse = new JSONObject(response.getBody());
+                JSONArray grades = jsonResponse.getJSONObject("movieInfoResult").getJSONObject("movieInfo")
+                        .optJSONArray("audits");
+                if (grades != null && grades.length() > 0) {
+                    return grades.getJSONObject(0).optString("watchGradeNm", "등급 정보 없음");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "등급 정보 없음";
     }
 
     private MovieEntity fetchMovieDetailsFromTMDb(MovieEntity movie, int tmdbId) {

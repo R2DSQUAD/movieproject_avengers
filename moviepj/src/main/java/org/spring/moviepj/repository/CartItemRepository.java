@@ -1,8 +1,10 @@
 package org.spring.moviepj.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.spring.moviepj.dto.CartItemDto;
 import org.spring.moviepj.entity.CartItemEntity;
 import org.spring.moviepj.entity.ScreeningEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +24,7 @@ public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> 
     List<CartItemEntity> findByIdInAndCartEntity_MemberEntity_Email(List<Long> cartItemIds, String email);
 
     List<CartItemEntity> findByIdInAndStatus(List<Long> cartItemIds, int i);
+
+    List<CartItemEntity> findByScreeningEntityIdAndStatusIn(Long screeningId, List<Integer> statuses);
 
 }

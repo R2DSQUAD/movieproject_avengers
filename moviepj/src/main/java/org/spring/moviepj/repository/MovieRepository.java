@@ -26,6 +26,8 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 
     Optional<MovieEntity> findByMovieNm(String name);
 
-    List<MovieEntity> findByMovieNmContaining(String movieNm);
+    @Query("SELECT m FROM MovieEntity m WHERE REPLACE(m.movieNm, ' ', '') LIKE CONCAT('%', :movieNm, '%')")
+    List<MovieEntity> findByMovieNmContaining(@Param("movieNm") String movieNm);
 
+    Optional<MovieEntity> findByMovieNmAndOpenDt(String movieNm, String formattedOpenDt);
 }

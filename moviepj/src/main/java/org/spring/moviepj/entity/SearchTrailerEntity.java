@@ -1,5 +1,7 @@
 package org.spring.moviepj.entity;
 
+import org.spring.moviepj.common.BasicTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,7 +24,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "search_trailer_tb")
-public class SearchTrailerEntity {
+public class SearchTrailerEntity extends BasicTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
