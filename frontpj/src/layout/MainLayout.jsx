@@ -38,7 +38,7 @@ const MainLayout = () => {
       header.style.backgroundColor = backgroundColor;
     }
     document
-      .querySelectorAll("header a, header img, header span")
+      .querySelectorAll("header a, header .bar img, header span")
       .forEach((el) => {
         switch (el.tagName) {
           case "A":
