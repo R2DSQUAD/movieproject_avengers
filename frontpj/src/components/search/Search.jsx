@@ -13,40 +13,47 @@ const Search = () => {
     const [movies, setMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    // 초성 여부 판단 함수
+
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     const isChosungOnly = (text) => {
-        // 정규 표현식: ㄱ-ㅎ, ㄳ, ㄵ, ㄶ, ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, ㅄ
         const chosungRegex = /^[ㄱ-ㅎ]+$/;
         return chosungRegex.test(text);
     };
 
     useEffect(() => {
-        const processSearch = async (query, type) => {
-            if (!query) {
-                setMovies([]);
-                return;
-            }
-
+        const fetchMovies = async () => {
             setIsLoading(true);
+            setMovies([]);
+
             try {
-                setMovies([]);
-                let queryToUse = query;
-                let currentSearchType = type;
-                const trimmedSearchQuery = query.trim(); // 검색어 공백 제거
-                
-                if (isChosungOnly(trimmedSearchQuery)) {
-                    queryToUse = Hangul.getChoseong(trimmedSearchQuery);
-                    currentSearchType = "chosung";
-                    setSearchType(currentSearchType);
+                let response;
+                if (!searchQuery) {
+                    response = await axios.get(`http://localhost:8090/api/searchList?page=${page}`);
                 } else {
-                    currentSearchType = "normal";
-                    setSearchType(currentSearchType);
+                    let queryToUse = searchQuery.trim();
+                    let currentSearchType = searchType;
+
+                    if (isChosungOnly(queryToUse)) {
+                        queryToUse = Hangul.getChoseong(queryToUse);
+                        currentSearchType = "chosung";
+                    } else {
+                        currentSearchType = "normal";
+                    }
+
+                    response = await axios.get(
+                        `http://localhost:8090/api/search?query=${encodeURIComponent(queryToUse)}&searchType=${currentSearchType}&page=${page}`
+                    );
                 }
 
-                const response = await axios.get(
-                    `http://localhost:8090/api/search?query=${encodeURIComponent(queryToUse)}&searchType=${currentSearchType}`
-                );
-                setMovies(response.data);
+                // 백엔드에서 받아온 데이터에서 필요한 정보 추출
+                const { content, totalPages } = response.data;
+
+                const filteredMovies = content.filter(movie => movie.poster_path);
+
+                setMovies(filteredMovies);
+                setTotalPages(totalPages);
             } catch (error) {
                 console.error("영화 검색 실패:", error);
             } finally {
@@ -54,8 +61,8 @@ const Search = () => {
             }
         };
 
-        processSearch(searchQuery, searchType);
-    }, [searchQuery, searchType]);
+        fetchMovies();
+    }, [searchQuery, searchType, page]); // page가 변경될 때마다 실행
 
     useEffect(() => {
         setSearchQuery(initialSearchQuery);
@@ -71,7 +78,7 @@ const Search = () => {
                     {movies.map((movie) => (
                         <li key={`${movie.movieCd}`}>
                             <img
-                                src={movie.poster_path || "https://via.placeholder.com/100"}
+                                src={movie.poster_path}
                                 alt={movie.movieNm}
                                 width="100"
                             />
@@ -79,7 +86,6 @@ const Search = () => {
                             <div>개봉일: {movie.openDt || "정보 없음"}</div>
                             <div>감독: {movie.directors || "정보 없음"}</div>
                             <div>장르: {movie.genreAlt || "정보 없음"}</div>
-                            <div>{movie.overview || "줄거리 없음"}</div>
                         </li>
                     ))}
                 </ul>
@@ -88,6 +94,22 @@ const Search = () => {
             {!isLoading && movies.length === 0 && searchQuery && (
                 <p>"{searchQuery}"에 대한 검색 결과가 없습니다.</p>
             )}
+
+            <div className="pagination">
+                <button
+                    disabled={page === 0}
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+                >
+                    이전
+                </button>
+                <span>{page + 1} / {totalPages}</span>
+                <button
+                    disabled={page + 1 >= totalPages}
+                    onClick={() => setPage((prev) => prev + 1)}
+                >
+                    다음
+                </button>
+            </div>
         </div>
     );
 };
