@@ -1,20 +1,13 @@
 package org.spring.moviepj.service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.spring.moviepj.dto.ScreeningDto;
-import org.spring.moviepj.entity.ScreeningEntity;
-import org.spring.moviepj.entity.TheaterEntity;
+import org.spring.moviepj.entity.MovieEntity;
 
 public interface ScreeningService {
 
-    void createScreenings(int daysToAdd);
-
-    // void createScreeningsForExistingMovies(int daysToAdd);
-
-    // void createScreeningsForNewMovies(LocalDate startDate, int daysToAdd);
+    void createScreenings(int daysToAdd, List<MovieEntity> newMovies);
 
     List<ScreeningDto> getScreeningsByMovieId(Long movieId);
 

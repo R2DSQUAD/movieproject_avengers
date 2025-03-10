@@ -15,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 
-    @Query("SELECT MAX(m.createTime) FROM MovieEntity m")
-    Optional<LocalDate> findLatestUpdateDate();
-
     @Query("SELECT m FROM MovieEntity m WHERE DATE(m.createTime) = :latestUpdateDate ORDER BY m.rank ASC")
     List<MovieEntity> findByUpdateDate(@Param("latestUpdateDate") LocalDate latestUpdateDate);
 
@@ -30,4 +27,10 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
     List<MovieEntity> findByMovieNmContaining(@Param("movieNm") String movieNm);
 
     Optional<MovieEntity> findByMovieNmAndOpenDt(String movieNm, String formattedOpenDt);
+
+    @Query("SELECT MAX(DATE(m.createTime)) FROM MovieEntity m")
+    Optional<LocalDate> findLatestCreateDate();
+
+    @Query("SELECT m FROM MovieEntity m WHERE DATE(m.createTime) >= :latestCreateDate ORDER BY m.createTime ASC")
+    List<MovieEntity> findNewMoviesAfter(@Param("latestCreateDate") LocalDate latestCreateDate);
 }
