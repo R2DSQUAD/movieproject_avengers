@@ -1,0 +1,54 @@
+.search-content {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 20px; /* 항목 간 간격 */
+  padding: 0;
+}
+
+ul > li {
+  color: var(--color-dark-text);
+  position: relative;
+  padding: 30px;
+}
+
+body.light ul > li {
+  color: var(--color-light-text);
+}
+
+ul > li > img.poster {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+ul > li > img.age-rating-icon {
+  max-width: 30px;
+  width: 10%;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 30px;
+}
+
+ul > li > span {
+  width: 100%;
+}
+
+ul > li > span.movie-title {
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  flex-direction: column;
+}

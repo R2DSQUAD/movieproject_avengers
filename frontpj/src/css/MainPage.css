@@ -18,7 +18,7 @@
   background-color: var(--color-dark-1);
 }
 
-.index .index-con .title img {
+.index .index-con .title > img {
   position: absolute;
   top: 0;
   left: 0;
@@ -254,3 +254,19 @@ body.light>nav a {
   color: var(--color-dark-text);
 }
 
+body.light .movie-info > h6 {
+  color: var(--color-dark-text);
+}
+
+.movie-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.age-rating-icon {
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  object-fit: cover;
+}
