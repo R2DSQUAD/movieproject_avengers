@@ -1,0 +1,39 @@
+package org.spring.moviepj.controller;
+
+import org.spring.moviepj.service.impl.ReplyLikeServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/reply")
+public class ReplyLikeController {
+
+    @Autowired
+    private ReplyLikeServiceImpl replyLikeServiceImpl;
+
+    // 좋아요 추가
+    @PostMapping("/like")
+    public ResponseEntity<?> likeReply(@RequestParam Long replyId, @RequestParam String email) {
+        try {
+            replyLikeServiceImpl.addLike(replyId, email);
+            return ResponseEntity.ok("좋아요가 추가되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // 좋아요 취소
+    @PostMapping("/unlike")
+    public ResponseEntity<?> unlikeReply(@RequestParam Long replyId, @RequestParam String email) {
+        try {
+            replyLikeServiceImpl.removeLike(replyId, email);
+            return ResponseEntity.ok("좋아요가 취소되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+   
+}
+
