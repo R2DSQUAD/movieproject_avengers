@@ -116,7 +116,7 @@ const BoardDetail = () => {
   const replyDelete = async () => {
     if (!replyToDelete) return;
     try {
-      await axios.post(`http://localhost:8090/api/reply/delete/${replyToDelete.id},${id}`);
+      await axios.post(`http://localhost:8090/api/reply/delete/${replyToDelete.id}/${id}`);
       const replyListResponse = await axios.get(`http://localhost:8090/api/reply/replyList/${id}`);
       setReplies(replyListResponse.data.replyList);
       closeReplyDeleteModal();

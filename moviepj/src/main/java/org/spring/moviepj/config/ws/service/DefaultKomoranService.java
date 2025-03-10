@@ -26,11 +26,11 @@ public class DefaultKomoranService {
   public void insertAnswerJdbc() {
     // AnswerEntity 생성 (no와 answer를 정의)
     List<AnswerEntity> answers = List.of(
-        new AnswerEntity(1L, "안녕하세요 영화 길잡이입니다. 무엇을 도와드릴까요?", "안녕"),
+        new AnswerEntity(1L, "안녕하세요 Frame In입니다. 무엇을 도와드릴까요?", "안녕"),
         new AnswerEntity(2L, "영화에 대한 검색 결과 입니다.", "영화"),
         new AnswerEntity(3L, "영화관에 대한 검색결과 입니다.", "영화관"),
         new AnswerEntity(4L, "검색결과를 찾을 수 없습니다. 도움말을 통해 검색해보세요!", "기타"),
-        new AnswerEntity(5L, "도움말을 보고 영화 길잡이에게 질문해보세요!", "도움말"));
+        new AnswerEntity(5L, "도움말을 보고 Frame In에게 질문해보세요!", "도움말"));
 
     // 이미 존재하는 항목을 제외하고 저장
     List<Long> answerNos = answers.stream().map(AnswerEntity::getNo).collect(Collectors.toList());

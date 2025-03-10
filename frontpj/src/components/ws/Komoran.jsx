@@ -272,7 +272,7 @@ const Komoran = () => {
           <div className="chat-header-logo">
             <img src="/image/logo.png" alt="logo" id="logo" />
           </div>
-          <div className="header-title">영화 길잡이</div>
+          <div className="header-title">Frame In</div>
         </div>
 
         <div className="komoran-body" ref={bodyRef}>
@@ -281,7 +281,7 @@ const Komoran = () => {
               <img src="/image/logo.png" alt="logo" id="logo" />
             </div>
             <p>
-              <b>영화 길잡이에 문의하기</b>
+              <b>Frame In에 문의하기</b>
             </p>
           </div>
           {messages.map((msg, index) => {
