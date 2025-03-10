@@ -239,31 +239,29 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public Page<SearchDto> searchMovieList(String query, String searchType, Pageable pageable) {
+
+        searchAndSaveMovies(query);
+
         // 검색어 정규화 (띄어쓰기 및 특수문자 제거)
         String normalizedQuery = query.replaceAll("[^a-zA-Z0-9가-힣]", "").trim();
-
-        // 초성 변환 및 공백 처리
         String chosungQuery = HangulUtils.getChosung(query).replaceAll("[^ㄱ-ㅎ]", "").trim(); // 초성에서 공백 제거
 
         Page<SearchEntity> searchEntities;
 
         if ("chosung".equals(searchType)) {
-            // 초성 검색 (페이징 적용)
             searchEntities = searchRepository.findByMovieNmChosungIgnoreSpace(chosungQuery, pageable);
         } else {
-            // 일반 검색 (페이징 적용)
             searchEntities = searchRepository.findByMovieNmContaining(normalizedQuery, pageable);
         }
 
         return searchEntities.map(searchEntity -> {
             String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
 
-            // 최신 MovieEntity 조회
             List<MovieEntity> movieEntities = movieRepository
                     .findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(searchEntity.getMovieNm(), formattedOpenDt);
 
             if (!movieEntities.isEmpty()) {
-                MovieEntity latestMovie = movieEntities.get(0); // 최신 데이터 선택
+                MovieEntity latestMovie = movieEntities.get(0);
                 return SearchDto.builder()
                         .movieCd(latestMovie.getMovieCd())
                         .movieNm(latestMovie.getMovieNm())
@@ -292,7 +290,6 @@ public class SearchServiceImpl implements SearchService {
             }
         });
     }
-
     /**
      * openDt 변환 메서드
      * - 20250228 → 2025-02-28 형식으로 변환
