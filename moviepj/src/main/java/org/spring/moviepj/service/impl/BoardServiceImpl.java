@@ -171,10 +171,12 @@ public void boardUpdate(BoardDto boardDto) throws IOException {
         updateHit(boardId2); // 조회수 업데이트
     }
 }
-
+@Override
+public int replyCount(Long id) {
+   return boardRepository.boardReplyCount(id);
+//        return 0;
+}
     
-
-
     @Override
     public void updateHit(Long id) {
         boardRepository.updateHit(id);
@@ -187,5 +189,13 @@ public void boardUpdate(BoardDto boardDto) throws IOException {
             throw new IllegalArgumentException("삭제할 상품이 x");
         }
         boardRepository.deleteById(id);
+    }
+
+    public void updateBoardReplyCount(BoardDto boardDto) {
+        BoardEntity boardEntity = boardRepository.findById(boardDto.getId())
+        .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+    boardEntity.setReplyCount(boardDto.getReplyCount());
+    boardRepository.save(boardEntity);  // DB에 업데이트
     }
 }

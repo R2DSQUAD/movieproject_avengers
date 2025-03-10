@@ -38,6 +38,8 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 path.startsWith("/chat") ||
                 path.startsWith("/botController") ||
                 path.startsWith("/api/cinemas") ||
+                path.startsWith("/api/chat") ||
+                path.startsWith("/api/reply") ||
                 path.startsWith("/api/calendar") ||
                 path.startsWith("/api/helpMessage") ||
                 path.startsWith("/board") ||

@@ -46,7 +46,14 @@ public class BoardEntity extends BasicTime {
     private MemberEntity memberEntity;
 
 //    private MultipartFile itemFile;
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonIgnore
 
+    private List<ReplyEntity> replyEntities;
+
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int replyCount;
+    
     @OneToMany(mappedBy = "boardEntity" ,fetch = FetchType.LAZY
             ,cascade = CascadeType.REMOVE)
     @JsonIgnore

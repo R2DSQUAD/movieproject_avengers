@@ -20,4 +20,6 @@ public interface BoardService {
 
     void boardDelete(Long id);
 
+    int replyCount(Long id);
+    void updateBoardReplyCount(BoardDto boardDto);
 }

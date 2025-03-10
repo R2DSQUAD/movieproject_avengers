@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.spring.moviepj.common.Role;
 import org.spring.moviepj.entity.CartEntity;
+import org.spring.moviepj.entity.ChatMessageEntity;
 import org.spring.moviepj.entity.MemberEntity;
 import org.spring.moviepj.entity.PaymentEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,7 +49,7 @@ public class MemberDto extends User {
 
     private Long paymentId; // 결제
     private List<PaymentEntity> paymentEntities; // 결제 목록
-
+    private List<ChatMessageEntity> chatMessageEntities;
     private LocalDateTime createTime; // 생성시간
 
     private LocalDateTime updateTime; // 수정시간
@@ -71,6 +72,21 @@ public class MemberDto extends User {
         this.social = social;
         this.roleNames = roleNames;
     }
+
+    public MemberDto(List<ChatMessageEntity> chatMessageEntities2, String email2, String pw2, String nickname2, boolean social2,
+    List<String> list) {
+        super(
+            email2,
+            pw2,
+            list.stream().map(str -> new SimpleGrantedAuthority("ROLE_" + str)).collect(Collectors.toList()));
+
+    this.email = email2;
+    this.pw = pw2;
+    this.nickname = nickname2;
+    this.social = social2;
+    this.roleNames = list;
+    this.chatMessageEntities=chatMessageEntities2;
+}
 
     // 현재 사용자의 정보-> JWT 생성시 사용(Claims)
     public Map<String, Object> getClaims() {

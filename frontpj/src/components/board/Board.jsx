@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/Board.css";
+import { useSelector } from "react-redux";
 
 const BoardList = () => {
   const [boardList, setBoardList] = useState([]); // 전체 게시글 리스트 상태
@@ -12,6 +13,7 @@ const BoardList = () => {
   const [messagesPerPage] = useState(5); // 페이지당 게시글 수
   const [selectedCategory, setSelectedCategory] = useState("all"); // 선택된 카테고리
   const navigate = useNavigate();
+  const loginState = useSelector((state) => state.loginSlice);
 
   useEffect(() => {
     const fetchBoardList = async () => {
@@ -118,11 +120,14 @@ const BoardList = () => {
   return (
     <div>
       <h2>게시글 리스트</h2>
-      <div>
-        <Link to="insert" className="nav-link">
-          게시글 작성
-        </Link>
-      </div>
+      {loginState.email ? (
+  <div>
+    <Link to="insert" className="nav-link">
+      게시글 작성
+    </Link>
+  </div>
+) : null}
+
 
       {/* 카테고리 선택 버튼 추가 */}
       <div>
@@ -149,6 +154,12 @@ const BoardList = () => {
           className={selectedCategory === "영화게시판" ? "active-category" : ""}
         >
           영화게시판
+        </button>
+        <button 
+          onClick={() => handleCategoryFilter("공지사항")} 
+          className={selectedCategory === "공지사항" ? "active-category" : ""}
+        >
+          공지사항
         </button>
       </div>
 
@@ -180,8 +191,10 @@ const BoardList = () => {
               <li key={board.id}>
                 <h3>제목: {board.title}</h3>
                 <p>카테고리: {board.category}</p>
-                <p>글쓴이: {board.email}</p>
+                <p>글쓴이(이메일): {board.email}</p>
+                <p>글쓴이(이름): {board.memberNickName}</p>
                 <p>조회수: {board.hit}</p>
+                <p>댓글수: {board.replyCount}</p>
                 {board.updateTime !== null ? (
                   <p>업로드시간: {formatDate(board.updateTime)}</p>
                 ) : (

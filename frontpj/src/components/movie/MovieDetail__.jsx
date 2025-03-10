@@ -98,7 +98,6 @@ const MovieDetail = () => {
     // Adjust font size for all trailers
     const spans = trailerSpanRefs.current;
     spans.forEach(adjustFontSize);
-    
 
     // Handle window resize
     const handleResize = () => {
@@ -164,51 +163,60 @@ const MovieDetail = () => {
                   예매하기
                 </button>
               </div>
-              <button onClick={() => navigate(`/movie/detail/review/${movieInfo.movieCd}`)}>
-                  리뷰보기
-                </button>
-              </div>
+              <button
+                onClick={() =>
+                  navigate(`/movie/detail/review/${movieInfo.movieCd}`)
+                }
+              >
+                리뷰보기
+              </button>
             </div>
-          </div>
-
-          <div className="moviedetail-content">
-            <span>줄거리</span>
-            <p>{movieInfo.overview}</p>
-            {selectedTrailerId && (
-              <div className="video-container">
-                <LiteYoutubeEmbed
-                  key={selectedTrailerId}
-                  id={selectedTrailerId}
-                  mute={false}
-                  params="controls=1&rel=0"
-                />
-              </div>
-            )}
-            <ul
-              className="thumbnailImg"
-              style={{
-                gridTemplateColumns: `repeat(${trailers.length}, 1fr)`,
-              }}
+            <button
+              onClick={() =>
+                navigate(`/movie/detail/review/${movieInfo.movieCd}`)
+              }
             >
-              {trailers.map((el, idx) => (
-                <li className="thumbnailImg-con" key={idx}>
-                  <img
-                    src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
-                    alt={el.name}
-                    onClick={() => handleThumbnailClick(el.url)}
-                    className={selectedTrailerId === el.url ? "selected" : ""}
-                  />
-                  <span
-                    ref={(el) => (trailerSpanRefs.current[idx] = el)}
-                  >
-                    {el.name.replace("[" + movieInfo.movieNm + "]", "").trim()}
-                  </span>
-                </li>
-              ))}
-            </ul>
+              리뷰보기
+            </button>
           </div>
         </div>
       </div>
+
+      <div className="moviedetail-content">
+        <span>줄거리</span>
+        <p>{movieInfo.overview}</p>
+        {selectedTrailerId && (
+          <div className="video-container">
+            <LiteYoutubeEmbed
+              key={selectedTrailerId}
+              id={selectedTrailerId}
+              mute={false}
+              params="controls=1&rel=0"
+            />
+          </div>
+        )}
+        <ul
+          className="thumbnailImg"
+          style={{
+            gridTemplateColumns: `repeat(${trailers.length}, 1fr)`,
+          }}
+        >
+          {trailers.map((el, idx) => (
+            <li className="thumbnailImg-con" key={idx}>
+              <img
+                src={`https://img.youtube.com/vi/${el.url}/hqdefault.jpg`}
+                alt={el.name}
+                onClick={() => handleThumbnailClick(el.url)}
+                className={selectedTrailerId === el.url ? "selected" : ""}
+              />
+              <span ref={(el) => (trailerSpanRefs.current[idx] = el)}>
+                {el.name.replace("[" + movieInfo.movieNm + "]", "").trim()}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 };
 
