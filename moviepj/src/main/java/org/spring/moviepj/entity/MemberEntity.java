@@ -53,6 +53,21 @@ public class MemberEntity extends BasicTime {
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<PaymentEntity> paymentEntities;
 
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<ChatMessageEntity> chatMessageEntities;
+
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<BoardEntity> boardEntities;
+
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<ReplyEntity> replyEntities;
+
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<ReplyLikeEntity> replyLikeEntities;
+
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<MovieReviewEntity> movieReviewEntities;
+    
     // 비즈니스 매서드==========================
     public void addRole(Role role) {
         memberRoleList.add(role);

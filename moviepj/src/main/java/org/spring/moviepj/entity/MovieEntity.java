@@ -83,4 +83,8 @@ public class MovieEntity extends BasicTime {
     @JsonIgnore
     private List<TrailerEntity> trailerEntities; // tmdb트레일러
 
+    @OneToMany(mappedBy = "movieEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<MovieReviewEntity> movieReviewEntities;
+
+
 }

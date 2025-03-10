@@ -67,6 +67,8 @@ const BoardInsert = () => {
             <option value="영화게시판">영화게시판</option>
             <option value="자유게시판">자유게시판</option>
             <option value="문의게시판">문의게시판</option>
+            {loginState.roleNames?.includes("ADMIN") ? (<option value="공지사항">공지사항</option>
+):( <></>)}
           </select>
         </div>
         <div style={{ color: 'white' }}>

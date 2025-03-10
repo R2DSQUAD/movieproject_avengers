@@ -33,7 +33,8 @@ public class BoardDto extends BasicTime {
     private  LocalDateTime updateTime;
     private String email;
 
-   
+    private int replyCount;
+
     @NotBlank(message = "내용을 입력하세요")
     private String content;
     private MemberEntity memberEntity;
@@ -44,7 +45,7 @@ public class BoardDto extends BasicTime {
     private String oldImgName; // 원본 이미지 이름
 
     private String newImgName;
-
+    private String memberNickName;
     public static BoardDto toBoardDto(BoardEntity boardEntity){
         BoardDto boardDto=new BoardDto();
         boardDto.setId(boardEntity.getId());
@@ -54,6 +55,8 @@ public class BoardDto extends BasicTime {
         boardDto.setTitle(boardEntity.getTitle());
         boardDto.setAttachFile(boardEntity.getAttachFile());
         boardDto.setEmail(boardEntity.getMemberEntity().getEmail());
+        boardDto.setReplyCount(boardEntity.getReplyCount());
+        boardDto.setMemberNickName(boardEntity.getMemberEntity().getNickname());
         //파일이 있을경우
         if(boardEntity.getAttachFile()==1){
             boardDto.setAttachFile(boardEntity.getAttachFile());

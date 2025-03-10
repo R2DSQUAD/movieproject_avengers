@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.spring.moviepj.common.Role;
 import org.spring.moviepj.dto.MemberDto;
 import org.spring.moviepj.dto.movie.results;
+import org.spring.moviepj.entity.ChatMessageEntity;
 import org.spring.moviepj.entity.MemberEntity;
 import org.spring.moviepj.repository.MemberRepository;
 import org.spring.moviepj.service.MemberService;
@@ -46,17 +47,20 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDto memberDetail(String email) {
-        MemberEntity memberEntity = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
-
-        return new MemberDto(
-                memberEntity.getEmail(),
-                memberEntity.getPw(),
-                memberEntity.getNickname(),
-                memberEntity.isSocial(),
-                memberEntity.getMemberRoleList().stream()
-                        .map(Enum::name)
-                        .toList());
+            MemberEntity memberEntity = memberRepository.findByEmail(email)
+                            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+            List<ChatMessageEntity> chatMessageEntities = memberEntity.getChatMessageEntities();
+            return new MemberDto(
+                chatMessageEntities,
+                            memberEntity.getEmail(),
+                            memberEntity.getPw(),
+                            memberEntity.getNickname(),
+                            memberEntity.isSocial(),
+                            memberEntity.getMemberRoleList().stream()
+                                            .map(Enum::name)
+                                            .toList()
+                                            
+                                            );
     }
 
     @Override

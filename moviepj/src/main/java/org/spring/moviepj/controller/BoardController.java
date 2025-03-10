@@ -71,7 +71,7 @@ public class BoardController {
         return ResponseEntity.ok(boardDto);
     }
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
         boardService.boardDelete(id);
         return ResponseEntity.ok("게시글이 성공적으로 삭제되었습니다.");
@@ -100,6 +100,14 @@ public class BoardController {
     
         // 서비스 메소드 호출
         boardService.boardUpdate(boardDto);
+
+        
+        int replyCount=boardService.replyCount(boardDto.getId());
+        boardDto.setReplyCount(replyCount);
+        
+          // 댓글 수를 업데이트
+          boardService.updateBoardReplyCount(boardDto);
+
     
         return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
     }

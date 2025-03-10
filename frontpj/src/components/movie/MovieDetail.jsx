@@ -164,6 +164,10 @@ const MovieDetail = () => {
                   예매하기
                 </button>
               </div>
+              <button onClick={() => navigate(`/movie/detail/review/${movieInfo.movieCd}`)}>
+                  리뷰보기
+                </button>
+              </div>
             </div>
           </div>
 
@@ -205,7 +209,6 @@ const MovieDetail = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

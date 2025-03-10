@@ -130,6 +130,23 @@ const MyMemberInfo = () => {
             <span>권한</span>
             <span>{member.roleNames.join(", ")}</span>
           </div>
+          <div className="messages">
+            <h3>메시지 목록</h3>
+            {member.chatMessageEntities && member.chatMessageEntities.length > 0 ? (
+              <ul>
+                {member.chatMessageEntities.map((message, index) => (
+                  <li key={index}>
+                    <div className="message">
+                      <span className="messageContent">{message.content}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>메시지가 없습니다.</p>
+            )}
+          </div>
+
         </div>
       ) : (
         <span>사용자 정보를 불러오는 중입니다...</span>
@@ -232,6 +249,7 @@ const MyMemberInfo = () => {
           <span>결제 내역이 없습니다.</span>
         )}
       </div>
+      
     </div>
   );
 };

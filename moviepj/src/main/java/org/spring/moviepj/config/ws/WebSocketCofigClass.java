@@ -25,15 +25,15 @@ public class WebSocketCofigClass {
     @OnMessage
 public void onMessage(String message, Session session) throws Exception {
     // 메시지가 닉네임 설정 요청인지 확인
-    if (message.startsWith("nickname:")) {
-        String nickname = message.substring("nickname:".length()).trim();
-        clientInfo.put(session, nickname);  // 닉네임 저장
-        System.out.println("닉네임 설정됨: " + nickname);
+    if (message.startsWith("email:")) {
+        String email = message.substring("email:".length()).trim();
+        clientInfo.put(session, email);  // 닉네임 저장
+        System.out.println("이메일 설정됨: " + email);
     } else {
         // 닉네임이 설정된 상태에서만 메시지 전달
-        String senderNickname = clientInfo.get(session);
-        if (senderNickname == null) {
-            senderNickname = "익명"; // 닉네임이 없는 경우 기본 값 설정
+        String senderemail = clientInfo.get(session);
+        if (senderemail == null) {
+            senderemail = "익명"; // 닉네임이 없는 경우 기본 값 설정
         }
 
         // 받은 메시지를 모든 클라이언트에 전달

@@ -15,5 +15,10 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
     @Query(value = " update BoardEntity b set b.hit=b.hit+1 where b.id=:id")
     void updateHit(@Param("id")Long id);
 
+    @Query(value= " select count(*) " +
+    " from board_tb b inner join reply_tb r " +
+    " on b.board_id=r.board_id " +
+    " where b.board_id=:id " ,nativeQuery = true)
+    int boardReplyCount(@Param("id") Long id);
 //    Optional<ItemImgEntity> findByItemEntity(ItemEntity itemEntity);
 }

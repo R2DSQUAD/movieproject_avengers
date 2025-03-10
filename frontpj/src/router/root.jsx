@@ -10,6 +10,7 @@ const MoviePage = lazy(() => import("../pages/movie/MoviePage"));
 const ScreeningPage = lazy(() => import("../pages/screening/ScreeningPage"));
 const ScreeningSeatPage = lazy(() => import("../pages/screeningSeat/ScreeningSeatPage"));
 const MovieDetail = lazy(() => import("../pages/movie/MovieDetail"));
+const MovieDetailReview = lazy(() => import("../pages/movie/MovieDetailReviewPage"));
 const MapPage = lazy(() => import("../pages/map/MapPage"));
 const JoinPage = lazy(() => import("../pages/member/JoinPage"));
 const BoardPage = lazy(() => import("../pages/board/BoardPage"));
@@ -106,6 +107,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <MovieDetail />
+          </Suspense>
+        ),
+      },
+      {
+        path: "movie/detail/review/:movieCd",
+        element: (
+          <Suspense fallback={Loading}>
+            <MovieDetailReview />
           </Suspense>
         ),
       },
