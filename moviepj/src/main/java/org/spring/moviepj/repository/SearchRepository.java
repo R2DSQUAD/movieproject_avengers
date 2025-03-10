@@ -17,10 +17,9 @@ public interface SearchRepository extends JpaRepository<SearchEntity, Long> {
     @Query("SELECT s FROM SearchEntity s WHERE REPLACE(s.movieNm, ' ', '') LIKE CONCAT('%', :movieNm, '%')")
     List<SearchEntity> findByMovieNmContaining(@Param("movieNm") String movieNm);
 
-    List<SearchEntity> findByMovieNmChosungContaining(String chosungQuery);
+    @Query("SELECT s FROM SearchEntity s WHERE REPLACE(s.movieNmChosung, ' ', '') LIKE %:chosung%")
+    List<SearchEntity> findByMovieNmChosungIgnoreSpace(@Param("chosung") String chosung);
 
     List<SearchEntity> findByMovieNmChosungIsNull();
-
-    List<SearchEntity> findByMovieNmChosung(String chosungQuery);
 
 }
