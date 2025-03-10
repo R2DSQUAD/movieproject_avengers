@@ -4,12 +4,16 @@ import java.util.List;
 
 import org.spring.moviepj.dto.SearchDto;
 import org.spring.moviepj.service.impl.SearchServiceImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Sort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,11 +25,22 @@ public class SearchController {
     private final SearchServiceImpl searchServiceImpl;
 
     @GetMapping("/search")
-    public ResponseEntity<List<SearchDto>> searchMovies(@RequestParam(name = "query") String query, @RequestParam(name = "searchType", defaultValue = "normal") String searchType) { // defaultValue 변경
+    public ResponseEntity<Page<SearchDto>> searchMovies(
+            @RequestParam(name = "query") String query,
+            @RequestParam(name = "searchType", defaultValue = "normal") String searchType,
+            @PageableDefault(page = 0, size = 8, sort = "openDt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        searchServiceImpl.searchAndSaveMovies(query);
-
-        List<SearchDto> searchDtos = searchServiceImpl.searchMovieList(query,searchType);
-        return ResponseEntity.status(HttpStatus.OK).body(searchDtos);
+        Page<SearchDto> searchDtos = searchServiceImpl.searchMovieList(query, searchType, pageable);
+        return ResponseEntity.ok(searchDtos);
     }
+
+    @GetMapping("/searchList")
+    public ResponseEntity<Page<SearchDto>> searchList(
+            @PageableDefault(page = 0, size = 8, sort = "openDt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<SearchDto> searchDtos = searchServiceImpl.searchAllList(pageable);
+
+        return ResponseEntity.ok(searchDtos);
+    }
+
 }

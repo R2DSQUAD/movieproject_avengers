@@ -20,6 +20,8 @@ import org.spring.moviepj.repository.SearchRepository;
 import org.spring.moviepj.repository.SearchTrailerRepository;
 import org.spring.moviepj.service.SearchService;
 import org.spring.moviepj.util.HangulUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -236,73 +238,59 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<SearchDto> searchMovieList(String query, String searchType) {
+    public Page<SearchDto> searchMovieList(String query, String searchType, Pageable pageable) {
         // 검색어 정규화 (띄어쓰기 및 특수문자 제거)
         String normalizedQuery = query.replaceAll("[^a-zA-Z0-9가-힣]", "").trim();
 
         // 초성 변환 및 공백 처리
         String chosungQuery = HangulUtils.getChosung(query).replaceAll("[^ㄱ-ㅎ]", "").trim(); // 초성에서 공백 제거
 
-        List<SearchEntity> searchEntities;
+        Page<SearchEntity> searchEntities;
 
         if ("chosung".equals(searchType)) {
-            // 초성 검색 (공백 제거된 초성 컬럼 비교)
-            searchEntities = searchRepository.findByMovieNmChosungIgnoreSpace(chosungQuery);
+            // 초성 검색 (페이징 적용)
+            searchEntities = searchRepository.findByMovieNmChosungIgnoreSpace(chosungQuery, pageable);
         } else {
-            // 일반 검색
-            searchEntities = searchRepository.findByMovieNmContaining(normalizedQuery);
+            // 일반 검색 (페이징 적용)
+            searchEntities = searchRepository.findByMovieNmContaining(normalizedQuery, pageable);
         }
 
-        // `searchEntities`에서 `MovieEntity` 조회 후 `SearchDto` 변환
-        List<MovieEntity> movieEntities = searchEntities.stream()
-                .map(searchEntity -> {
-                    String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
-                    return movieRepository.findByMovieNmAndOpenDt(searchEntity.getMovieNm(), formattedOpenDt);
-                })
-                .filter(Optional::isPresent) // 존재하는 경우만 가져오기
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        return searchEntities.map(searchEntity -> {
+            String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
 
-        return searchEntities.stream()
-                .map(searchEntity -> {
-                    String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
-                    Optional<MovieEntity> movieEntityOpt = movieRepository
-                            .findByMovieNmAndOpenDt(searchEntity.getMovieNm(), formattedOpenDt);
+            // 최신 MovieEntity 조회
+            List<MovieEntity> movieEntities = movieRepository
+                    .findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(searchEntity.getMovieNm(), formattedOpenDt);
 
-                    if (movieEntityOpt.isPresent()) {
-                        MovieEntity movie = movieEntityOpt.get();
-                        logger.info("[MovieEntity 사용] {} ({})", movie.getMovieNm(), movie.getMovieCd());
-
-                        return SearchDto.builder()
-                                .movieCd(movie.getMovieCd())
-                                .movieNm(movie.getMovieNm())
-                                .openDt(movie.getOpenDt())
-                                .directors(movie.getDirector())
-                                .genreAlt(movie.getGenres())
-                                .watchGradeNm(movie.getWatchGradeNm())
-                                .runTime(movie.getRunTime())
-                                .overview(movie.getOverview())
-                                .poster_path(movie.getPoster_path())
-                                .backdrop_path(movie.getBackdrop_path())
-                                .build();
-                    } else {
-                        logger.info("[SearchEntity 사용] {} ({})", searchEntity.getMovieNm(), searchEntity.getMovieCd());
-
-                        return SearchDto.builder()
-                                .movieCd(searchEntity.getMovieCd())
-                                .movieNm(searchEntity.getMovieNm())
-                                .openDt(formattedOpenDt)
-                                .directors(searchEntity.getDirectors())
-                                .genreAlt(searchEntity.getGenreAlt())
-                                .watchGradeNm(searchEntity.getWatchGradeNm())
-                                .runTime(searchEntity.getRunTime())
-                                .overview(searchEntity.getOverview())
-                                .poster_path(searchEntity.getPoster_path())
-                                .backdrop_path(searchEntity.getBackdrop_path())
-                                .build();
-                    }
-                })
-                .collect(Collectors.toList());
+            if (!movieEntities.isEmpty()) {
+                MovieEntity latestMovie = movieEntities.get(0); // 최신 데이터 선택
+                return SearchDto.builder()
+                        .movieCd(latestMovie.getMovieCd())
+                        .movieNm(latestMovie.getMovieNm())
+                        .openDt(latestMovie.getOpenDt())
+                        .directors(latestMovie.getDirector())
+                        .genreAlt(latestMovie.getGenres())
+                        .watchGradeNm(latestMovie.getWatchGradeNm())
+                        .runTime(latestMovie.getRunTime())
+                        .overview(latestMovie.getOverview())
+                        .poster_path(latestMovie.getPoster_path())
+                        .backdrop_path(latestMovie.getBackdrop_path())
+                        .build();
+            } else {
+                return SearchDto.builder()
+                        .movieCd(searchEntity.getMovieCd())
+                        .movieNm(searchEntity.getMovieNm())
+                        .openDt(formattedOpenDt)
+                        .directors(searchEntity.getDirectors())
+                        .genreAlt(searchEntity.getGenreAlt())
+                        .watchGradeNm(searchEntity.getWatchGradeNm())
+                        .runTime(searchEntity.getRunTime())
+                        .overview(searchEntity.getOverview())
+                        .poster_path(searchEntity.getPoster_path())
+                        .backdrop_path(searchEntity.getBackdrop_path())
+                        .build();
+            }
+        });
     }
 
     /**
@@ -324,4 +312,53 @@ public class SearchServiceImpl implements SearchService {
         int year = Integer.parseInt(openDt.substring(0, 4)); // openDt에서 연도만 추출
         return year >= 2000;
     }
+
+    @Override
+    public Page<SearchDto> searchAllList(Pageable pageable) {
+        // `SearchEntity` 목록 가져오기 (페이징 적용)
+        Page<SearchEntity> searchEntities = searchRepository.findAll(pageable);
+
+        // `SearchEntity`를 `SearchDto`로 변환
+        Page<SearchDto> resultPage = searchEntities.map(searchEntity -> {
+            String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
+
+            // 최신 `MovieEntity` 조회
+            List<MovieEntity> movieEntities = movieRepository
+                    .findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(searchEntity.getMovieNm(), formattedOpenDt);
+
+            if (!movieEntities.isEmpty()) {
+                // 가장 최신 MovieEntity 데이터 사용
+                MovieEntity latestMovie = movieEntities.get(0);
+                return SearchDto.builder()
+                        .movieCd(latestMovie.getMovieCd())
+                        .movieNm(latestMovie.getMovieNm())
+                        .openDt(latestMovie.getOpenDt())
+                        .directors(latestMovie.getDirector())
+                        .genreAlt(latestMovie.getGenres())
+                        .watchGradeNm(latestMovie.getWatchGradeNm())
+                        .runTime(latestMovie.getRunTime())
+                        .overview(latestMovie.getOverview())
+                        .poster_path(latestMovie.getPoster_path())
+                        .backdrop_path(latestMovie.getBackdrop_path())
+                        .build();
+            } else {
+                // MovieEntity에 데이터가 없으면 SearchEntity 사용
+                return SearchDto.builder()
+                        .movieCd(searchEntity.getMovieCd())
+                        .movieNm(searchEntity.getMovieNm())
+                        .openDt(formattedOpenDt)
+                        .directors(searchEntity.getDirectors())
+                        .genreAlt(searchEntity.getGenreAlt())
+                        .watchGradeNm(searchEntity.getWatchGradeNm())
+                        .runTime(searchEntity.getRunTime())
+                        .overview(searchEntity.getOverview())
+                        .poster_path(searchEntity.getPoster_path())
+                        .backdrop_path(searchEntity.getBackdrop_path())
+                        .build();
+            }
+        });
+
+        return resultPage;
+    }
+
 }

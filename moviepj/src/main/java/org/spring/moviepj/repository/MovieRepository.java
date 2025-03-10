@@ -33,4 +33,13 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 
     @Query("SELECT m FROM MovieEntity m WHERE DATE(m.createTime) >= :latestCreateDate ORDER BY m.createTime ASC")
     List<MovieEntity> findNewMoviesAfter(@Param("latestCreateDate") LocalDate latestCreateDate);
+
+    @Query("SELECT m FROM MovieEntity m " +
+            "WHERE m.movieNm = :movieNm " +
+            "AND m.openDt = :openDt " +
+            "ORDER BY m.createTime DESC")
+    List<MovieEntity> findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(
+            @Param("movieNm") String movieNm,
+            @Param("openDt") String openDt);
+
 }
