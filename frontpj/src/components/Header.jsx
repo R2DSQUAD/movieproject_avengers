@@ -76,20 +76,33 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
 
 
   const handleSearch = (e) => {
-    if (e.key === "Enter" && searchQuery.trim() !== "") {
-       const trimmedSearchQuery = searchQuery.trim().replace(/\s/g, ""); // 검색어 공백 제거
-      const isChosung = isChosungOnly(trimmedSearchQuery);
-      let queryToUse = trimmedSearchQuery;
-      let searchType = "normal"; // 기본값은 전체 검색
+    // 클릭 이벤트 또는 Enter 키 입력이 있을 때
+    switch (e.type) {
+        case "click":
+        case "keydown":
+            // Enter 키일 때만 처리 (클릭일 때는 조건이 필요 없으므로)
+            if (e.type === "keydown" && e.key !== "Enter") return;
 
-      if (isChosung) {
-        queryToUse = Hangul.getChoseong(trimmedSearchQuery); // 초성으로 변환 //수정
-        searchType = "chosung"; // 초성 검색으로 변경
-      }
+            if (searchQuery.trim() !== "") {
+                const isChosung = isChosungOnly(searchQuery.trim());
+                let queryToUse = searchQuery;
+                let searchType = "normal";
 
-      navigate(`/movie/search?query=${encodeURIComponent(queryToUse)}&searchType=${searchType}`);
+                if (isChosung) {
+                    queryToUse = Hangul.getChoseong(searchQuery.trim());
+                    searchType = "chosung";
+                }
+
+                navigate(`/movie/search?query=${encodeURIComponent(queryToUse)}&searchType=${searchType}`);
+            }
+            break;
+
+        // 다른 이벤트를 추가할 경우
+        default:
+            break;
     }
-  }
+};
+  
 
   return (
     <header>
@@ -127,7 +140,7 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
           <input type="text" name="search" id="search" placeholder="search"
             value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearch} />
-          <img src="/image/search.svg" alt="search" className="search-icon" />
+          <img src="/image/search.svg" alt="search" className="search-icon" onClick={handleSearch}/>
         </div>
         {isLoggedIn ? (
           <div className="member-info" ref={memberInfoRef} onClick={memberInfoOnClick}>

@@ -1,36 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import * as Hangul from 'es-hangul';
 
 const Search = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const searchQuery = queryParams.get("query") || "";
-    const searchType = queryParams.get("searchType") || "normal";
+    const initialSearchQuery = queryParams.get("query") || "";
+    const initialSearchType = queryParams.get("searchType") || "normal";
+    const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+    const [searchType, setSearchType] = useState(initialSearchType);
     const [movies, setMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
+    // 초성 여부 판단 함수
+    const isChosungOnly = (text) => {
+        // 정규 표현식: ㄱ-ㅎ, ㄳ, ㄵ, ㄶ, ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, ㅄ
+        const chosungRegex = /^[ㄱ-ㅎ]+$/;
+        return chosungRegex.test(text);
+    };
+
     useEffect(() => {
-        if (!searchQuery) {
-          setMovies([]);
-          return;
-        }
-        const fetchMovies = async () => {
+        const processSearch = async (query, type) => {
+            if (!query) {
+                setMovies([]);
+                return;
+            }
+
             setIsLoading(true);
             try {
-                setMovies([]); // 기존 검색 결과 초기화 (중복 방지)
-                const response = await axios.get(`http://localhost:8090/api/search?query=${encodeURIComponent(searchQuery)}&searchType=${searchType}`);
+                setMovies([]);
+                let queryToUse = query;
+                let currentSearchType = type;
+                const trimmedSearchQuery = query.trim(); // 검색어 공백 제거
+                
+                if (isChosungOnly(trimmedSearchQuery)) {
+                    queryToUse = Hangul.getChoseong(trimmedSearchQuery);
+                    currentSearchType = "chosung";
+                    setSearchType(currentSearchType);
+                } else {
+                    currentSearchType = "normal";
+                    setSearchType(currentSearchType);
+                }
+
+                const response = await axios.get(
+                    `http://localhost:8090/api/search?query=${encodeURIComponent(queryToUse)}&searchType=${currentSearchType}`
+                );
                 setMovies(response.data);
             } catch (error) {
                 console.error("영화 검색 실패:", error);
-            }finally{
+            } finally {
                 setIsLoading(false);
             }
         };
 
+        processSearch(searchQuery, searchType);
+    }, [searchQuery, searchType]);
 
-        fetchMovies();
-    }, [searchQuery,searchType]);
+    useEffect(() => {
+        setSearchQuery(initialSearchQuery);
+        setSearchType(initialSearchType);
+    }, [initialSearchQuery, initialSearchType]);
 
     return (
         <div>
@@ -39,7 +69,7 @@ const Search = () => {
             {!isLoading && movies.length > 0 && (
                 <ul>
                     {movies.map((movie) => (
-                        <li key={`${movie.movieNm}-${movie.openDt || "unknown"}`}>
+                        <li key={`${movie.movieCd}`}>
                             <img
                                 src={movie.poster_path || "https://via.placeholder.com/100"}
                                 alt={movie.movieNm}

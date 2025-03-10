@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { LiteYoutubeEmbed } from "react-lite-yt-embed";
 import { useCountUp } from "../../hooks/useCountup";
@@ -12,6 +12,7 @@ const MovieDetail = () => {
   const [selectedTrailerId, setSelectedTrailerId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const trailerSpanRefs = useRef([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,6 +76,41 @@ const MovieDetail = () => {
 
     fetchData();
   }, [movieCd]);
+
+  useEffect(() => {
+    const adjustFontSize = (span) => {
+      if (!span) return;
+
+      const parentWidth = span.parentElement.offsetWidth;
+      const spanWidth = span.offsetWidth;
+      let fontSize = 16;
+
+      if (parentWidth < spanWidth) {
+        fontSize = Math.floor((parentWidth / spanWidth) * 16);
+      }
+
+      if (fontSize > 16) {
+        fontSize = 16;
+      }
+      span.style.fontSize = `${fontSize}px`;
+    };
+
+    // Adjust font size for all trailers
+    const spans = trailerSpanRefs.current;
+    spans.forEach(adjustFontSize);
+    
+
+    // Handle window resize
+    const handleResize = () => {
+      spans.forEach(adjustFontSize);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [trailers]); // Adjust font size when trailers change
 
   const handleThumbnailClick = (id) => {
     setSelectedTrailerId(id);
@@ -158,7 +194,9 @@ const MovieDetail = () => {
                     onClick={() => handleThumbnailClick(el.url)}
                     className={selectedTrailerId === el.url ? "selected" : ""}
                   />
-                  <span>
+                  <span
+                    ref={(el) => (trailerSpanRefs.current[idx] = el)}
+                  >
                     {el.name.replace("[" + movieInfo.movieNm + "]", "").trim()}
                   </span>
                 </li>
