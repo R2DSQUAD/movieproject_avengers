@@ -147,4 +147,30 @@ public class PaymentServiceImpl implements PaymentService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PaymentDto> paymentList() {
+        List<PaymentEntity> paymentEntities = paymentRepository.findAll();
+
+        return paymentEntities.stream()
+                .map(el -> PaymentDto.builder()
+                        .seatNumber(el.getCartItemEntity().getSeatNumber())
+                        .screeningDate(el.getCartItemEntity().getScreeningEntity().getScreeningDate().toString())
+                        .screeningTime(el.getCartItemEntity().getScreeningEntity().getScreeningTime().toString())
+                        .screeningEndTime(el.getCartItemEntity().getScreeningEntity().getScreeningEndTime().toString())
+                        .theaterName(el.getCartItemEntity().getScreeningEntity().getTheaterEntity().getName())
+                        .cinemaName(el.getCartItemEntity().getScreeningEntity().getTheaterEntity().getCinemaEntity()
+                                .getCinemaName())
+                        .movieNm(el.getCartItemEntity().getScreeningEntity().getMovieEntity().getMovieNm())
+                        .posterPath(el.getCartItemEntity().getScreeningEntity().getMovieEntity().getPoster_path())
+                        .totalAmount(el.getTotalAmount())
+                        .paymentMethod(el.getPaymentMethod())
+                        .email(el.getMemberEntity().getEmail())
+                        .createTime(el.getCreateTime())
+                        .updateTime(el.getUpdateTime())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }

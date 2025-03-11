@@ -22,6 +22,9 @@ const AdminLeft = () => {
         <li>
           <Link to="/admin/chatbot">챗봇 관리</Link>
         </li>
+        <li>
+          <Link to="/admin/paymentList">결제 관리</Link>
+        </li>
       </ul>
     </div>
   );
