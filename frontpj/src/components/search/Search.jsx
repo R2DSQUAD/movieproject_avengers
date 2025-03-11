@@ -16,6 +16,7 @@ const Search = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [sortOption, setSortOption] = useState("release"); // 기본값은 개봉일 순
 
     const isChosungOnly = (text) => {
         const chosungRegex = /^[ㄱ-ㅎ]+$/;
@@ -30,7 +31,7 @@ const Search = () => {
                 let response;
 
                 if (!searchQuery) {
-                    response = await axios.get(`http://localhost:8090/api/searchList?page=${page}`);
+                    response = await axios.get(`http://localhost:8090/api/searchList?page=${page}&sortOption=${sortOption}`);
                 } else {
                     let queryToUse = searchQuery.trim(); // 검색어 공백 제거
                     let currentSearchType = searchType;
@@ -45,12 +46,11 @@ const Search = () => {
                     }
 
                     response = await axios.get(
-                        `http://localhost:8090/api/search?query=${encodeURIComponent(queryToUse)}&searchType=${currentSearchType}&page=${page}`
+                        `http://localhost:8090/api/search?query=${encodeURIComponent(queryToUse)}&searchType=${currentSearchType}&page=${page}&sortOption=${sortOption}`
                     );
                 }
 
                 const { content, totalPages } = response.data;
-
 
                 setMovies(content);
                 setTotalPages(totalPages);
@@ -62,7 +62,7 @@ const Search = () => {
         };
 
         fetchMovies();
-    }, [searchQuery, searchType, page]);
+    }, [searchQuery, searchType, page, sortOption]);
 
     useEffect(() => {
         setSearchQuery(initialSearchQuery);
@@ -87,17 +87,34 @@ const Search = () => {
         return <span>{title}</span>;
     };
 
+<<<<<<< HEAD
+    const handleMovieClick = (movieCd, openDt) => {
+        const isMovieEntity = /^\d{4}-\d{2}-\d{2}$/.test(openDt); // openDt가 YYYY-MM-DD 형식이면 MovieEntity로 간주
+        const url = isMovieEntity ? `/movie/detail/${movieCd}` : `/search/detail/${movieCd}`;
+        navigate(url);  // 해당 URL로 이동
+=======
 
     const handleMovieClick = (movieCd) => {
         navigate(`/movie/detail/${movieCd}`);
+>>>>>>> dev
     };
 
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+        setPage(0); // 정렬 옵션 변경 시 페이지를 0으로 초기화
+    };
 
 
 
 
     return (
         <div className="search-content">
+            <div className="sort-options">
+                <select value={sortOption} onChange={handleSortChange}>
+                    <option value="release">개봉일 순</option>
+                    <option value="alphabetical">가나다 순</option>
+                </select>
+            </div>
             {isLoading && <p>검색 중입니다... 조금만 기다려주세요</p>}
 
             {!isLoading && movies.length > 0 && (

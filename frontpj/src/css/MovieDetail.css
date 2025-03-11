@@ -1,6 +1,22 @@
 @import url('../css/MainContent.css');
 
-.moviedetail-content {
+.content .main .main-con .leftBar .leftBar-con {
+  position: relative;
+}
+
+.share-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;   
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  padding: 5px;
+  box-sizing: border-box;
+ }
+
+.movieDetail-content {
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -15,17 +31,17 @@
   justify-content: center;
 }
 
-body.dark .moviedetail-content {
+body.dark .movieDetail-content {
   background-color: var(--color-dark-3);
 }
 
 
-.moviedetail-content>.video-container {
+.movieDetail-content>.video-container {
   width: 100%;
   max-width: 800px;
 }
 
-.moviedetail-content>ul {
+.movieDetail-content>ul {
   display: grid;
   gap: 10px;
   overflow-x: auto; /* 가로 스크롤 가능하도록 */
@@ -38,7 +54,7 @@ body.dark .moviedetail-content {
   position: relative;
 }
 
-.moviedetail-content>ul>li {
+.movieDetail-content>ul>li {
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
@@ -48,7 +64,7 @@ body.dark .moviedetail-content {
   gap: 30px;
 }
 
-.moviedetail-content>ul>li>img {
+.movieDetail-content>ul>li>img {
   width: 100%;
   max-width: 300px;
   min-width: 300px;
@@ -61,10 +77,10 @@ body.dark .moviedetail-content {
   cursor: pointer;
 }
 
-.moviedetail-content>ul>li>img:hover {
+.movieDetail-content>ul>li>img:hover {
   transform: scale(1.03);
 }
 
-.moviedetail-content>ul>li>img.selected {
+.movieDetail-content>ul>li>img.selected {
   border: 3px solid var(--color-red);
 }

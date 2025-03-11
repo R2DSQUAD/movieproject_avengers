@@ -197,6 +197,7 @@ const Screening = () => {
                   <img
                     src={screenings[0].movieEntity.poster_path}
                     alt={screenings[0].movieEntity.movieNm}
+                    className="poster"
                   />
                   <div className="movie-info">
                     <div>

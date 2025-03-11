@@ -106,7 +106,8 @@ const ScreeningSeat = () => {
         <div className="main-con">
           <div className="leftBar">
             <div className="leftBar-con">
-              <img src={movieEntity.poster_path} alt={movieEntity.movieNm} />
+              <img src={movieEntity.poster_path} alt={movieEntity.movieNm} className="poster"/>
+              
               <div className="movie-info">
                 <div>
                   <h3>제목</h3>

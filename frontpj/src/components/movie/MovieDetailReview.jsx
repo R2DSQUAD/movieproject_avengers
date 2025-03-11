@@ -97,7 +97,7 @@ const MovieDetailReview = () => {
           <div className="leftBar">
             <div className="leftBar-con">
               {movieInfo && movieInfo.poster_path && (
-                <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
+                <img src={movieInfo.poster_path} alt={movieInfo.movieNm} className="poster" />
               )}
               <div className="movie-info">
                 <div>

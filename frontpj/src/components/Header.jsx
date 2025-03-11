@@ -153,7 +153,9 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
             <div className={`member-info-con ${isMemberInfoActive ? 'active' : ''}`}>
               <Link to="/member/detail">내 정보</Link>
               <Link to="/cart/myCartList">장바구니</Link>
+              <Link to="/member/myPaymentList">결제내역</Link>
               <Link to="/chatroom">실시간채팅</Link>
+              <Link to="/member/myChatList">채팅내역</Link>
               <span onClick={handleLogout}>로그아웃</span>
             </div>
           </div>

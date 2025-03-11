@@ -105,6 +105,11 @@ const Komoran = () => {
   const [lastBotMessageIndex, setLastBotMessageIndex] = useState(null);
   const bodyRef = useRef(null);
   const mapRef = useRef(null); // Ref to track the map div
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   // 카카오맵 스크립트 로드
   const loadKakaoMapScript = useCallback(() => {
@@ -334,7 +339,8 @@ const Komoran = () => {
               if (e.key === "Enter") {
                 handleSendMessage(message);
               }
-            }} autofocus
+            }}
+            ref={inputRef}
           />
           <button onClick={handleButtonClick}>전송</button>
         </div>

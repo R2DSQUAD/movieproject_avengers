@@ -173,11 +173,9 @@ const MovieDetail = () => {
           <div className="leftBar">
             <div className="leftBar-con">
               {movieInfo && movieInfo.poster_path && (
-                <img src={movieInfo.poster_path} alt={movieInfo.movieNm} />
+                <img src={movieInfo.poster_path} alt={movieInfo.movieNm} className="poster" />
               )}
-              <p onClick={shareOnKakao} style={{ cursor: "pointer" }}>
-                카카오톡 공유하기
-              </p>
+              <img src="/image/share.svg" alt="공유하기" className="share-icon" onClick={shareOnKakao}/>
 
               <div className="movie-info">
                 <div>
@@ -213,9 +211,7 @@ const MovieDetail = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="moviedetail-content">
+          <div className="movieDetail-content">
           <span>줄거리</span>
           <p>{movieInfo.overview}</p>
           {selectedTrailerId && (
@@ -250,6 +246,7 @@ const MovieDetail = () => {
               </li>
             ))}
           </ul>
+        </div>
         </div>
       </div>
     </div>
