@@ -87,16 +87,10 @@ const Search = () => {
         return <span>{title}</span>;
     };
 
-<<<<<<< HEAD
-    const handleMovieClick = (movieCd, openDt) => {
-        const isMovieEntity = /^\d{4}-\d{2}-\d{2}$/.test(openDt); // openDt가 YYYY-MM-DD 형식이면 MovieEntity로 간주
-        const url = isMovieEntity ? `/movie/detail/${movieCd}` : `/search/detail/${movieCd}`;
-        navigate(url);  // 해당 URL로 이동
-=======
 
     const handleMovieClick = (movieCd) => {
         navigate(`/movie/detail/${movieCd}`);
->>>>>>> dev
+
     };
 
     const handleSortChange = (e) => {
