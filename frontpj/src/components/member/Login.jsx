@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginPostAsync } from "../../slices/loginSlice";
@@ -16,6 +16,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPw, setShowPw] = useState(false);
+  const inputRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +31,10 @@ const Login = () => {
       handleClickLogin();
     }
   };
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -78,6 +83,7 @@ const Login = () => {
             value={loginParam.email}
             onChange={handleChange}
             onKeyDown={activeEnter}
+            ref={inputRef}
           />
         </div>
         <div className="password">

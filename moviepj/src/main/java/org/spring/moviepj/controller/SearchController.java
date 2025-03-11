@@ -8,6 +8,7 @@ import org.spring.moviepj.entity.SearchTrailerEntity;
 import org.spring.moviepj.repository.SearchTrailerRepository;
 import org.spring.moviepj.service.impl.SearchServiceImpl;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -33,17 +34,31 @@ public class SearchController {
     public ResponseEntity<Page<SearchDto>> searchMovies(
             @RequestParam(name = "query") String query,
             @RequestParam(name = "searchType", defaultValue = "normal") String searchType,
-            @PageableDefault(page = 0, size = 8, sort = "openDt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @RequestParam(name = "sortOption", defaultValue = "release") String sortOption,
+            @PageableDefault(page = 0, size = 8) Pageable pageable) {
 
-        Page<SearchDto> searchDtos = searchServiceImpl.searchMovieList(query, searchType, pageable);
+        Sort sort = Sort.by(Sort.Order.desc("openDt")); // 기본적으로 개봉순 내림차순
+        if ("alphabetical".equals(sortOption)) {
+            sort = Sort.by(Sort.Order.asc("movieNm")); // 가나다 순 오름차순
+        }
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<SearchDto> searchDtos = searchServiceImpl.searchMovieList(query, searchType, sortedPageable);
         return ResponseEntity.ok(searchDtos);
     }
 
     @GetMapping("/searchList")
     public ResponseEntity<Page<SearchDto>> searchList(
-            @PageableDefault(page = 0, size = 8, sort = "openDt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @RequestParam(name = "sortOption", defaultValue = "release") String sortOption,
+            @PageableDefault(page = 0, size = 8) Pageable pageable) {
 
-        Page<SearchDto> searchDtos = searchServiceImpl.searchAllList(pageable);
+        Sort sort = Sort.by(Sort.Order.desc("openDt")); // 기본적으로 개봉순 내림차순
+        if ("alphabetical".equals(sortOption)) {
+            sort = Sort.by(Sort.Order.asc("movieNm")); // 가나다 순 오름차순
+        }
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<SearchDto> searchDtos = searchServiceImpl.searchAllList(sortedPageable);
 
         return ResponseEntity.ok(searchDtos);
     }

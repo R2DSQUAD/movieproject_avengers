@@ -92,7 +92,7 @@ const SearchMovieDetail = () => {
                     </div>
                 </div>
 
-                <div className="moviedetail-content">
+                <div className="movieDetail-content">
                     <span>줄거리</span>
                     <p>{movieInfo.overview}</p>
 

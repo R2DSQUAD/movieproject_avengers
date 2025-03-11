@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/MyMemberInfo.css";
 import jwtAxios from "../../util/jwtUtil";
 
 const MyMemberInfo = () => {
+  const navigate = useNavigate();
   const [member, setMember] = useState(null);
   const [groupedPayments, setGroupedPayments] = useState({});
   const [expandedGroup, setExpandedGroup] = useState(null);
@@ -15,11 +16,19 @@ const MyMemberInfo = () => {
     newPassword: "",
     confirmPassword: "",
   });
-  const navigate = useNavigate();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (showUpdateModal && inputRef.current && !isVerified) {
+      inputRef.current.focus();
+    }
+  }, [showUpdateModal, isVerified]);
 
   const fetchMemberInfo = async () => {
     try {
-      const response = await jwtAxios.get("http://localhost:8090/api/myinfo/detail");
+      const response = await jwtAxios.get(
+        "http://localhost:8090/api/myinfo/detail"
+      );
       setMember(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -33,7 +42,10 @@ const MyMemberInfo = () => {
 
   const fetchPaymentHistory = async () => {
     try {
-      const response = await jwtAxios.get("http://localhost:8090/api/payment/myPaymentList", { withCredentials: true });
+      const response = await jwtAxios.get(
+        "http://localhost:8090/api/payment/myPaymentList",
+        { withCredentials: true }
+      );
       const payments = Array.isArray(response.data) ? response.data : [];
       const grouped = payments.reduce((acc, payment) => {
         const key = payment.createTime.substring(0, 19);
@@ -106,7 +118,6 @@ const MyMemberInfo = () => {
       alert("정보 업데이트에 실패했습니다.");
     }
   };
-  
 
   return (
     <div className="memberInfo">
@@ -132,7 +143,8 @@ const MyMemberInfo = () => {
           </div>
           <div className="messages">
             <h3>메시지 목록</h3>
-            {member.chatMessageEntities && member.chatMessageEntities.length > 0 ? (
+            {member.chatMessageEntities &&
+            member.chatMessageEntities.length > 0 ? (
               <ul>
                 {member.chatMessageEntities.map((message, index) => (
                   <li key={index}>
@@ -146,78 +158,110 @@ const MyMemberInfo = () => {
               <p>메시지가 없습니다.</p>
             )}
           </div>
-
         </div>
       ) : (
         <span>사용자 정보를 불러오는 중입니다...</span>
       )}
-{showUpdateModal && (
-  <div className="modal">
-    <div className="modal-content">
-      {!isVerified ? (
-        <div>
-          <h3>현재 비밀번호 확인</h3>
-          <input
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            placeholder="현재 비밀번호"
-          />
-          <div className="modal-actions">
-            <button onClick={handleVerifyPassword}>확인</button>
-            <button onClick={() => setShowUpdateModal(false)}>취소</button>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <h3>정보 수정</h3>
-          <label>닉네임 변경:</label>
-          <input
-            type="text"
-            value={updateForm.nickname}
-            onChange={(e) => setUpdateForm({ ...updateForm, nickname: e.target.value })}
-          />
-          <label>새로운 비밀번호:</label>
-          <input
-            type="password"
-            placeholder="새 비밀번호"
-            value={updateForm.newPassword}
-            onChange={(e) => setUpdateForm({ ...updateForm, newPassword: e.target.value })}
-          />
-          <label>비밀번호 확인:</label>
-          <input
-            type="password"
-            placeholder="새 비밀번호 확인"
-            value={updateForm.confirmPassword}
-            onChange={(e) => setUpdateForm({ ...updateForm, confirmPassword: e.target.value })}
-          />
-          <div className="modal-actions">
-            <button onClick={handleUpdateMember}>수정 완료</button>
-            <button onClick={() => setShowUpdateModal(false)}>취소</button>
+      {showUpdateModal && (
+        <div className="modal">
+          <div className="modal-content">
+            {!isVerified ? (
+              <div>
+                <h3>현재 비밀번호 확인</h3>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="현재 비밀번호"
+                  ref={inputRef}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleVerifyPassword();
+                    }
+                  }}
+                />
+                <div className="modal-actions">
+                  <button onClick={() => setShowUpdateModal(false)}>
+                    취소
+                  </button>
+                  <button onClick={handleVerifyPassword}>확인</button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <h3>정보 수정</h3>
+                <label>닉네임 변경:</label>
+                <input
+                  type="text"
+                  value={updateForm.nickname}
+                  onChange={(e) =>
+                    setUpdateForm({ ...updateForm, nickname: e.target.value })
+                  }
+                />
+                <label>새로운 비밀번호:</label>
+                <input
+                  type="password"
+                  placeholder="새 비밀번호"
+                  value={updateForm.newPassword}
+                  onChange={(e) =>
+                    setUpdateForm({
+                      ...updateForm,
+                      newPassword: e.target.value,
+                    })
+                  }
+                />
+                <label>비밀번호 확인:</label>
+                <input
+                  type="password"
+                  placeholder="새 비밀번호 확인"
+                  value={updateForm.confirmPassword}
+                  onChange={(e) =>
+                    setUpdateForm({
+                      ...updateForm,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                />
+                <div className="modal-actions">
+                  <button onClick={() => setShowUpdateModal(false)}>
+                    취소
+                  </button>
+                  <button onClick={handleUpdateMember}>수정 완료</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
-    </div>
-  </div>
-)}
 
-
-<div className="paymentHistory">
+      <div className="paymentHistory">
         <h3>결제 내역</h3>
         {Object.keys(groupedPayments).length > 0 ? (
           <div className="paymentList">
             {Object.entries(groupedPayments).map(([time, group], index) => (
               <div key={index} className="paymentGroup">
-                <div className="paymentHeader" onClick={() => setExpandedGroup(expandedGroup === time ? null : time)}>
+                <div
+                  className="paymentHeader"
+                  onClick={() =>
+                    setExpandedGroup(expandedGroup === time ? null : time)
+                  }
+                >
                   <span>{new Date(time).toLocaleDateString()} 결제</span>
-                  <span className="totalAmount">{group.representativePayment.totalAmount.toLocaleString()} 원</span>
+                  <span className="totalAmount">
+                    {group.representativePayment.totalAmount.toLocaleString()}{" "}
+                    원
+                  </span>
                 </div>
 
                 {expandedGroup === time && (
                   <div className="paymentDetails">
                     {group.payments.map((payment, idx) => (
                       <div key={idx} className="paymentItem">
-                        <img src={payment.posterPath} alt={payment.movieNm} className="poster" />
+                        <img
+                          src={payment.posterPath}
+                          alt={payment.movieNm}
+                          className="poster"
+                        />
                         <div className="paymentInfo">
                           <div>
                             <strong>영화명:</strong> {payment.movieNm}
@@ -232,7 +276,8 @@ const MyMemberInfo = () => {
                             <strong>좌석:</strong> {payment.seatNumber}
                           </div>
                           <div>
-                            <strong>상영일:</strong> {payment.screeningDate} {payment.screeningTime} ~ {payment.screeningEndTime}
+                            <strong>상영일:</strong> {payment.screeningDate}{" "}
+                            {payment.screeningTime} ~ {payment.screeningEndTime}
                           </div>
                           <div>
                             <strong>결제 방법:</strong> {payment.paymentMethod}
@@ -249,7 +294,6 @@ const MyMemberInfo = () => {
           <span>결제 내역이 없습니다.</span>
         )}
       </div>
-      
     </div>
   );
 };

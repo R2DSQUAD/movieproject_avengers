@@ -149,6 +149,27 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
+    // 영화 제목 정규화 메서드 (SearchServiceImpl 내부에 추가)
+    public static String normalizeMovieTitle(String title) {
+        if (title == null) return "";
+    
+        // 소괄호 포함 내용 제거
+        title = title.replaceAll("[^a-zA-Z0-9가-힣\\s]", "");
+        title = title.replaceAll("\\(.*?\\)", "");
+    
+        // 대표적인 불필요 단어 제거
+        title = title.replaceAll("(?i)\\b극장판\\b", "");
+        title = title.replaceAll("(?i)\\b더 무비\\b", "");
+        title = title.replaceAll("(?i)\\b더무비\\b", "");
+        title = title.replaceAll("(?i)\\bthe movie\\b", "");
+    
+        // 다른 패턴도 가능
+        title = title.replaceAll("(?i)\\bmovie\\b", "");
+    
+        // 양쪽 공백 정리
+        return title.replaceAll("\\s+", " ").trim();
+    }
+
     private SearchEntity fetchTMDbDetails(SearchEntity searchEntity) {
         try {
             String encodedQuery = URLEncoder.encode(searchEntity.getMovieNm(), StandardCharsets.UTF_8);
@@ -164,11 +185,17 @@ public class SearchServiceImpl implements SearchService {
 
                     // TMDb 검색 결과 중에서 개봉일이 일치하는 영화 찾기
                     JSONObject selectedMovie = null;
+                    String normalizedKobisTitle = normalizeMovieTitle(searchEntity.getMovieNm());
+
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject movie = results.getJSONObject(i);
                         String releaseDate = movie.optString("release_date", "");
+                        String normalizedTmdbTitle = normalizeMovieTitle(movie.optString("title", ""));
 
-                        if (releaseDate.equals(formattedOpenDt)) { // 개봉일이 정확히 일치하는 경우
+                        if (releaseDate.equals(formattedOpenDt) &&
+                                (normalizedKobisTitle.equals(normalizedTmdbTitle) ||
+                                        normalizedKobisTitle.contains(normalizedTmdbTitle) ||
+                                        normalizedTmdbTitle.contains(normalizedKobisTitle))) {
                             selectedMovie = movie;
                             break;
                         }
