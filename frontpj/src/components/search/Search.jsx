@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import * as Hangul from "es-hangul";
-import "../../css/Search.css"; // CSS 파일 임포트
+import "../../css/Search.css";
 
 const Search = () => {
     const location = useLocation();
@@ -14,7 +14,6 @@ const Search = () => {
     const [searchType, setSearchType] = useState(initialSearchType);
     const [movies, setMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
@@ -31,10 +30,8 @@ const Search = () => {
                 let response;
 
                 if (!searchQuery) {
-                    // 검색어가 없으면 전체 영화 리스트를 가져옴
                     response = await axios.get(`http://localhost:8090/api/searchList?page=${page}`);
                 } else {
-                    // 검색어가 있으면 해당 조건으로 검색
                     let queryToUse = searchQuery.trim(); // 검색어 공백 제거
                     let currentSearchType = searchType;
 
@@ -47,26 +44,15 @@ const Search = () => {
                         setSearchType(currentSearchType);
                     }
 
-                    // 백엔드에서 받아오는 데이터
                     response = await axios.get(
-                        `http://localhost:8090/api/search?query=${encodeURIComponent(
-                            queryToUse
-                        )}&searchType=${currentSearchType}&page=${page}`
+                        `http://localhost:8090/api/search?query=${encodeURIComponent(queryToUse)}&searchType=${currentSearchType}&page=${page}`
                     );
                 }
 
                 const { content, totalPages } = response.data;
 
-                const filteredMovies = content.filter((movie) => movie.poster_path);
 
-                // openDt를 기준으로 내림차순 정렬 (최근 순)
-                const sortedMovies = filteredMovies.sort((a, b) => {
-                    const dateA = a.openDt ? new Date(a.openDt) : new Date(0);
-                    const dateB = b.openDt ? new Date(b.openDt) : new Date(0);
-                    return dateB - dateA;
-                });
-
-                setMovies(sortedMovies);
+                setMovies(content);
                 setTotalPages(totalPages);
             } catch (error) {
                 console.error("영화 검색 실패:", error);
@@ -76,36 +62,39 @@ const Search = () => {
         };
 
         fetchMovies();
-    }, [searchQuery, searchType, page]); // page, searchQuery, searchType가 변경될 때마다 실행
+    }, [searchQuery, searchType, page]);
 
     useEffect(() => {
         setSearchQuery(initialSearchQuery);
         setSearchType(initialSearchType);
+        setPage(0);
     }, [initialSearchQuery, initialSearchType]);
 
     const formatMovieTitle = (title) => {
         if (!title) return "";
 
-        // 제목에 :이 있을 경우만 처리
         if (title.includes(":")) {
             const parts = title.split(":");
             return (
                 <span>
-                    {parts[0]} {/* 첫 번째 부분 */}
-                    {":"} {/* :을 첫 번째 줄 끝에 추가 */}
+                    {parts[0]}:{/* 첫 번째 부분 */}
                     <br />
                     {parts[1]} {/* 두 번째 부분 */}
                 </span>
             );
         }
 
-        // :이 없으면 그대로 출력
         return <span>{title}</span>;
     };
 
-    const handleMovieClick = (movieCd) => {
-        navigate(`/movie/detail/${movieCd}`);
+
+    const handleMovieClick = (movieCd, openDt) => {
+        // openDt 값이 YYYY-MM-DD 형식이면 MovieEntity, 그렇지 않으면 SearchEntity
+        const isMovieEntity = /^\d{4}-\d{2}-\d{2}$/.test(openDt); // openDt가 YYYY-MM-DD 형식이면 MovieEntity로 간주
+        const url = isMovieEntity ? `/movie/detail/${movieCd}` : `/search/detail/${movieCd}`;
+        navigate(url);  // 해당 URL로 이동
     };
+
 
     return (
         <div className="search-content">
@@ -114,10 +103,10 @@ const Search = () => {
             {!isLoading && movies.length > 0 && (
                 <ul>
                     {movies.map((movie) => (
-                        <li key={`${movie.movieCd}`} onClick={() => handleMovieClick(movie.movieCd)} style={{ cursor: "pointer" }}>
+                        <li key={movie.movieCd} onClick={() => handleMovieClick(movie.movieCd, movie.openDt)} style={{ cursor: "pointer" }}>
                             <img
                                 className="poster"
-                                src={movie.poster_path || "https://via.placeholder.com/100"}
+                                src={movie.poster_path}
                                 alt={movie.movieNm}
                                 width="100"
                             />
@@ -136,32 +125,22 @@ const Search = () => {
                                 alt={movie.watchGradeNm}
                                 className="age-rating-icon"
                             />
-                            <span className="movie-title">
-                                {formatMovieTitle(movie.movieNm)}
-                            </span>
+                            <span className="movie-title">{formatMovieTitle(movie.movieNm)}</span>
                         </li>
                     ))}
                 </ul>
             )}
 
-            {!isLoading && movies.length === 0 && searchQuery && (
-                <p>"{searchQuery}"에 대한 검색 결과가 없습니다.</p>
-            )}
+            {!isLoading && movies.length === 0 && searchQuery && <p>"{searchQuery}"에 대한 검색 결과가 없습니다.</p>}
 
             <div className="pagination">
-                <button
-                    disabled={page === 0}
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-                >
+                <button disabled={page === 0} onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>
                     이전
                 </button>
                 <span>
                     {page + 1} / {totalPages}
                 </span>
-                <button
-                    disabled={page + 1 >= totalPages}
-                    onClick={() => setPage((prev) => prev + 1)}
-                >
+                <button disabled={page + 1 >= totalPages} onClick={() => setPage((prev) => prev + 1)}>
                     다음
                 </button>
             </div>

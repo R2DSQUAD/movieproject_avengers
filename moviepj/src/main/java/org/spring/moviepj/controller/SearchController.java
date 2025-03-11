@@ -3,6 +3,7 @@ package org.spring.moviepj.controller;
 import java.util.List;
 
 import org.spring.moviepj.dto.SearchDto;
+import org.spring.moviepj.entity.SearchEntity;
 import org.spring.moviepj.entity.SearchTrailerEntity;
 import org.spring.moviepj.repository.SearchTrailerRepository;
 import org.spring.moviepj.service.impl.SearchServiceImpl;
@@ -47,14 +48,11 @@ public class SearchController {
         return ResponseEntity.ok(searchDtos);
     }
 
-    @GetMapping("/searchTrailerList/{movieCd}")
-    public ResponseEntity<List<SearchTrailerEntity>> getSearchTrailers(@PathVariable String movieCd) {
-        List<SearchTrailerEntity> trailers = searchTrailerRepository.findByMovieCd(movieCd);
+    @GetMapping("/searchDetail/{movieCd}")
+    public ResponseEntity<?> searchDetail(@PathVariable String movieCd) {
+        SearchDto searchDto = searchServiceImpl.searchDetail(movieCd);
 
-        if (trailers.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.ok(trailers);
+        return ResponseEntity.ok(searchDto);
     }
 
 }

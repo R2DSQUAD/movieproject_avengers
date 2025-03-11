@@ -14,4 +14,6 @@ public interface SearchService {
 
     Page<SearchDto> searchAllList(Pageable pageable);
 
+    SearchDto searchDetail(String movieCd);
+
 }

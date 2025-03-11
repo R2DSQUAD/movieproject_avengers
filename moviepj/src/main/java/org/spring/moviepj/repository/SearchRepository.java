@@ -1,6 +1,7 @@
 package org.spring.moviepj.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.spring.moviepj.entity.SearchEntity;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,9 @@ public interface SearchRepository extends JpaRepository<SearchEntity, Long> {
 
     List<SearchEntity> findByMovieNmChosungIsNull();
 
-    Page<SearchEntity> findAll(Pageable pageable);
+    @Query("SELECT s FROM SearchEntity s WHERE s.poster_path IS NOT NULL")
+    Page<SearchEntity> findAllByPosterPathIsNotNull(Pageable pageable);
+
+    Optional<SearchEntity> findByMovieCd(String movieCd);
 
 }
