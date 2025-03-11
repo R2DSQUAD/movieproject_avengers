@@ -27,6 +27,7 @@ const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
 const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 const KakaoRedirectPage = lazy(() => import("../pages/member/KakaoRedirectPage"));
 const SearchPage = lazy(() => import("../pages/search/SearchPage"));
+const MyPaymentListPage = lazy(() => import("../pages/member/MyPaymentListPage"));
 
 
 
@@ -164,6 +165,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <MyMemberInfoPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "member/myPaymentList",
+        element: (
+          <Suspense fallback={Loading}>
+            <MyPaymentListPage />
           </Suspense>
         ),
       },

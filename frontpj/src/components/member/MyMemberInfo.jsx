@@ -6,8 +6,6 @@ import jwtAxios from "../../util/jwtUtil";
 const MyMemberInfo = () => {
   const navigate = useNavigate();
   const [member, setMember] = useState(null);
-  const [groupedPayments, setGroupedPayments] = useState({});
-  const [expandedGroup, setExpandedGroup] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -40,30 +38,8 @@ const MyMemberInfo = () => {
     }
   };
 
-  const fetchPaymentHistory = async () => {
-    try {
-      const response = await jwtAxios.get(
-        "http://localhost:8090/api/payment/myPaymentList",
-        { withCredentials: true }
-      );
-      const payments = Array.isArray(response.data) ? response.data : [];
-      const grouped = payments.reduce((acc, payment) => {
-        const key = payment.createTime.substring(0, 19);
-        if (!acc[key]) {
-          acc[key] = { representativePayment: payment, payments: [] };
-        }
-        acc[key].payments.push(payment);
-        return acc;
-      }, {});
-      setGroupedPayments(grouped);
-    } catch (error) {
-      console.error("결제 내역 가져오는 중 오류 발생:", error);
-    }
-  };
-
   useEffect(() => {
     fetchMemberInfo();
-    fetchPaymentHistory();
   }, []);
 
   const handleOpenUpdateModal = () => {
@@ -92,7 +68,6 @@ const MyMemberInfo = () => {
   };
 
   const handleUpdateMember = async () => {
-    // 새 비밀번호가 입력된 경우에만 검증 진행
     if (updateForm.newPassword) {
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
       if (!passwordRegex.test(updateForm.newPassword)) {
@@ -108,7 +83,7 @@ const MyMemberInfo = () => {
       await jwtAxios.put("http://localhost:8090/api/myinfo/update", {
         currentPassword: currentPassword,
         nickname: updateForm.nickname,
-        newPassword: updateForm.newPassword, // 만약 비어있다면 백엔드에서 비밀번호 변경 없이 닉네임만 업데이트 처리하도록 함
+        newPassword: updateForm.newPassword,
       });
       alert("정보가 업데이트되었습니다.");
       setShowUpdateModal(false);
@@ -141,27 +116,11 @@ const MyMemberInfo = () => {
             <span>권한</span>
             <span>{member.roleNames.join(", ")}</span>
           </div>
-          <div className="messages">
-            <h3>메시지 목록</h3>
-            {member.chatMessageEntities &&
-            member.chatMessageEntities.length > 0 ? (
-              <ul>
-                {member.chatMessageEntities.map((message, index) => (
-                  <li key={index}>
-                    <div className="message">
-                      <span className="messageContent">{message.content}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>메시지가 없습니다.</p>
-            )}
-          </div>
         </div>
       ) : (
         <span>사용자 정보를 불러오는 중입니다...</span>
       )}
+
       {showUpdateModal && (
         <div className="modal">
           <div className="modal-content">
@@ -180,120 +139,18 @@ const MyMemberInfo = () => {
                     }
                   }}
                 />
-                <div className="modal-actions">
-                  <button onClick={() => setShowUpdateModal(false)}>
-                    취소
-                  </button>
-                  <button onClick={handleVerifyPassword}>확인</button>
-                </div>
+                <button onClick={() => setShowUpdateModal(false)}>취소</button>
+                <button onClick={handleVerifyPassword}>확인</button>
               </div>
             ) : (
               <div>
                 <h3>정보 수정</h3>
-                <label>닉네임 변경:</label>
-                <input
-                  type="text"
-                  value={updateForm.nickname}
-                  onChange={(e) =>
-                    setUpdateForm({ ...updateForm, nickname: e.target.value })
-                  }
-                />
-                <label>새로운 비밀번호:</label>
-                <input
-                  type="password"
-                  placeholder="새 비밀번호"
-                  value={updateForm.newPassword}
-                  onChange={(e) =>
-                    setUpdateForm({
-                      ...updateForm,
-                      newPassword: e.target.value,
-                    })
-                  }
-                />
-                <label>비밀번호 확인:</label>
-                <input
-                  type="password"
-                  placeholder="새 비밀번호 확인"
-                  value={updateForm.confirmPassword}
-                  onChange={(e) =>
-                    setUpdateForm({
-                      ...updateForm,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                />
-                <div className="modal-actions">
-                  <button onClick={() => setShowUpdateModal(false)}>
-                    취소
-                  </button>
-                  <button onClick={handleUpdateMember}>수정 완료</button>
-                </div>
+                <button onClick={handleUpdateMember}>수정 완료</button>
               </div>
             )}
           </div>
         </div>
       )}
-
-      <div className="paymentHistory">
-        <h3>결제 내역</h3>
-        {Object.keys(groupedPayments).length > 0 ? (
-          <div className="paymentList">
-            {Object.entries(groupedPayments).map(([time, group], index) => (
-              <div key={index} className="paymentGroup">
-                <div
-                  className="paymentHeader"
-                  onClick={() =>
-                    setExpandedGroup(expandedGroup === time ? null : time)
-                  }
-                >
-                  <span>{new Date(time).toLocaleDateString()} 결제</span>
-                  <span className="totalAmount">
-                    {group.representativePayment.totalAmount.toLocaleString()}{" "}
-                    원
-                  </span>
-                </div>
-
-                {expandedGroup === time && (
-                  <div className="paymentDetails">
-                    {group.payments.map((payment, idx) => (
-                      <div key={idx} className="paymentItem">
-                        <img
-                          src={payment.posterPath}
-                          alt={payment.movieNm}
-                          className="poster"
-                        />
-                        <div className="paymentInfo">
-                          <div>
-                            <strong>영화명:</strong> {payment.movieNm}
-                          </div>
-                          <div>
-                            <strong>영화관:</strong> {payment.cinemaName}
-                          </div>
-                          <div>
-                            <strong>상영관:</strong> {payment.theaterName}
-                          </div>
-                          <div>
-                            <strong>좌석:</strong> {payment.seatNumber}
-                          </div>
-                          <div>
-                            <strong>상영일:</strong> {payment.screeningDate}{" "}
-                            {payment.screeningTime} ~ {payment.screeningEndTime}
-                          </div>
-                          <div>
-                            <strong>결제 방법:</strong> {payment.paymentMethod}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <span>결제 내역이 없습니다.</span>
-        )}
-      </div>
     </div>
   );
 };
