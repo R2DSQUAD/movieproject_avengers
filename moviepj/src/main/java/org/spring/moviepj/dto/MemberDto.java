@@ -36,8 +36,8 @@ public class MemberDto extends User {
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9]).{8,20}$", message = "비밀번호는 영문, 숫자를 포함한 8~20자로 입력해주세요.")
     private String pw; // 비밀번호
 
-    @NotBlank(message = "이름은 필수 입력 값입니다.")
-    @Pattern(regexp = "^[a-zA-Z가-힣0-9]{2,10}$", message = "이름은 한글, 영문, 숫자를 포함한 2~10자로 입력해주세요.")
+    @NotBlank(message = "닉네임은 필수 입력 값입니다.")
+    @Pattern(regexp = "^[a-zA-Z가-힣0-9]{2,10}$", message = "닉네임은 한글, 영문을 포함한 2~10자로 입력해주세요.")
     private String nickname; // 이름
 
     private boolean social; // 소셜로그인 여부
