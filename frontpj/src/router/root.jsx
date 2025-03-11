@@ -27,7 +27,7 @@ const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
 const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 const KakaoRedirectPage = lazy(() => import("../pages/member/KakaoRedirectPage"));
 const SearchPage = lazy(() => import("../pages/search/SearchPage"));
-const SearchMovieDetailPage = lazy(() => import("../pages/search/SearchMovieDetailPage"));
+
 
 
 
@@ -108,14 +108,6 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <MovieDetail />
-          </Suspense>
-        ),
-      },
-      {
-        path: "searchMovie/detail/:movieCd",
-        element: (
-          <Suspense fallback={Loading}>
-            <SearchMovieDetailPage />
           </Suspense>
         ),
       },
