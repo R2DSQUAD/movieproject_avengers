@@ -88,12 +88,12 @@ const Search = () => {
     };
 
 
-    const handleMovieClick = (movieCd, openDt) => {
-        // openDt 값이 YYYY-MM-DD 형식이면 MovieEntity, 그렇지 않으면 SearchEntity
-        const isMovieEntity = /^\d{4}-\d{2}-\d{2}$/.test(openDt); // openDt가 YYYY-MM-DD 형식이면 MovieEntity로 간주
-        const url = isMovieEntity ? `/movie/detail/${movieCd}` : `/search/detail/${movieCd}`;
-        navigate(url);  // 해당 URL로 이동
+    const handleMovieClick = (movieCd) => {
+        navigate(`/movie/detail/${movieCd}`);
     };
+
+
+
 
 
     return (
@@ -103,7 +103,7 @@ const Search = () => {
             {!isLoading && movies.length > 0 && (
                 <ul>
                     {movies.map((movie) => (
-                        <li key={movie.movieCd} onClick={() => handleMovieClick(movie.movieCd, movie.openDt)} style={{ cursor: "pointer" }}>
+                        <li key={movie.movieCd} onClick={() => handleMovieClick(movie.movieCd)} style={{ cursor: "pointer" }}>
                             <img
                                 className="poster"
                                 src={movie.poster_path}
