@@ -14,6 +14,8 @@ import org.spring.moviepj.repository.CartItemRepository;
 import org.spring.moviepj.repository.MemberRepository;
 import org.spring.moviepj.repository.PaymentRepository;
 import org.spring.moviepj.service.PaymentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -171,6 +173,35 @@ public class PaymentServiceImpl implements PaymentService {
                         .updateTime(el.getUpdateTime())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<PaymentDto> searchPaymentList(String email, String paymentMethod, Pageable pageable) {
+        Page<PaymentEntity> paymentPage;
+        if (email != null && !email.isEmpty()) {
+            paymentPage = paymentRepository.findByMemberEntityEmailContaining(email, pageable);
+        } else if (paymentMethod != null && !paymentMethod.isEmpty()) {
+            paymentPage = paymentRepository.findByPaymentMethodContaining(paymentMethod, pageable);
+        } else {
+            paymentPage = paymentRepository.findAll(pageable);
+        }
+
+        return paymentPage.map(el -> PaymentDto.builder()
+                .seatNumber(el.getCartItemEntity().getSeatNumber())
+                .screeningDate(el.getCartItemEntity().getScreeningEntity().getScreeningDate().toString())
+                .screeningTime(el.getCartItemEntity().getScreeningEntity().getScreeningTime().toString())
+                .screeningEndTime(el.getCartItemEntity().getScreeningEntity().getScreeningEndTime().toString())
+                .theaterName(el.getCartItemEntity().getScreeningEntity().getTheaterEntity().getName())
+                .cinemaName(el.getCartItemEntity().getScreeningEntity().getTheaterEntity().getCinemaEntity()
+                        .getCinemaName())
+                .movieNm(el.getCartItemEntity().getScreeningEntity().getMovieEntity().getMovieNm())
+                .posterPath(el.getCartItemEntity().getScreeningEntity().getMovieEntity().getPoster_path())
+                .totalAmount(el.getTotalAmount())
+                .paymentMethod(el.getPaymentMethod())
+                .email(el.getMemberEntity().getEmail())
+                .createTime(el.getCreateTime())
+                .updateTime(el.getUpdateTime())
+                .build());
     }
 
 }
