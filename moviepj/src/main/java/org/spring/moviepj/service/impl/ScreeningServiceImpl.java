@@ -40,7 +40,7 @@ public class ScreeningServiceImpl implements ScreeningService {
             LocalTime.of(7, 0), LocalTime.of(10, 0), LocalTime.of(13, 0),
             LocalTime.of(16, 0), LocalTime.of(19, 0), LocalTime.of(22, 0));
 
-    @Scheduled(cron = "0 25 19 * * *")
+    @Scheduled(cron = "0 12 10 * * *")
     public void updateScreenings() {
         log.debug("[자동 실행] 상영 일정 추가 작업 시작");
         try {
@@ -48,23 +48,29 @@ public class ScreeningServiceImpl implements ScreeningService {
 
             // 최신 영화 추가 날짜 가져오기
             Optional<LocalDate> latestCreateDateOpt = movieRepository.findLatestCreateDate();
-            LocalDate latestCreateDate = latestCreateDateOpt.orElse(LocalDate.now());
-
-            log.info("📌 최신 영화 추가 날짜: {}", latestCreateDate);
-
-            // 기존 영화는 절대 포함하지 않고 새로운 영화만 가져옴
-            List<MovieEntity> newMovies = movieRepository.findNewMoviesAfter(latestCreateDate);
-
-            log.info("📌 새로운 영화 개수: {}", newMovies.size());
-            for (MovieEntity movie : newMovies) {
-                log.info("📌 새로운 영화: {} | createTime: {}", movie.getMovieNm(), movie.getCreateTime());
+            if (latestCreateDateOpt.isEmpty()) {
+                log.warn("DB에 영화 데이터가 없습니다. 스케줄 생성을 중단합니다.");
+                return;
             }
+            LocalDate latestCreateDate = latestCreateDateOpt.get();
 
-            if (!newMovies.isEmpty()) {
-                log.info("[새로운 영화 추가됨] 오늘 포함 5일치 상영 스케줄 생성");
-                createScreenings(5, newMovies);
+            log.info(" 최신 영화 추가 날짜: {}", latestCreateDate);
+
+            // 최신 영화 리스트 가져오기 (가장 최신 createTime을 가진 영화들만 가져옴)
+            List<MovieEntity> latestMovies = movieRepository.findNewMoviesAfter(latestCreateDate);
+            log.info(" 최신 영화 개수: {}", latestMovies.size());
+
+            if (!latestMovies.isEmpty()) {
+                // 기존에 5일치가 생성되지 않았다면 5일치 생성
+                if (!screeningRepository.existsByScreeningDate(LocalDate.now().plusDays(4))) {
+                    log.info("[새로운 영화 추가됨] 오늘 포함 5일치 스케줄 생성");
+                    createScreenings(5, latestMovies);
+                } else {
+                    log.info("[일일 실행] 기존 최신 영화의 하루치만 추가");
+                    createScreenings(1, latestMovies);
+                }
             } else {
-                log.info("[일일 실행] 새로운 영화가 없으므로 기존 영화 스케줄 추가하지 않음");
+                log.info("[일일 실행] 최신 영화가 없으므로 스케줄 생성하지 않음");
             }
         } catch (Exception e) {
             log.error("[자동 실행] 상영 일정 추가 작업 실패", e);
