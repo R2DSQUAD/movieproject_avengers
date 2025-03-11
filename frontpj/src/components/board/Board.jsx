@@ -192,7 +192,7 @@ const BoardList = () => {
                 <h3>제목: {board.title}</h3>
                 <p>카테고리: {board.category}</p>
                 <p>글쓴이(이메일): {board.email}</p>
-                <p>글쓴이(이름): {board.memberNickName}</p>
+                <p>글쓴이(닉네임): {board.memberNickName}</p>
                 <p>조회수: {board.hit}</p>
                 <p>댓글수: {board.replyCount}</p>
                 {board.updateTime !== null ? (

@@ -83,14 +83,14 @@ const Join = () => {
             />
           </div>
 
-          {/* 이름 입력 */}
+          {/* 닉네임 입력 */}
           <div className="nickname">
-            <span>이름</span>
+            <span>닉네임</span>
             <input
               id="nickname"
               type="text"
               name="nickname"
-              placeholder="이름을 입력하세요."
+              placeholder="닉네임을 입력하세요."
               value={formData.nickname}
               onChange={handleChange}
             />
