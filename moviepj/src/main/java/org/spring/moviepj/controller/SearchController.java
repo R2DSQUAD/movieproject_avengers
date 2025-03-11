@@ -1,10 +1,14 @@
 package org.spring.moviepj.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.spring.moviepj.dto.SearchDto;
+import org.spring.moviepj.entity.MovieEntity;
 import org.spring.moviepj.entity.SearchEntity;
 import org.spring.moviepj.entity.SearchTrailerEntity;
+import org.spring.moviepj.repository.MovieRepository;
 import org.spring.moviepj.repository.SearchTrailerRepository;
 import org.spring.moviepj.service.impl.SearchServiceImpl;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class SearchController {
 
     private final SearchServiceImpl searchServiceImpl;
+    private final MovieRepository movieRepository;
     private final SearchTrailerRepository searchTrailerRepository;
 
     @GetMapping("/search")

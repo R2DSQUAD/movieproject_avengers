@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,44 +54,43 @@ public class SearchServiceImpl implements SearchService {
     private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=3faa3953bb1d0746b8d7294bd106d787&language=ko-KR";
 
-    @Override
+    @Async
+    public void searchAndSaveMoviesAsync(String query) {
+        searchAndSaveMovies(query);
+    }
+
     public void searchAndSaveMovies(String query) {
         try {
             String apiUrl = String.format(KOBIS_MOVIE_LIST_API, query);
-
             ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 JSONObject jsonResponse = new JSONObject(response.getBody());
                 JSONArray movies = jsonResponse.getJSONObject("movieListResult").getJSONArray("movieList");
 
-                for (int i = 0; i < movies.length(); i++) {
-                    JSONObject movie = movies.getJSONObject(i);
+                List<SearchEntity> searchEntities = new ArrayList<>();
+
+                movies.toList().parallelStream().forEach(movieObj -> {
+                    JSONObject movie = new JSONObject((java.util.Map) movieObj);
                     String movieCd = movie.getString("movieCd");
 
-                    // 개봉일 필터링: 2000년도 이후의 영화만 저장
                     String openDt = movie.optString("openDt", "");
-                    if (!isAfter2000(openDt)) {
-                        continue; // 2000년 이후 영화가 아니면 저장하지 않음
-                    }
-
-                    // 기존에 저장된 영화인지 확인
-                    if (searchRepository.existsByMovieCd(movieCd)) {
-                        logger.info("이미 존재하는 영화: {} (저장하지 않음)", movieCd);
-                        continue; // 이미 있으면 저장하지 않고 넘어감
+                    if (!isAfter2000(openDt) || searchRepository.existsByMovieCd(movieCd)) {
+                        return;
                     }
 
                     SearchEntity searchEntity = fetchMovieDetails(movieCd, movie);
                     if (searchEntity != null) {
-                        searchRepository.save(searchEntity);
+                        searchEntities.add(searchEntity);
                     }
-                }
-                updateChosungForExistingData(); // 기존 데이터 초성 업데이트
+                });
+
+                searchRepository.saveAll(searchEntities); // 벌크 저장 적용
+                updateChosungForExistingData();
             }
 
         } catch (Exception e) {
-            logger.error("Error occurred while searching and saving movies: {}", e.getMessage());
-            e.printStackTrace();
+            logger.error("Error occurred while searching and saving movies: {}", e.getMessage(), e);
         }
     }
 

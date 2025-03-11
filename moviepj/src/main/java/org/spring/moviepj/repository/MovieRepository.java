@@ -15,31 +15,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 
-    @Query("SELECT m FROM MovieEntity m WHERE DATE(m.createTime) = :latestUpdateDate ORDER BY m.rank ASC")
-    List<MovieEntity> findByUpdateDate(@Param("latestUpdateDate") LocalDate latestUpdateDate);
+        @Query("SELECT m FROM MovieEntity m WHERE DATE(m.createTime) = :latestUpdateDate ORDER BY m.rank ASC")
+        List<MovieEntity> findByUpdateDate(@Param("latestUpdateDate") LocalDate latestUpdateDate);
 
-    @Query("SELECT m FROM MovieEntity m WHERE FUNCTION('DATE', m.createTime) = (SELECT FUNCTION('DATE', MAX(m2.createTime)) FROM MovieEntity m2) ORDER BY m.rank ASC")
-    List<MovieEntity> findLatestTop10Movies();
+        @Query("SELECT m FROM MovieEntity m WHERE FUNCTION('DATE', m.createTime) = (SELECT FUNCTION('DATE', MAX(m2.createTime)) FROM MovieEntity m2) ORDER BY m.rank ASC")
+        List<MovieEntity> findLatestTop10Movies();
 
-    Optional<MovieEntity> findByMovieNm(String name);
+        Optional<MovieEntity> findByMovieNm(String name);
 
-    @Query("SELECT m FROM MovieEntity m WHERE REPLACE(m.movieNm, ' ', '') LIKE CONCAT('%', :movieNm, '%')")
-    List<MovieEntity> findByMovieNmContaining(@Param("movieNm") String movieNm);
+        @Query("SELECT m FROM MovieEntity m WHERE REPLACE(m.movieNm, ' ', '') LIKE CONCAT('%', :movieNm, '%')")
+        List<MovieEntity> findByMovieNmContaining(@Param("movieNm") String movieNm);
 
-    Optional<MovieEntity> findByMovieNmAndOpenDt(String movieNm, String formattedOpenDt);
+        Optional<MovieEntity> findByMovieNmAndOpenDt(String movieNm, String formattedOpenDt);
 
-    @Query("SELECT MAX(DATE(m.createTime)) FROM MovieEntity m")
-    Optional<LocalDate> findLatestCreateDate();
+        @Query("SELECT MAX(DATE(m.createTime)) FROM MovieEntity m")
+        Optional<LocalDate> findLatestCreateDate();
 
-    @Query("SELECT m FROM MovieEntity m WHERE DATE(m.createTime) >= :latestCreateDate ORDER BY m.createTime ASC")
-    List<MovieEntity> findNewMoviesAfter(@Param("latestCreateDate") LocalDate latestCreateDate);
+        @Query("SELECT m FROM MovieEntity m WHERE DATE(m.createTime) >= :latestCreateDate ORDER BY m.createTime ASC")
+        List<MovieEntity> findNewMoviesAfter(@Param("latestCreateDate") LocalDate latestCreateDate);
 
-    @Query("SELECT m FROM MovieEntity m " +
-            "WHERE m.movieNm = :movieNm " +
-            "AND m.openDt = :openDt " +
-            "ORDER BY m.createTime DESC")
-    List<MovieEntity> findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(
-            @Param("movieNm") String movieNm,
-            @Param("openDt") String openDt);
+        @Query("SELECT m FROM MovieEntity m " +
+                        "WHERE m.movieNm = :movieNm " +
+                        "AND m.openDt = :openDt " +
+                        "ORDER BY m.createTime DESC")
+        List<MovieEntity> findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(
+                        @Param("movieNm") String movieNm,
+                        @Param("openDt") String openDt);
 
 }
