@@ -39,6 +39,7 @@ const AdminLayout = lazy(() => import("../components/admin/AdminLayout"));
 const MemberList = lazy(() => import("../components/admin/member/MemberList"));
 const Cinemas = lazy(() => import("../components/admin/cinema/Cinemas"));
 const AdminChatBot = lazy(() => import("../components/admin/chatbot/AdminChatBot"));
+const PaymentList = lazy(() => import("../components/admin/payment/PaymentList"));
 
 const root = createBrowserRouter([
   {
@@ -246,6 +247,14 @@ const root = createBrowserRouter([
             element: (
               <Suspense fallback={Loading}>
                 <AdminChatBot />
+              </Suspense>
+            ),
+          },
+          {
+            path: "paymentList",
+            element: (
+              <Suspense fallback={Loading}>
+                <PaymentList />
               </Suspense>
             ),
           },
