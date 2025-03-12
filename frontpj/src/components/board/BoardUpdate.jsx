@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import jwtAxios from "../../util/jwtUtil";
 
 const BoardUpdate = () => {
   const { id } = useParams(); // Get the id from the URL params (for edit scenario)
@@ -24,7 +25,7 @@ const BoardUpdate = () => {
     if (id) {
       const fetchBoardDetail = async () => {
         try {
-          const response = await axios.get(`http://localhost:8090/board/detail/${id}`);
+          const response = await jwtAxios.get(`http://localhost:8090/board/detail/${id}`);
           setTitle(response.data.title);
           setCategory(response.data.category);
           setContent(response.data.content);
@@ -51,7 +52,7 @@ const BoardUpdate = () => {
     formData.append("id", id)
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("category", category); // Adding category
+    formData.append("category", category); 
     formData.append("email", loginState.email); // Email from login state
     if (itemFile) {
       formData.append("itemFile", itemFile); // Add the file if any
@@ -59,7 +60,7 @@ const BoardUpdate = () => {
 
     try {
       // Send data to the server (Content-Type handled automatically by FormData)
-      const response = await axios.post("http://localhost:8090/board/update", formData);
+      const response = await jwtAxios.post("http://localhost:8090/board/update", formData);
       setMessage(response.data);
     } catch (error) {
       setMessage("게시글 수정에 실패했습니다.");
@@ -101,6 +102,8 @@ const BoardUpdate = () => {
             <option value="영화게시판">영화게시판</option>
             <option value="자유게시판">자유게시판</option>
             <option value="문의게시판">문의게시판</option>
+            {loginState.roleNames?.includes("ADMIN") ? (<option value="공지사항">공지사항</option>
+):( <></>)}
           </select>
         </div>
         <div style={{ color: "white" }}>

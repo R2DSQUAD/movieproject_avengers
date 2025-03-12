@@ -1,31 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import "../../css/Board.css";
+import "../../../css/admin/Cinemas.css";
 import { useSelector } from "react-redux";
+import jwtAxios from "../../../util/jwtUtil";
 
-const BoardList = () => {
+const AdminBoard = () => {
   const [boardList, setBoardList] = useState([]); // 전체 게시글 리스트 상태
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태
   const [filteredBoardList, setFilteredBoardList] = useState([]); // 필터링된 게시글 리스트
   const [searchOption, setSearchOption] = useState("title"); // 검색 항목 (제목, 내용, 글쓴이)
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-  const [messagesPerPage] = useState(5); // 페이지당 게시글 수
+  const [messagesPerPage] = useState(10); // 페이지당 게시글 수
   const [selectedCategory, setSelectedCategory] = useState("all"); // 선택된 카테고리
   const navigate = useNavigate();
   const loginState = useSelector((state) => state.loginSlice);
-
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBoard, setSelectedBoard] = useState(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    category: "",
+    email: "",
+    itemFile: null, // 파일 상태 추가
+  });
+  
   useEffect(() => {
     const fetchBoardList = async () => {
       try {
         const response = await axios.get("http://localhost:8090/board/List");
-        const sortedBoardList = response.data.sort((a, b) => {
-          const timeA = a.updateTime || a.createTime; // updateTime이 있으면 updateTime을 사용
-          const timeB = b.updateTime || b.createTime; // updateTime이 있으면 updateTime을 사용
-          return new Date(timeB) - new Date(timeA); // 최신순으로 정렬
-        });
-        setBoardList(sortedBoardList);  // 받아온 데이터로 상태 업데이트
-        setFilteredBoardList(sortedBoardList); // 초기에는 모든 게시글을 표시
+        setBoardList(response.data);  // 받아온 데이터로 상태 업데이트
+        setFilteredBoardList(response.data); // 초기에는 모든 게시글을 표시
       } catch (err) {
         console.error("아이템 리스트 불러오기 실패", err);
       }
@@ -42,8 +47,10 @@ const BoardList = () => {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    
-    return `${year}년-${month}월-${day}일 ${hours}시:${minutes}분:${seconds}초`;
+    if(year<2000){
+      return null;
+    }
+    return `${year}년-${month}월-${day}일 ${hours}시:${minutes}분`;
   };
 
   // 카테고리 버튼 클릭 시 카테고리 필터링
@@ -55,14 +62,6 @@ const BoardList = () => {
     } else {
       filtered = boardList.filter(board => board.category === category);
     }
-
-    // 게시글을 createTime 또는 updateTime을 기준으로 최신순으로 정렬
-    filtered.sort((a, b) => {
-      const timeA = a.updateTime || a.createTime;
-      const timeB = b.updateTime || b.createTime;
-      return new Date(timeB) - new Date(timeA); // 최신순으로 정렬
-    });
-
     setFilteredBoardList(filtered);
     setCurrentPage(1); // 카테고리 필터링 후 첫 페이지로 이동
   };
@@ -86,13 +85,6 @@ const BoardList = () => {
     let finalFilteredList = selectedCategory !== "all" 
       ? filteredList.filter(board => board.category === selectedCategory)
       : filteredList;
-
-    finalFilteredList.sort((a, b) => {
-      const timeA = a.updateTime || a.createTime;
-      const timeB = b.updateTime || b.createTime;
-      return new Date(timeB) - new Date(timeA); // 최신순으로 정렬
-    });
-
     setFilteredBoardList(finalFilteredList); // 정렬된 게시글 리스트 상태 업데이트
     setCurrentPage(1); // 검색 후 첫 페이지로 이동
   };
@@ -117,24 +109,72 @@ const BoardList = () => {
 
   const { rangeStart, rangeEnd } = getPaginationRange();
 
-  const handleCreatePost = () => {
-    if (!loginState.email) {
-      // 로그인되어 있지 않으면 로그인 페이지로 이동
-      navigate('/member/login');
+
+  const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "itemFile") {
+      setFormData((prev) => ({ ...prev, itemFile: files[0] })); // 파일 업데이트
     } else {
-      // 로그인되어 있으면 게시글 작성 페이지로 이동
-      navigate('/board/insert');
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+  
+
+  const handleDelete = async () => {
+    try {
+      await jwtAxios.delete(`http://localhost:8090/admin/board/delete/${selectedBoard.id}`);
+      const response = await axios.get("http://localhost:8090/board/List");
+      setBoardList(response.data);  // 받아온 데이터로 상태 업데이트
+      setFilteredBoardList(response.data); // 초기에는 모든 게시글을 표시
+      setShowModal(false);
+    } catch (error) {
+      console.error("삭제 실패:", error);
     }
   };
 
+  const handleUpdate = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("id", formData.id);
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("content", formData.content);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("email", formData.email);
+  
+    // 파일이 있으면 함께 추가
+    if (formData.itemFile) {
+      formDataToSend.append("itemFile", formData.itemFile);
+    }
+  
+    try {
+      await jwtAxios.post(`http://localhost:8090/admin/board/update`, formDataToSend);
+  
+      // 업데이트 후 게시글 리스트를 새로고침
+      const response = await axios.get("http://localhost:8090/board/List");
+      setBoardList(response.data);
+      setFilteredBoardList(response.data);
+      setShowModal(false); // 모달 닫기
+    } catch (error) {
+      console.error("게시글 업데이트 실패:", error);
+    }
+  };
+  const handleEditClick = (board) => {
+    // 선택된 게시글 데이터를 폼에 채워 넣기
+    setFormData({
+      id: board.id,
+      title: board.title,
+      content: board.content,
+      category: board.category,
+      email: board.email,
+      itemFile: null, // 파일을 초기화. 파일 수정이 아니라면 null로 설정
+    });
+    setSelectedBoard(board); // 선택된 게시글 정보 저장
+    setShowModal(true); // 모달 표시
+  };
+  
   return (
     <div>
       <h2>게시글 리스트</h2>
-  <div>
-  <button onClick={handleCreatePost} className="nav-link">
-        게시글 작성
-      </button>
-  </div>
+ 
 
 
       {/* 카테고리 선택 버튼 추가 */}
@@ -190,50 +230,57 @@ const BoardList = () => {
         <button onClick={handleSearch}>검색</button> {/* 검색 버튼 클릭 시 handleSearch 실행 */}
       </div>
 
-      {filteredBoardList.length === 0 ? (  
-        <p>등록된 게시글이 없습니다.</p>
-      ) : (
-        <>
-          <ul>
+        <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>카테고리</th>
+            <th>글쓴이</th>
+            <th>조회수</th>
+            <th>댓글수</th>
+            <th>파일</th>
+            <th>createTime</th>
+            <th>updateTime</th>
+            <th>수정</th>
+          </tr>
+        </thead>
+         <tbody>
             {currentMessages.map((board) => (
-              <li key={board.id}>
-                <h3>제목: {board.title}</h3>
-                <p>카테고리: {board.category}</p>
-                <p>글쓴이(이메일): {board.email}</p>
-                <p>글쓴이(이름): {board.memberNickName}</p>
-                <p>조회수: {board.hit}</p>
-                <p>댓글수: {board.replyCount}</p>
-                {board.updateTime !== null ? (
-                  <p>업로드시간: {formatDate(board.updateTime)}</p>
-                ) : (
-                  <p>업로드시간: {formatDate(board.createTime)}</p>
-                )}
-                <button
-                  onClick={() => navigate(`/board/detail/${board.id}`)}
-                >
-                  보기
-                </button>
-                <hr />
-              </li>
+              <tr key={board.id}>
+                <td>{board.id}</td>
+                <td>{board.title}</td>
+                <td>{board.category}</td>
+                <td>{board.email}</td>
+                <td>{board.hit}</td>
+                <td>{board.replyCount}</td>
+              <td>  {board.newImgName ? (
+  <img
+    src={`http://localhost:8090/upload/${board.newImgName}`}
+    alt={board.oldImgName}
+    style={{ maxWidth: "30px", maxHeight: "18px" }}
+  />
+) : (
+  <img
+    src="http://localhost:8090/upload/default-img.jpg"  // 임시 사진 경로
+    style={{ maxWidth: "30px", maxHeight: "18px" }}
+  />
+)}</td>
+                <td>{formatDate(board.createTime)}</td>
+                <td>{formatDate(board.updateTime)}</td>
+                <td><button onClick={() => handleEditClick(board)}> 수정</button></td>
+                </tr>  
             ))}
-          </ul>
-
+          </tbody>
+          </table>
           {/* 페이징 처리 */}
           <div className="pagination">
             <button
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
             >
-              맨 처음
-            </button>
-
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              이전
-            </button>
-
+          &lt;&lt;
+          </button>
             {[...Array(rangeEnd - rangeStart + 1)].map((_, index) => (
               <button
                 key={index}
@@ -248,21 +295,78 @@ const BoardList = () => {
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              다음
-            </button>
+                   &gt;&gt;
 
-            <button
-              onClick={() => handlePageChange(totalPages)}
-              disabled={currentPage === totalPages}
-            >
-              맨 끝
             </button>
           </div>
-        </>
+          {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>게시글 수정</h3>
+            <label>
+              제목:
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              카테고리:
+
+              <select
+            value={formData.category}
+            onChange={handleInputChange}
+            required
+            name="category">
+            <option value="">카테고리 선택</option>
+            <option value="영화게시판">영화게시판</option>
+            <option value="자유게시판">자유게시판</option>
+            <option value="문의게시판">문의게시판</option>
+            {loginState.roleNames?.includes("ADMIN") ? (<option value="공지사항">공지사항</option>
+):( <></>)}
+          </select>
+            </label>
+            <label>
+              내용:
+              <input
+                type="text"
+                name="content"
+                value={formData.content}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+                파일:
+             <input
+             type="file"
+            name="itemFile"
+            onChange={handleInputChange} // 파일 입력 변경 처리
+                />
+            </label>
+
+            <label>
+              작성자:
+              <input
+                type="text"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+              />
+            </label>
+            <div className="modal-actions">
+            <button onClick={handleDelete}>게시글 삭제</button>
+              <button onClick={handleUpdate}>수정 완료</button>  
+              <button className="modal-close-btn" onClick={() => setShowModal(false)}>✖</button>
+
+            </div>
+          </div>
+        </div>
       )}
 
     </div>
   );
 };
 
-export default BoardList;
+export default AdminBoard;

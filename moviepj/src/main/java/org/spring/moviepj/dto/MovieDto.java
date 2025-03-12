@@ -54,5 +54,5 @@ public class MovieDto {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
-
+    private Double averageRating;
 }

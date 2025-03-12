@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import '../../css/BoardDetail.css'; // CSS 파일 import
+import jwtAxios from "../../util/jwtUtil";
 
 // 모달 컴포넌트
 const Modal = ({ message, onClose, onConfirm }) => {
@@ -56,7 +57,11 @@ const BoardDetail = () => {
     const fetchReplyList = async () => {
       try {
         const response = await axios.get(`http://localhost:8090/api/reply/replyList/${id}`);
-        setReplies(response.data.replyList);
+
+        const sortedReplies = response.data.replyList || [];
+        sortedReplies.sort((a, b) => new Date(b.createTime) - new Date(a.createTime)); // `createdAt`을 기준으로 정렬
+
+        setReplies(sortedReplies);
       } catch (err) {
         console.error("댓글 리스트 불러오기 실패", err);
       }
@@ -67,7 +72,7 @@ const BoardDetail = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.post(`http://localhost:8090/board/delete/${id}`);
+      await jwtAxios.post(`http://localhost:8090/board/delete/${id}`);
       navigate("/board");
     } catch (err) {
       console.error("게시글 삭제 실패", err);
@@ -116,9 +121,12 @@ const BoardDetail = () => {
   const replyDelete = async () => {
     if (!replyToDelete) return;
     try {
-      await axios.post(`http://localhost:8090/api/reply/delete/${replyToDelete.id},${id}`);
+      await jwtAxios.post(`http://localhost:8090/api/reply/delete/${replyToDelete.id}/${id}`);
       const replyListResponse = await axios.get(`http://localhost:8090/api/reply/replyList/${id}`);
-      setReplies(replyListResponse.data.replyList);
+      const sortedReplies = replyListResponse.data.replyList || [];
+      sortedReplies.sort((a, b) => new Date(b.createTime) - new Date(a.createTime)); // `createdAt`을 기준으로 정렬
+
+      setReplies(sortedReplies);
       closeReplyDeleteModal();
     } catch (err) {
       console.error("댓글 삭제 실패", err);
@@ -126,12 +134,17 @@ const BoardDetail = () => {
     }
   };
   const handleLike = async (replyId) => {
+    if (!loginState.email) {
+      // email이 없으면 로그인 페이지로 이동
+      navigate('/member/login');
+      return; // 이후 로직을 실행하지 않도록 종료
+    }
     const reply = replies.find((r) => r.id === replyId);
   
     // 사용자가 이미 좋아요를 눌렀다면, unlike 요청을 보냄
     if (reply.replyLikeEntities.some((like) => like.email === loginState.email)) {
       try {
-        await axios.post(`http://localhost:8090/api/reply/unlike?replyId=${replyId}&email=${loginState.email}`);
+        await jwtAxios.post(`http://localhost:8090/api/reply/unlike?replyId=${replyId}&email=${loginState.email}`);
   
         // 서버에서 좋아요 취소 성공 후, UI 상태 업데이트
         setReplies((prevReplies) =>
@@ -145,7 +158,10 @@ const BoardDetail = () => {
           )
         );
         const replyListResponse = await axios.get(`http://localhost:8090/api/reply/replyList/${id}`);
-        setReplies(replyListResponse.data.replyList);
+        const sortedReplies = replyListResponse.data.replyList || [];
+        sortedReplies.sort((a, b) => new Date(b.createTime) - new Date(a.createTime)); // `createdAt`을 기준으로 정렬
+  
+        setReplies(sortedReplies);
       } catch (err) {
         console.error("좋아요 취소 실패", err);
         alert("좋아요 취소에 실패했습니다.");
@@ -153,7 +169,7 @@ const BoardDetail = () => {
     } else {
       // 좋아요가 눌리지 않은 상태라면, like 요청을 보냄
       try {
-        await axios.post(`http://localhost:8090/api/reply/like?replyId=${replyId}&email=${loginState.email}`);
+        await jwtAxios.post(`http://localhost:8090/api/reply/like?replyId=${replyId}&email=${loginState.email}`);
   
         // 서버에서 좋아요 추가 성공 후, UI 상태 업데이트
         setReplies((prevReplies) =>
@@ -168,7 +184,10 @@ const BoardDetail = () => {
         );
 
         const replyListResponse = await axios.get(`http://localhost:8090/api/reply/replyList/${id}`);
-        setReplies(replyListResponse.data.replyList);
+        const sortedReplies = replyListResponse.data.replyList || [];
+      sortedReplies.sort((a, b) => new Date(b.createTime) - new Date(a.createTime)); // `createdAt`을 기준으로 정렬
+
+      setReplies(sortedReplies);
       } catch (err) {
         console.error("좋아요 실패", err);
         alert("좋아요 처리에 실패했습니다.");
@@ -180,6 +199,12 @@ const BoardDetail = () => {
   
   
   const handleSubmit = async (e) => {
+
+    if (!loginState.email) {
+      // email이 없으면 로그인 페이지로 이동
+      navigate('/member/login');
+      return; // 이후 로직을 실행하지 않도록 종료
+    }
     e.preventDefault();
 
     const requestData = {
@@ -189,13 +214,16 @@ const BoardDetail = () => {
     };
 
     try {
-      const response = await axios.post("http://localhost:8090/api/reply/write", requestData, {
+      const response = await jwtAxios.post("http://localhost:8090/api/reply/write", requestData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
       const replyListResponse = await axios.get(`http://localhost:8090/api/reply/replyList/${id}`);
-      setReplies(replyListResponse.data.replyList);
+      const sortedReplies = replyListResponse.data.replyList || [];
+      sortedReplies.sort((a, b) => new Date(b.createTime) - new Date(a.createTime)); // `createdAt`을 기준으로 정렬
+
+      setReplies(sortedReplies);
       setContent("");
     } catch (error) {
       console.error("Error:", error);
@@ -271,7 +299,6 @@ const BoardDetail = () => {
       )}
 
       {/* 댓글 작성 */}
-      {loginState.email ? (
       <div>
         <h2>댓글 작성</h2>
         <form onSubmit={handleSubmit}>
@@ -287,7 +314,6 @@ const BoardDetail = () => {
           <button type="submit">입력</button>
         </form>
       </div>
-) : null}
 
   {/* 댓글 목록 */}
 <div>
@@ -301,11 +327,9 @@ const BoardDetail = () => {
           <li key={reply.id}>
             <p>작성자: {reply.email}</p>
             <p>내용: {reply.replyContent}</p>
-            <p>작성일: {formatDate(reply.createTime)}</p>
             <p>좋아요: {reply.likeCount}개</p>
+            <p>작성일: {formatDate(reply.createTime)}</p>
             {/* 좋아요 버튼 */}
-                  {loginState.email ? (
-
             <button
   onClick={() => handleLike(reply.id)}
   style={{
@@ -323,7 +347,6 @@ const BoardDetail = () => {
     ? "좋아요 취소"
     : "좋아요"}
 </button>
-) : null}
 
 
             {/* 댓글 삭제 버튼 (권한 확인) */}

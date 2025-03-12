@@ -10,6 +10,7 @@ import org.spring.moviepj.service.impl.BoardServiceImpl;
 import org.spring.moviepj.service.impl.ReplyServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class ReplyController {
      private final ReplyServiceImpl replyService;
     private final BoardServiceImpl boardService;
-
+        @PreAuthorize("isAuthenticated()")
         @PostMapping("/reply/write")
         public ResponseEntity<Map<String, Object>> write(@RequestBody ReplyDto replyDto){
 
@@ -57,8 +58,8 @@ public class ReplyController {
         return new ResponseEntity<>(map, HttpStatus.OK);
 
     }
-
-    @PostMapping("/reply/delete/{id},{boardId}")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/reply/delete/{id}/{boardId}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id, @PathVariable("boardId")Long boardId){
         
         replyService.replyDelete(id);

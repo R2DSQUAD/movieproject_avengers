@@ -65,6 +65,10 @@ public class MemberEntity extends BasicTime {
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<ReplyLikeEntity> replyLikeEntities;
 
+
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<MovieReviewLikeEntity> movieReviewLikeEntities;
+
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<MovieReviewEntity> movieReviewEntities;
     
