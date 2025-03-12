@@ -43,7 +43,7 @@ const BoardList = () => {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
     
-    return `${year}년-${month}월-${day}일 ${hours}시:${minutes}분:${seconds}초`;
+    return `${year}년-${month}월-${day}일 ${hours}시:${minutes}분`;
   };
 
   // 카테고리 버튼 클릭 시 카테고리 필터링
