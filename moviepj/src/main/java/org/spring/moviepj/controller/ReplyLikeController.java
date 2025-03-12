@@ -16,7 +16,7 @@ public class ReplyLikeController {
     // 좋아요 추가
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/like")
-    public ResponseEntity<?> likeReply(@RequestParam Long replyId, @RequestParam String email) {
+    public ResponseEntity<?> likeReply(@RequestParam("replyId") Long replyId, @RequestParam("email") String email) {
         try {
             replyLikeServiceImpl.addLike(replyId, email);
             return ResponseEntity.ok("좋아요가 추가되었습니다.");
@@ -28,7 +28,7 @@ public class ReplyLikeController {
     // 좋아요 취소
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/unlike")
-    public ResponseEntity<?> unlikeReply(@RequestParam Long replyId, @RequestParam String email) {
+    public ResponseEntity<?> unlikeReply(@RequestParam("replyId") Long replyId, @RequestParam("email") String email) {
         try {
             replyLikeServiceImpl.removeLike(replyId, email);
             return ResponseEntity.ok("좋아요가 취소되었습니다.");

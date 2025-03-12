@@ -85,29 +85,38 @@ const Cart = () => {
     console.log("선택된 장바구니 ID:", selectedCartItemIds); // 디버깅용 콘솔 로그 추가
 
     // 선택한 항목 ID만 Payment 페이지로 전달
-    navigate("/payment/orderSettlement", { state: { cartItemIds: selectedCartItemIds } });
+    navigate("/payment/orderSettlement", {
+      state: { cartItemIds: selectedCartItemIds },
+    });
   };
-
-
 
   const totalPrice = cartItems
     .filter((item) => selectedItems.has(item.id)) // 선택된 항목만 계산
     .reduce((acc, item) => acc + item.price, 0);
 
-  const allSelected = cartItems.length > 0 && selectedItems.size === cartItems.length;
+  const allSelected =
+    cartItems.length > 0 && selectedItems.size === cartItems.length;
 
   return (
     <div className="cart">
       <div className="cart-con">
         <h1>내 장바구니 리스트</h1>
-        {error && <div style={{ color: "red" }}>{error}</div>}
+        {error && <div style={{ color: "var(--color-red)" }}>{error}</div>}
         {cartItems.length > 0 ? (
           <>
-            <button onClick={handleSelectAll}>
-              {allSelected ? "전체 선택 해제" : "전체 선택"}
-            </button>
+            <div className="select-all">
+              <span>{allSelected ? "전체선택해제" : "전체선택"}</span>
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={handleSelectAll}
+              />
+            </div>
             {cartItems.map((item) => (
-              <div key={item.id} className="cart-container">
+              <div
+                key={item.id}
+                className={`cart-container ${selectedItems.has(item.id) ? "active" : ""}`}
+              >
                 <div className="cart-item">
                   <img
                     src={item.poster_path}
@@ -135,10 +144,12 @@ const Cart = () => {
                 />
               </div>
             ))}
-            <button onClick={handleDelete}>선택 삭제</button>
-            <button onClick={paymentFn}>결제하기</button>
-            <div className="total-price">
+            <div className="cart-footer">
               <h2>총 가격: {totalPrice.toLocaleString()}원</h2>
+              <div className="button-container">
+                <button onClick={handleDelete}>선택 삭제</button>
+                <button onClick={paymentFn}>결제하기</button>
+              </div>
             </div>
           </>
         ) : (

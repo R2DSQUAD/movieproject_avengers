@@ -185,64 +185,64 @@ const MemberList = () => {
 
       {/* 수정/삭제 모달 */}
       {showModal && (
-  <div className="member-modal">
-    <div className="member-modal-content">
-      <h3>회원 수정/삭제</h3>
-      <form>
-        <label>
-          이메일:
-          <input type="email" name="email" value={formData.email} disabled />
-        </label>
-        <label>
-          비밀번호:(변경 시 입력, 미입력 시 기존 유지):
-          <input
-            type="password"
-            name="pw"
-            value={formData.pw}
-            onChange={handleInputChange}
-            placeholder="새 비밀번호"
-          />
-        </label>
-        <label>
-          닉네임:
-          <input
-            type="text"
-            name="nickname"
-            value={formData.nickname}
-            onChange={handleInputChange}
-          />
-        </label>
-        <label>
-          권한:
-          <select
-            name="roleNames"
-            value={formData.roleNames[0] || ""}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                roleNames: [e.target.value],
-              }))
-            }
-          >
-            <option value="ADMIN">ADMIN</option>
-            <option value="MANAGER">MANAGER</option>
-            <option value="USER">USER</option>
-          </select>
-        </label>
-        <label>
-          소셜 로그인:
-          <input type="checkbox" name="social" checked={formData.social} disabled />
-        </label>
-      </form>
-      <div className="modal-actions">
-        <button onClick={handleDeleteMember}>회원 삭제</button>
-        <button onClick={handleUpdateMember}>수정 완료</button>        
-        <button className="modal-close-btn" onClick={() => setShowModal(false)}>✖</button>
+        <div className="member-modal">
+          <div className="member-modal-content">
+            <h3>회원 수정/삭제</h3>
+            <form>
+              <label>
+                이메일:
+                <input type="email" name="email" value={formData.email} disabled />
+              </label>
+              <label>
+                비밀번호:(변경 시 입력, 미입력 시 기존 유지):
+                <input
+                  type="password"
+                  name="pw"
+                  value={formData.pw}
+                  onChange={handleInputChange}
+                  placeholder="새 비밀번호"
+                />
+              </label>
+              <label>
+                닉네임:
+                <input
+                  type="text"
+                  name="nickname"
+                  value={formData.nickname}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                권한:
+                <select
+                  name="roleNames"
+                  value={formData.roleNames[0] || ""}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      roleNames: [e.target.value],
+                    }))
+                  }
+                >
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="MANAGER">MANAGER</option>
+                  <option value="USER">USER</option>
+                </select>
+              </label>
+              <label>
+                소셜 로그인:
+                <input type="checkbox" name="social" checked={formData.social} disabled />
+              </label>
+            </form>
+            <div className="modal-actions">
+              <button onClick={handleDeleteMember}>회원 삭제</button>
+              <button onClick={handleUpdateMember}>수정 완료</button>
+              <button className="modal-close-btn" onClick={() => setShowModal(false)}>✖</button>
 
-      </div>
-    </div>
-  </div>
-)}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

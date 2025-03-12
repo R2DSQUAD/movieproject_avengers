@@ -26,6 +26,9 @@ const ChatBot = lazy(() => import("../pages/ws/ChatBotPage"));
 const Komoran = lazy(() => import("../pages/ws/KomoranPage"));
 const KakaoRedirectPage = lazy(() => import("../pages/member/KakaoRedirectPage"));
 const SearchPage = lazy(() => import("../pages/search/SearchPage"));
+const MyPaymentListPage = lazy(() => import("../pages/member/MyPaymentListPage"));
+const MyChatListPage = lazy(() => import("../pages/member/MyChatListPage"));
+
 
 
 
@@ -36,6 +39,7 @@ const MemberList = lazy(() => import("../components/admin/member/MemberList"));
 const BoardList = lazy(() => import("../components/admin/board/AdminBoard"));
 const Cinemas = lazy(() => import("../components/admin/cinema/Cinemas"));
 const AdminChatBot = lazy(() => import("../components/admin/chatbot/AdminChatBot"));
+const PaymentList = lazy(() => import("../components/admin/payment/PaymentList"));
 
 const root = createBrowserRouter([
   {
@@ -159,6 +163,22 @@ const root = createBrowserRouter([
         ),
       },
       {
+        path: "member/myPaymentList",
+        element: (
+          <Suspense fallback={Loading}>
+            <MyPaymentListPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "member/myChatList",
+        element: (
+          <Suspense fallback={Loading}>
+            <MyChatListPage />
+          </Suspense>
+        ),
+      },
+      {
         path: "/cart/myCartList",
         element: (
           <Suspense fallback={Loading}>
@@ -219,6 +239,14 @@ const root = createBrowserRouter([
             element: (
               <Suspense fallback={Loading}>
                 <AdminChatBot />
+              </Suspense>
+            ),
+          },
+          {
+            path: "paymentList",
+            element: (
+              <Suspense fallback={Loading}>
+                <PaymentList />
               </Suspense>
             ),
           },

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../css/Join.css";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,6 +16,11 @@ const Join = () => {
   const [success, setSuccess] = useState(false); // 회원가입 성공 여부
   const [showPw, setShowPw] = useState(false);
   const [showPwChk, setShowPwChk] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   // 입력값 변경 핸들러
   const handleChange = (e) => {
@@ -74,17 +79,18 @@ const Join = () => {
               placeholder="이메일을 입력하세요."
               value={formData.email}
               onChange={handleChange}
+              ref={inputRef}
             />
           </div>
 
-          {/* 이름 입력 */}
+          {/* 닉네임 입력 */}
           <div className="nickname">
-            <span>이름</span>
+            <span>닉네임</span>
             <input
               id="nickname"
               type="text"
               name="nickname"
-              placeholder="이름을 입력하세요."
+              placeholder="닉네임을 입력하세요."
               value={formData.nickname}
               onChange={handleChange}
             />

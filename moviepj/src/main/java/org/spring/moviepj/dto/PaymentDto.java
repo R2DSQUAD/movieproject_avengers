@@ -39,6 +39,7 @@ public class PaymentDto {
     private int totalAmount;
 
     private Long memberId;
+    private String email;
     private MemberEntity memberEntity;
 
     private String paymentMethod;

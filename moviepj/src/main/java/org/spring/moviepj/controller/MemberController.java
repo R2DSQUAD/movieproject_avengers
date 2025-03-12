@@ -1,6 +1,5 @@
 package org.spring.moviepj.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -35,19 +35,14 @@ public class MemberController {
 
     @PostMapping("/member/join")
     public ResponseEntity<?> join(@Valid @RequestBody MemberDto memberDto, BindingResult bindingResult) {
-
-        // 1. 유효성 검사 실패 시 오류 메시지를 반환
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors().stream()
                     .collect(Collectors.toMap(
-                            FieldError::getField, // 필드 이름
-                            FieldError::getDefaultMessage, // 오류 메시지
-                            (existing, replacement) -> existing // 중복 키가 발생할 때 기존 값을 사용
-                    ));
+                            FieldError::getField,
+                            FieldError::getDefaultMessage,
+                            (existing, replacement) -> existing));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
-
-        // 2. 유효성 검사를 통과하면 회원가입 진행
         memberServiceImpl.insertMember(memberDto);
         return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
@@ -56,46 +51,67 @@ public class MemberController {
     @GetMapping("/myinfo/detail")
     public ResponseEntity<MemberDto> memberDetail(@AuthenticationPrincipal MemberDto memberDto) {
         if (memberDto == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인하지 않은 사용자
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         MemberDto detail = memberServiceImpl.memberDetail(memberDto.getEmail());
         return ResponseEntity.ok(detail);
     }
 
-    // 본인정보수정하기
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/auth/verify-password")
+    public ResponseEntity<Map<String, Boolean>> verifyPassword(
+            @AuthenticationPrincipal MemberDto principal,
+            @RequestBody Map<String, String> request) {
+        String currentPassword = request.get("currentPassword");
+        MemberEntity memberEntity = memberRepository.findByEmail(principal.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + principal.getEmail()));
+        boolean isVerified = passwordEncoder.matches(currentPassword, memberEntity.getPw());
+        Map<String, Boolean> response = Map.of("verified", isVerified);
+        return ResponseEntity.ok(response);
+    }
+
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/myinfo/update")
     public ResponseEntity<?> updateMyInfo(
             @AuthenticationPrincipal MemberDto principal,
             @RequestBody Map<String, String> updateData) {
-        // updateData 예: {"currentPassword": "현재비밀번호", "nickname": "새닉네임",
-        // "newPassword": "새비밀번호"}
-        String currentPassword = updateData.get("currentPassword");
+
         String newNickname = updateData.get("nickname");
-        String newPassword = updateData.get("newPassword");
+        String newPassword = updateData.get("pw");
+        
+        if(newNickname == null || newNickname.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("닉네임을 입력해주세요.");
+        }
 
         MemberEntity memberEntity = memberRepository.findByEmail(principal.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + principal.getEmail()));
 
-        // 현재 비밀번호 검증
-        if (!passwordEncoder.matches(currentPassword, memberEntity.getPw())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("현재 비밀번호가 일치하지 않습니다.");
-        }
-
-        // 이메일, 소셜, 역할은 수정 불가
-        memberEntity.setNickname(newNickname);
+        // 새 비밀번호가 입력되었을 경우, 유효성 검사
         if (newPassword != null && !newPassword.isEmpty()) {
+            if (newPassword.length() < 8 || newPassword.length() > 20) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호는 8~20자 이내여야 합니다.");
+            }
+            if (!newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d).+$")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호는 영문과 숫자를 포함해야 합니다.");
+            }
+            // 새 비밀번호를 암호화하여 저장
             memberEntity.setPw(passwordEncoder.encode(newPassword));
         }
 
+        // 닉네임 업데이트
+        memberEntity.setNickname(newNickname);
+
+        // 저장된 엔티티를 업데이트
         MemberEntity updated = memberRepository.save(memberEntity);
+
+        // 업데이트된 정보를 MemberDto로 반환
         MemberDto updatedDto = new MemberDto(
                 updated.getEmail(),
                 updated.getPw(),
                 updated.getNickname(),
                 updated.isSocial(),
                 updated.getMemberRoleList().stream().map(Enum::name).collect(Collectors.toList()));
+
         return ResponseEntity.ok(updatedDto);
     }
 

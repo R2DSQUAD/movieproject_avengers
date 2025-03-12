@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,11 @@ import org.spring.moviepj.repository.SearchRepository;
 import org.spring.moviepj.repository.SearchTrailerRepository;
 import org.spring.moviepj.service.SearchService;
 import org.spring.moviepj.util.HangulUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,44 +54,43 @@ public class SearchServiceImpl implements SearchService {
     private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
     private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=3faa3953bb1d0746b8d7294bd106d787&language=ko-KR";
 
-    @Override
+    @Async
+    public void searchAndSaveMoviesAsync(String query) {
+        searchAndSaveMovies(query);
+    }
+
     public void searchAndSaveMovies(String query) {
         try {
             String apiUrl = String.format(KOBIS_MOVIE_LIST_API, query);
-
             ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 JSONObject jsonResponse = new JSONObject(response.getBody());
                 JSONArray movies = jsonResponse.getJSONObject("movieListResult").getJSONArray("movieList");
 
-                for (int i = 0; i < movies.length(); i++) {
-                    JSONObject movie = movies.getJSONObject(i);
+                List<SearchEntity> searchEntities = new ArrayList<>();
+
+                movies.toList().parallelStream().forEach(movieObj -> {
+                    JSONObject movie = new JSONObject((java.util.Map) movieObj);
                     String movieCd = movie.getString("movieCd");
 
-                    // 개봉일 필터링: 2000년도 이후의 영화만 저장
                     String openDt = movie.optString("openDt", "");
-                    if (!isAfter2000(openDt)) {
-                        continue; // 2000년 이후 영화가 아니면 저장하지 않음
-                    }
-
-                    // 기존에 저장된 영화인지 확인
-                    if (searchRepository.existsByMovieCd(movieCd)) {
-                        logger.info("이미 존재하는 영화: {} (저장하지 않음)", movieCd);
-                        continue; // 이미 있으면 저장하지 않고 넘어감
+                    if (!isAfter2000(openDt) || searchRepository.existsByMovieCd(movieCd)) {
+                        return;
                     }
 
                     SearchEntity searchEntity = fetchMovieDetails(movieCd, movie);
                     if (searchEntity != null) {
-                        searchRepository.save(searchEntity);
+                        searchEntities.add(searchEntity);
                     }
-                }
-                updateChosungForExistingData(); // 기존 데이터 초성 업데이트
+                });
+
+                searchRepository.saveAll(searchEntities); // 벌크 저장 적용
+                updateChosungForExistingData();
             }
 
         } catch (Exception e) {
-            logger.error("Error occurred while searching and saving movies: {}", e.getMessage());
-            e.printStackTrace();
+            logger.error("Error occurred while searching and saving movies: {}", e.getMessage(), e);
         }
     }
 
@@ -145,6 +149,27 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
+    // 영화 제목 정규화 메서드 (SearchServiceImpl 내부에 추가)
+    public static String normalizeMovieTitle(String title) {
+        if (title == null) return "";
+    
+        // 소괄호 포함 내용 제거
+        title = title.replaceAll("[^a-zA-Z0-9가-힣\\s]", "");
+        title = title.replaceAll("\\(.*?\\)", "");
+    
+        // 대표적인 불필요 단어 제거
+        title = title.replaceAll("(?i)\\b극장판\\b", "");
+        title = title.replaceAll("(?i)\\b더 무비\\b", "");
+        title = title.replaceAll("(?i)\\b더무비\\b", "");
+        title = title.replaceAll("(?i)\\bthe movie\\b", "");
+    
+        // 다른 패턴도 가능
+        title = title.replaceAll("(?i)\\bmovie\\b", "");
+    
+        // 양쪽 공백 정리
+        return title.replaceAll("\\s+", " ").trim();
+    }
+
     private SearchEntity fetchTMDbDetails(SearchEntity searchEntity) {
         try {
             String encodedQuery = URLEncoder.encode(searchEntity.getMovieNm(), StandardCharsets.UTF_8);
@@ -160,11 +185,17 @@ public class SearchServiceImpl implements SearchService {
 
                     // TMDb 검색 결과 중에서 개봉일이 일치하는 영화 찾기
                     JSONObject selectedMovie = null;
+                    String normalizedKobisTitle = normalizeMovieTitle(searchEntity.getMovieNm());
+
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject movie = results.getJSONObject(i);
                         String releaseDate = movie.optString("release_date", "");
+                        String normalizedTmdbTitle = normalizeMovieTitle(movie.optString("title", ""));
 
-                        if (releaseDate.equals(formattedOpenDt)) { // 개봉일이 정확히 일치하는 경우
+                        if (releaseDate.equals(formattedOpenDt) &&
+                                (normalizedKobisTitle.equals(normalizedTmdbTitle) ||
+                                        normalizedKobisTitle.contains(normalizedTmdbTitle) ||
+                                        normalizedTmdbTitle.contains(normalizedKobisTitle))) {
                             selectedMovie = movie;
                             break;
                         }
@@ -236,58 +267,46 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<SearchDto> searchMovieList(String query, String searchType) {
+    public Page<SearchDto> searchMovieList(String query, String searchType, Pageable pageable) {
+        searchAndSaveMovies(query);
+
         // 검색어 정규화 (띄어쓰기 및 특수문자 제거)
         String normalizedQuery = query.replaceAll("[^a-zA-Z0-9가-힣]", "").trim();
-
-        // 초성 변환 및 공백 처리
         String chosungQuery = HangulUtils.getChosung(query).replaceAll("[^ㄱ-ㅎ]", "").trim(); // 초성에서 공백 제거
 
-        List<SearchEntity> searchEntities;
+        Page<SearchEntity> searchEntities;
 
         if ("chosung".equals(searchType)) {
-            // 초성 검색 (공백 제거된 초성 컬럼 비교)
-            searchEntities = searchRepository.findByMovieNmChosungIgnoreSpace(chosungQuery);
+            searchEntities = searchRepository.findByMovieNmChosungIgnoreSpace(chosungQuery, pageable);
         } else {
-            // 일반 검색
-            searchEntities = searchRepository.findByMovieNmContaining(normalizedQuery);
+            searchEntities = searchRepository.findByMovieNmContaining(normalizedQuery, pageable);
         }
 
-        // `searchEntities`에서 `MovieEntity` 조회 후 `SearchDto` 변환
-        List<MovieEntity> movieEntities = searchEntities.stream()
+        List<SearchDto> filteredResults = searchEntities.stream()
                 .map(searchEntity -> {
                     String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
-                    return movieRepository.findByMovieNmAndOpenDt(searchEntity.getMovieNm(), formattedOpenDt);
-                })
-                .filter(Optional::isPresent) // 존재하는 경우만 가져오기
-                .map(Optional::get)
-                .collect(Collectors.toList());
 
-        return searchEntities.stream()
-                .map(searchEntity -> {
-                    String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
-                    Optional<MovieEntity> movieEntityOpt = movieRepository
-                            .findByMovieNmAndOpenDt(searchEntity.getMovieNm(), formattedOpenDt);
+                    List<MovieEntity> movieEntities = movieRepository
+                            .findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(searchEntity.getMovieNm(), formattedOpenDt);
 
-                    if (movieEntityOpt.isPresent()) {
-                        MovieEntity movie = movieEntityOpt.get();
-                        logger.info("[MovieEntity 사용] {} ({})", movie.getMovieNm(), movie.getMovieCd());
-
+                    if (!movieEntities.isEmpty()) {
+                        MovieEntity latestMovie = movieEntities.get(0);
                         return SearchDto.builder()
-                                .movieCd(movie.getMovieCd())
-                                .movieNm(movie.getMovieNm())
-                                .openDt(movie.getOpenDt())
-                                .directors(movie.getDirector())
-                                .genreAlt(movie.getGenres())
-                                .watchGradeNm(movie.getWatchGradeNm())
-                                .runTime(movie.getRunTime())
-                                .overview(movie.getOverview())
-                                .poster_path(movie.getPoster_path())
-                                .backdrop_path(movie.getBackdrop_path())
+                                .movieCd(latestMovie.getMovieCd())
+                                .movieNm(latestMovie.getMovieNm())
+                                .openDt(latestMovie.getOpenDt())
+                                .directors(latestMovie.getDirector())
+                                .genreAlt(latestMovie.getGenres())
+                                .watchGradeNm(latestMovie.getWatchGradeNm())
+                                .runTime(latestMovie.getRunTime())
+                                .overview(latestMovie.getOverview())
+                                .poster_path(latestMovie.getPoster_path())
+                                .backdrop_path(latestMovie.getBackdrop_path())
                                 .build();
                     } else {
-                        logger.info("[SearchEntity 사용] {} ({})", searchEntity.getMovieNm(), searchEntity.getMovieCd());
-
+                        if (searchEntity.getPoster_path() == null || searchEntity.getPoster_path().isEmpty()) {
+                            return null; // 포스터 이미지가 없으면 제외
+                        }
                         return SearchDto.builder()
                                 .movieCd(searchEntity.getMovieCd())
                                 .movieNm(searchEntity.getMovieNm())
@@ -302,7 +321,10 @@ public class SearchServiceImpl implements SearchService {
                                 .build();
                     }
                 })
+                .filter(Objects::nonNull) // null 값 제외
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(filteredResults, pageable, filteredResults.size());
     }
 
     /**
@@ -324,4 +346,73 @@ public class SearchServiceImpl implements SearchService {
         int year = Integer.parseInt(openDt.substring(0, 4)); // openDt에서 연도만 추출
         return year >= 2000;
     }
+
+    @Override
+    public Page<SearchDto> searchAllList(Pageable pageable) {
+        // `poster_path`가 있는 데이터만 가져오도록 변경
+        Page<SearchEntity> searchEntities = searchRepository.findAllByPosterPathIsNotNull(pageable);
+
+        List<SearchDto> resultList = searchEntities.getContent().stream()
+                .map(searchEntity -> {
+                    String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
+
+                    // 최신 `MovieEntity` 조회
+                    List<MovieEntity> movieEntities = movieRepository
+                            .findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(searchEntity.getMovieNm(), formattedOpenDt);
+
+                    if (!movieEntities.isEmpty()) {
+                        // 가장 최신 MovieEntity 데이터 사용
+                        MovieEntity latestMovie = movieEntities.get(0);
+                        return SearchDto.builder()
+                                .movieCd(latestMovie.getMovieCd())
+                                .movieNm(latestMovie.getMovieNm())
+                                .openDt(latestMovie.getOpenDt())
+                                .directors(latestMovie.getDirector())
+                                .genreAlt(latestMovie.getGenres())
+                                .watchGradeNm(latestMovie.getWatchGradeNm())
+                                .runTime(latestMovie.getRunTime())
+                                .overview(latestMovie.getOverview())
+                                .poster_path(latestMovie.getPoster_path())
+                                .backdrop_path(latestMovie.getBackdrop_path())
+                                .build();
+                    } else {
+                        // MovieEntity에 데이터가 없으면 SearchEntity 사용
+                        return SearchDto.builder()
+                                .movieCd(searchEntity.getMovieCd())
+                                .movieNm(searchEntity.getMovieNm())
+                                .openDt(formattedOpenDt)
+                                .directors(searchEntity.getDirectors())
+                                .genreAlt(searchEntity.getGenreAlt())
+                                .watchGradeNm(searchEntity.getWatchGradeNm())
+                                .runTime(searchEntity.getRunTime())
+                                .overview(searchEntity.getOverview())
+                                .poster_path(searchEntity.getPoster_path())
+                                .backdrop_path(searchEntity.getBackdrop_path())
+                                .build();
+                    }
+                })
+                .collect(Collectors.toList()); // Null 필터링 필요 없음
+
+        return new PageImpl<>(resultList, pageable, searchEntities.getTotalElements());
+    }
+
+    @Override
+    public SearchDto searchDetail(String movieCd) {
+        SearchEntity searchEntity = searchRepository.findByMovieCd(movieCd)
+                .orElseThrow(() -> new RuntimeException("해당 movieCd에 대한 데이터를 찾을 수 없습니다."));
+
+        return SearchDto.builder()
+                .movieCd(searchEntity.getMovieCd())
+                .movieNm(searchEntity.getMovieNm())
+                .openDt(searchEntity.getOpenDt())
+                .directors(searchEntity.getDirectors())
+                .genreAlt(searchEntity.getGenreAlt())
+                .watchGradeNm(searchEntity.getWatchGradeNm())
+                .runTime(searchEntity.getRunTime())
+                .overview(searchEntity.getOverview())
+                .poster_path(searchEntity.getPoster_path())
+                .backdrop_path(searchEntity.getBackdrop_path())
+                .build();
+    }
+
 }

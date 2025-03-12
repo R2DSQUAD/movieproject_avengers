@@ -1,25 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/MyMemberInfo.css";
 import jwtAxios from "../../util/jwtUtil";
 
 const MyMemberInfo = () => {
+  const navigate = useNavigate();
   const [member, setMember] = useState(null);
-  const [groupedPayments, setGroupedPayments] = useState({});
-  const [expandedGroup, setExpandedGroup] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
   const [updateForm, setUpdateForm] = useState({
     nickname: "",
     newPassword: "",
     confirmPassword: "",
   });
-  const navigate = useNavigate();
+  const inputRef = useRef(null);
+  const [formErrors, setFormErrors] = useState({
+    nickname: "",
+    newPassword: "",
+    confirmPassword: "",
+    currentPassword:""
+  });
+
+  useEffect(() => {
+    if (showUpdateModal && inputRef.current && !isVerified) {
+      inputRef.current.focus();
+    }
+  }, [showUpdateModal, isVerified]);
 
   const fetchMemberInfo = async () => {
     try {
-      const response = await jwtAxios.get("http://localhost:8090/api/myinfo/detail");
+      const response = await jwtAxios.get(
+        "http://localhost:8090/api/myinfo/detail"
+      );
       setMember(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -31,27 +47,8 @@ const MyMemberInfo = () => {
     }
   };
 
-  const fetchPaymentHistory = async () => {
-    try {
-      const response = await jwtAxios.get("http://localhost:8090/api/payment/myPaymentList", { withCredentials: true });
-      const payments = Array.isArray(response.data) ? response.data : [];
-      const grouped = payments.reduce((acc, payment) => {
-        const key = payment.createTime.substring(0, 19);
-        if (!acc[key]) {
-          acc[key] = { representativePayment: payment, payments: [] };
-        }
-        acc[key].payments.push(payment);
-        return acc;
-      }, {});
-      setGroupedPayments(grouped);
-    } catch (error) {
-      console.error("결제 내역 가져오는 중 오류 발생:", error);
-    }
-  };
-
   useEffect(() => {
     fetchMemberInfo();
-    fetchPaymentHistory();
   }, []);
 
   const handleOpenUpdateModal = () => {
@@ -63,47 +60,82 @@ const MyMemberInfo = () => {
       newPassword: "",
       confirmPassword: "",
     });
+    setFormErrors({
+      nickname: "",
+      newPassword: "",
+      confirmPassword: "",
+      currentPassword: "",
+    });
   };
 
   const handleVerifyPassword = async () => {
     try {
-      await jwtAxios.put("http://localhost:8090/api/myinfo/update", {
+      const response = await jwtAxios.post("http://localhost:8090/api/auth/verify-password", {
         currentPassword: currentPassword,
-        nickname: member.nickname,
-        newPassword: "",
       });
-      setIsVerified(true);
+      if (response.data.verified) {
+        setIsVerified(true);
+      } else {
+        setFormErrors({ ...formErrors, currentPassword: "현재 비밀번호가 올바르지 않습니다." });
+      }
     } catch (error) {
-      alert("현재 비밀번호가 올바르지 않습니다.");
-      console.error("비밀번호 검증 실패:", error);
+      setFormErrors({ ...formErrors, currentPassword: "현재 비밀번호가 올바르지 않습니다." });
     }
   };
 
   const handleUpdateMember = async () => {
-    // 새 비밀번호가 입력된 경우에만 검증 진행
+    let errors = {};
+    let isValid = true;
+  
+    console.log("업데이트 폼 데이터:", updateForm);  // 데이터 확인
+  
+    if (!updateForm.nickname) {
+      errors.nickname = "닉네임을 입력해주세요.";
+      isValid = false;
+    } else if (updateForm.nickname.length < 2) {
+      errors.nickname = "닉네임은 최소 2자 이상이어야 합니다.";
+      isValid = false;
+    }
+  
+    // 닉네임 비교
+    if (updateForm.nickname === member.nickname) {
+      errors.nickname = "새 닉네임이 기존 닉네임과 동일합니다.";
+      isValid = false;
+    }
+  
     if (updateForm.newPassword) {
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,20}$/;
       if (!passwordRegex.test(updateForm.newPassword)) {
-        alert("비밀번호는 영문과 숫자를 포함한 8~20자여야 합니다.");
-        return;
+        errors.newPassword = "비밀번호는 영문과 숫자를 포함한 8~20자여야 합니다.";
+        isValid = false;
       }
       if (updateForm.newPassword !== updateForm.confirmPassword) {
-        alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-        return;
+        errors.confirmPassword = "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.";
+        isValid = false;
       }
     }
+  
+    if (!isValid) {
+      setFormErrors(errors);
+      return;
+    }
+  
+    const dataToUpdate = {
+      nickname: updateForm.nickname,
+      pw: updateForm.newPassword,
+    };
+  
     try {
-      await jwtAxios.put("http://localhost:8090/api/myinfo/update", {
-        currentPassword: currentPassword,
-        nickname: updateForm.nickname,
-        newPassword: updateForm.newPassword, // 만약 비어있다면 백엔드에서 비밀번호 변경 없이 닉네임만 업데이트 처리하도록 함
-      });
+      const response = await jwtAxios.put("http://localhost:8090/api/myinfo/update", dataToUpdate);
       alert("정보가 업데이트되었습니다.");
       setShowUpdateModal(false);
       fetchMemberInfo();
     } catch (error) {
-      console.error("정보 업데이트 실패:", error);
-      alert("정보 업데이트에 실패했습니다.");
+      if (error.response && error.response.data) {
+        alert(error.response.data);
+      } else {
+        alert("정보 업데이트에 실패했습니다.");
+      }
     }
   };
   
@@ -113,11 +145,13 @@ const MyMemberInfo = () => {
       <div className="userTitle">
         <span>안녕하세요!</span>
         <span>{member ? member.nickname : ""}님</span>
-        <button onClick={handleOpenUpdateModal}>정보 수정하기</button>
       </div>
 
       {member ? (
         <div className="memberInfoContent">
+          <button className="memberUpdateBtn" onClick={handleOpenUpdateModal}>
+            정보 수정하기
+          </button>
           <div className="email">
             <span>이메일</span>
             <span>{member.email}</span>
@@ -130,126 +164,140 @@ const MyMemberInfo = () => {
             <span>권한</span>
             <span>{member.roleNames.join(", ")}</span>
           </div>
-          <div className="messages">
-            <h3>메시지 목록</h3>
-            {member.chatMessageEntities && member.chatMessageEntities.length > 0 ? (
-              <ul>
-                {member.chatMessageEntities.map((message, index) => (
-                  <li key={index}>
-                    <div className="message">
-                      <span className="messageContent">{message.content}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>메시지가 없습니다.</p>
-            )}
-          </div>
-
         </div>
       ) : (
         <span>사용자 정보를 불러오는 중입니다...</span>
       )}
-{showUpdateModal && (
-  <div className="modal">
-    <div className="modal-content">
-      {!isVerified ? (
-        <div>
-          <h3>현재 비밀번호 확인</h3>
-          <input
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            placeholder="현재 비밀번호"
-          />
-          <div className="modal-actions">
-            <button onClick={handleVerifyPassword}>확인</button>
-            <button onClick={() => setShowUpdateModal(false)}>취소</button>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <h3>정보 수정</h3>
-          <label>닉네임 변경:</label>
-          <input
-            type="text"
-            value={updateForm.nickname}
-            onChange={(e) => setUpdateForm({ ...updateForm, nickname: e.target.value })}
-          />
-          <label>새로운 비밀번호:</label>
-          <input
-            type="password"
-            placeholder="새 비밀번호"
-            value={updateForm.newPassword}
-            onChange={(e) => setUpdateForm({ ...updateForm, newPassword: e.target.value })}
-          />
-          <label>비밀번호 확인:</label>
-          <input
-            type="password"
-            placeholder="새 비밀번호 확인"
-            value={updateForm.confirmPassword}
-            onChange={(e) => setUpdateForm({ ...updateForm, confirmPassword: e.target.value })}
-          />
-          <div className="modal-actions">
-            <button onClick={handleUpdateMember}>수정 완료</button>
-            <button onClick={() => setShowUpdateModal(false)}>취소</button>
+
+      {showUpdateModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-close">
+              <img src="./../image/close.svg" alt="close" onClick={() => setShowUpdateModal(false)} />
+            </div>
+            {!isVerified ? (
+              <div>
+                <div className="password">
+                  <span>현재 비밀번호</span>
+                  <div>
+                    <input
+                      id="currentPw"
+                      type={showCurrentPw ? "text" : "password"}
+                      value={currentPassword}
+                      placeholder="현재 비밀번호를 입력하세요."
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      ref={inputRef}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleVerifyPassword();
+                      }}
+                    />
+                    <div
+                      className="eye"
+                      onClick={() => setShowCurrentPw((prev) => !prev)}
+                    >
+                      <img
+                        src={
+                          showCurrentPw
+                            ? "/image/eye.svg"
+                            : "/image/eye-slash.svg"
+                        }
+                        alt="toggle-pw"
+                      />
+                    </div>
+                  </div>
+                  {formErrors.currentPassword && (
+                    <div className="error">{formErrors.currentPassword}</div>
+                  )}
+                </div>
+
+                <div className="modal-actions">
+                  <button onClick={handleVerifyPassword}>확인</button>
+                </div>
+              </div>
+            ) : (
+              <div className="updateForm">
+                <h2>정보 수정</h2>
+                <span>닉네임 변경</span>
+                <input
+                  type="text"
+                  value={updateForm.nickname}
+                  onChange={(e) =>
+                    setUpdateForm({ ...updateForm, nickname: e.target.value })
+                  }
+                />
+                {formErrors.nickname && <div className="error">{formErrors.nickname}</div>}
+                <div className="password">
+                  <span>새 비밀번호</span>
+                  <div>
+                    <input
+                      id="newPw"
+                      type={showNewPw ? "text" : "password"}
+                      value={updateForm.newPassword}
+                      placeholder="새 비밀번호를 입력하세요."
+                      onChange={(e) =>
+                        setUpdateForm({
+                          ...updateForm,
+                          newPassword: e.target.value,
+                        })
+                      }
+                    />
+                    <div
+                      className="eye"
+                      onClick={() => setShowNewPw((prev) => !prev)}
+                    >
+                      <img
+                        src={
+                          showNewPw ? "/image/eye.svg" : "/image/eye-slash.svg"
+                        }
+                        alt="toggle-pw"
+                      />
+                    </div>
+                  </div>
+                  {formErrors.newPassword && (
+                    <div className="error">{formErrors.newPassword}</div>
+                  )}
+                </div>
+                <div className="password">
+                  <span>새 비밀번호 확인</span>
+                  <div>
+                    <input
+                      id="confirmPw"
+                      type={showConfirmPw ? "text" : "password"}
+                      value={updateForm.confirmPassword}
+                      placeholder="새 비밀번호를 다시 입력하세요."
+                      onChange={(e) =>
+                        setUpdateForm({
+                          ...updateForm,
+                          confirmPassword: e.target.value,
+                        })
+                      }
+                    />
+                    <div
+                      className="eye"
+                      onClick={() => setShowConfirmPw((prev) => !prev)}
+                    >
+                      <img
+                        src={
+                          showConfirmPw
+                            ? "/image/eye.svg"
+                            : "/image/eye-slash.svg"
+                        }
+                        alt="toggle-pw"
+                      />
+                    </div>
+                  </div>
+                  {formErrors.confirmPassword && (
+                    <div className="error">{formErrors.confirmPassword}</div>
+                  )}
+                </div>
+                <div className="modal-actions">
+                  <button onClick={handleUpdateMember}>수정 완료</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
-    </div>
-  </div>
-)}
-
-
-<div className="paymentHistory">
-        <h3>결제 내역</h3>
-        {Object.keys(groupedPayments).length > 0 ? (
-          <div className="paymentList">
-            {Object.entries(groupedPayments).map(([time, group], index) => (
-              <div key={index} className="paymentGroup">
-                <div className="paymentHeader" onClick={() => setExpandedGroup(expandedGroup === time ? null : time)}>
-                  <span>{new Date(time).toLocaleDateString()} 결제</span>
-                  <span className="totalAmount">{group.representativePayment.totalAmount.toLocaleString()} 원</span>
-                </div>
-
-                {expandedGroup === time && (
-                  <div className="paymentDetails">
-                    {group.payments.map((payment, idx) => (
-                      <div key={idx} className="paymentItem">
-                        <img src={payment.posterPath} alt={payment.movieNm} className="poster" />
-                        <div className="paymentInfo">
-                          <div>
-                            <strong>영화명:</strong> {payment.movieNm}
-                          </div>
-                          <div>
-                            <strong>영화관:</strong> {payment.cinemaName}
-                          </div>
-                          <div>
-                            <strong>상영관:</strong> {payment.theaterName}
-                          </div>
-                          <div>
-                            <strong>좌석:</strong> {payment.seatNumber}
-                          </div>
-                          <div>
-                            <strong>상영일:</strong> {payment.screeningDate} {payment.screeningTime} ~ {payment.screeningEndTime}
-                          </div>
-                          <div>
-                            <strong>결제 방법:</strong> {payment.paymentMethod}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <span>결제 내역이 없습니다.</span>
-        )}
-      </div>
-      
     </div>
   );
 };

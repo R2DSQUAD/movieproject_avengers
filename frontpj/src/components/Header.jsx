@@ -71,7 +71,7 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
       window.removeEventListener("resize", adjustFontSize);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [loginState.nickname, setIsMemberInfoActive]); // setIsMemberInfoActive 추가
+  }, [loginState.nickname, setIsMemberInfoActive]); // setIsMemberInfoAcfrontpj/public/image/logo.pngtive 추가
 
 
 
@@ -111,21 +111,21 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
           <div className="logo">
             <div className="logo-con">
               <img src="/image/logo.png" alt="logo" id="logo" />
-              <span>Movie</span>
+              <span>Frame In</span>
             </div>
           </div>
         </Link>
         <Link to="" className="nav-link">
-          Home
+          홈
         </Link>
         <Link to="/board" className="nav-link">
-          Board
+          게시판
         </Link>
         <Link to="/movie/search" className="nav-link">
-          Search
+          영화 검색
         </Link>
         <Link to="/movie/map" className="nav-link">
-          Cinemas
+          영화관
         </Link>
         {isLoggedIn && loginState.roleNames && loginState.roleNames.includes("ADMIN") && (
           <Link to="/admin" className="nav-link">
@@ -137,7 +137,7 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
       </nav>
       <div className="bar">
         <div className="search-container">
-          <input type="text" name="search" id="search" placeholder="search"
+          <input type="text" name="search" id="search" placeholder="영화 검색"
             value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearch} />
           <img src="/image/search.svg" alt="search" className="search-icon" onClick={handleSearch}/>
@@ -153,7 +153,9 @@ export default function Header({ isDarkMode, setIsDarkMode, isMemberInfoActive, 
             <div className={`member-info-con ${isMemberInfoActive ? 'active' : ''}`}>
               <Link to="/member/detail">내 정보</Link>
               <Link to="/cart/myCartList">장바구니</Link>
+              <Link to="/member/myPaymentList">결제내역</Link>
               <Link to="/chatroom">실시간채팅</Link>
+              <Link to="/member/myChatList">채팅내역</Link>
               <span onClick={handleLogout}>로그아웃</span>
             </div>
           </div>

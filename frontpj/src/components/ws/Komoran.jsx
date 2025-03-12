@@ -105,6 +105,11 @@ const Komoran = () => {
   const [lastBotMessageIndex, setLastBotMessageIndex] = useState(null);
   const bodyRef = useRef(null);
   const mapRef = useRef(null); // Ref to track the map div
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   // 카카오맵 스크립트 로드
   const loadKakaoMapScript = useCallback(() => {
@@ -272,7 +277,7 @@ const Komoran = () => {
           <div className="chat-header-logo">
             <img src="/image/logo.png" alt="logo" id="logo" />
           </div>
-          <div className="header-title">영화 길잡이</div>
+          <div className="header-title">Frame In</div>
         </div>
 
         <div className="komoran-body" ref={bodyRef}>
@@ -281,7 +286,7 @@ const Komoran = () => {
               <img src="/image/logo.png" alt="logo" id="logo" />
             </div>
             <p>
-              <b>영화 길잡이에 문의하기</b>
+              <b>Frame In에 문의하기</b>
             </p>
           </div>
           {messages.map((msg, index) => {
@@ -334,7 +339,8 @@ const Komoran = () => {
               if (e.key === "Enter") {
                 handleSendMessage(message);
               }
-            }} autofocus
+            }}
+            ref={inputRef}
           />
           <button onClick={handleButtonClick}>전송</button>
         </div>

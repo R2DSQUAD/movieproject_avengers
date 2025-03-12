@@ -66,12 +66,13 @@ public class ReplyController {
         BoardDto boardDto=boardService.detail(boardId);
         int replyCount=boardService.replyCount(boardDto.getId());
 
-        boardDto.setReplyCount(replyCount);
+    BoardDto boardDto = boardService.detail(boardId);
+    int replyCount = boardService.replyCount(boardDto.getId());
+    boardDto.setReplyCount(replyCount);
+    boardService.updateBoardReplyCount(boardDto);
 
-        boardService.updateBoardReplyCount(boardDto);
+    return ResponseEntity.ok("댓글이 성공적으로 삭제되었습니다.");
+}
 
-
-        return ResponseEntity.ok("댓글이 성공적으로 삭제되었습니다.");
-    }
 
 }
