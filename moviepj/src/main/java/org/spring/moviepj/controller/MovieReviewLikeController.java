@@ -1,24 +1,24 @@
 package org.spring.moviepj.controller;
 
-import org.spring.moviepj.service.impl.ReplyLikeServiceImpl;
+import org.spring.moviepj.service.impl.MovieReviewLikeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/reply")
-public class ReplyLikeController {
+@RequestMapping("/api/review")
+public class MovieReviewLikeController {
 
     @Autowired
-    private ReplyLikeServiceImpl replyLikeServiceImpl;
+    private MovieReviewLikeServiceImpl movieReviewLikeServiceImpl;
 
     // 좋아요 추가
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/like")
-    public ResponseEntity<?> likeReply(@RequestParam("replyId") Long replyId, @RequestParam("email") String email) {
+    public ResponseEntity<?> likeReview(@RequestParam Long movieReviewId, @RequestParam String email) {
         try {
-            replyLikeServiceImpl.addLike(replyId, email);
+            movieReviewLikeServiceImpl.addLike(movieReviewId, email);
             return ResponseEntity.ok("좋아요가 추가되었습니다.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -28,9 +28,9 @@ public class ReplyLikeController {
     // 좋아요 취소
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/unlike")
-    public ResponseEntity<?> unlikeReply(@RequestParam("replyId") Long replyId, @RequestParam("email") String email) {
+    public ResponseEntity<?> unlikeReview(@RequestParam Long movieReviewId, @RequestParam String email) {
         try {
-            replyLikeServiceImpl.removeLike(replyId, email);
+            movieReviewLikeServiceImpl.removeLike(movieReviewId, email);
             return ResponseEntity.ok("좋아요가 취소되었습니다.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

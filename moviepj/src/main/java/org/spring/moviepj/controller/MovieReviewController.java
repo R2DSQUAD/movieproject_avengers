@@ -15,6 +15,7 @@ import org.spring.moviepj.service.impl.MovieServiceImpl;
 import org.spring.moviepj.service.impl.ReplyServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class MovieReviewController {
      private final MovieReviewServiceImpl movieReviewServiceImpl;
 
+     
+        @PreAuthorize("isAuthenticated()")
         @PostMapping("/review/write")
         public ResponseEntity<Map<String, Object>> write(@RequestBody MovieReviewDto movieReviewDto){
 
@@ -53,8 +56,8 @@ public class MovieReviewController {
         return new ResponseEntity<>(map, HttpStatus.OK);
 
     }
-
-    @PostMapping("/reply/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/review/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
         movieReviewServiceImpl.movieReviewDelete(id);
         return ResponseEntity.ok("댓글이 성공적으로 삭제되었습니다.");

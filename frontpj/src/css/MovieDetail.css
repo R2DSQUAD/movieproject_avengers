@@ -84,3 +84,98 @@ body.dark .movieDetail-content {
 .movieDetail-content>ul>li>img.selected {
   border: 3px solid var(--color-red);
 }
+
+.rating {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* 기본 별 스타일 */
+.star {
+  font-size: 30px;
+  color: #d3d3d3; /* 기본 색: 회색 */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* 클릭한 별의 색상 변경 */
+.star.selected {
+  color: #f39c12; /* 별을 선택했을 때 색상: 노란색 */
+}
+
+/* 별에 마우스 오버시 색상 변경 */
+.star:hover {
+  color: #f39c12;
+}
+
+.movieDetailReview-content{
+  width: 100%;
+
+}
+.movieReviewInsert{
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Box */
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+}
+
+/* Modal Buttons */
+.modal-buttons {
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.modal-confirm-button {
+  background-color: var(--color-green);
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.modal-cancel-button {
+  background-color: var(--color-red);
+  color: white;
+  border: none;
+  border-radius: 4px;
+}

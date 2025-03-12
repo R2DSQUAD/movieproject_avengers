@@ -10,6 +10,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,7 @@ public class BoardController {
     //     boardService.boardInsert(boardDto);
     //     return ResponseEntity.ok("아이템이 성공적으로 추가되었습니다.");
     // }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/insert")
     public ResponseEntity<String> insertOk(
             @RequestParam("title") String title,
@@ -58,6 +59,7 @@ public class BoardController {
 
 
     // 아이템 목록 조회
+    
     @GetMapping("/List")
     public ResponseEntity<List<BoardDto>> itemList(){
         List<BoardDto> boardDtos = boardService.boardList();
@@ -70,7 +72,7 @@ public class BoardController {
         BoardDto boardDto = boardService.detail(id);
         return ResponseEntity.ok(boardDto);
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
         boardService.boardDelete(id);
@@ -78,6 +80,7 @@ public class BoardController {
     }
 
     // 아이템 수정
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/update")
     public ResponseEntity<String> updateOk(
             @RequestParam("title") String title,

@@ -8,6 +8,7 @@ import org.spring.moviepj.common.BasicTime;
 import org.spring.moviepj.entity.MemberEntity;
 import org.spring.moviepj.entity.MovieEntity;
 import org.spring.moviepj.entity.MovieReviewEntity;
+import org.spring.moviepj.entity.MovieReviewLikeEntity;
 import org.spring.moviepj.entity.ReplyEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,11 +38,13 @@ public class MovieReviewDto extends BasicTime{
     private MemberEntity memberEntity;  
 
     private Double rating;  
+    private int likeCount;
 
     private Long MovieId;
     private String reviewText;  
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private List<MovieReviewLikeDto> movieReviewLikeEntities;
 
 
      public static MovieReviewDto toMovieReviewDto(MovieReviewEntity movieReviewEntity) {
@@ -53,7 +56,19 @@ public class MovieReviewDto extends BasicTime{
         movieReviewDto.setReviewText(movieReviewEntity.getReviewText());
         movieReviewDto.setCreateTime(movieReviewEntity.getCreateTime());
         movieReviewDto.setUpdateTime(movieReviewEntity.getUpdateTime());
+        movieReviewDto.setLikeCount(movieReviewEntity.getMovieReviewLikeEntities().size());
+         // MovieReviewLikeEntity 리스트에서 필요한 정보만 추출
+    List<MovieReviewLikeDto> movieReviewLikeDtos = movieReviewEntity.getMovieReviewLikeEntities().stream()
+    .map(movieReviewLikeEntity -> {
+        MovieReviewLikeDto movieReviewLikeDto = new MovieReviewLikeDto();
+        movieReviewLikeDto.setId(movieReviewLikeEntity.getId());
+        movieReviewLikeDto.setEmail(movieReviewLikeEntity.getMemberEntity().getEmail()); // 좋아요를 누른 사람 이메일
+        movieReviewLikeDto.setMovieReviewId(movieReviewLikeEntity.getMovieReviewEntity().getId()); // 댓글 ID
+        return movieReviewLikeDto;
+    })
+    .collect(Collectors.toList());
 
+    movieReviewDto.setMovieReviewLikeEntities(movieReviewLikeDtos);
     return movieReviewDto;
 }
 }
