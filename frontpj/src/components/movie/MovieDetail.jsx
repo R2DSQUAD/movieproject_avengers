@@ -5,6 +5,7 @@ import { LiteYoutubeEmbed } from "react-lite-yt-embed";
 import { useCountUp } from "../../hooks/useCountup";
 import { useSelector } from "react-redux";
 import jwtAxios from "../../util/jwtUtil";
+import "../../css/MovieDetail.css";
 
 const Modal = ({ onClose, onConfirm, message }) => {
   return (
@@ -588,7 +589,7 @@ const MovieDetail = () => {
             </div>
           </div>
 
-          <div className="moviedetail-content">
+          <div className="movieDetail-content">
             <span>줄거리</span>
             <p>{movieInfo.overview}</p>
             {selectedTrailerId && (
