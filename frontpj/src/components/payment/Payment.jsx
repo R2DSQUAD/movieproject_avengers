@@ -79,7 +79,7 @@ const Payment = () => {
     let pgProvider = "";
     switch (paymentMethod) {
       case "kakaoPay":
-        pgProvider = "kakaoPay.TC0ONETIME";
+        pgProvider = "kakaopay.TC0ONETIME";
         break;
       case "credit_card":
         pgProvider = "html5_inicis.INIBillTst";
@@ -159,26 +159,23 @@ const Payment = () => {
       <h1>결제 페이지</h1>
       <div className="payment-con">
         <div className="reservation">
-          <h5>예매 정보</h5>
+          <h3>예매 정보</h3>
           {paymentItems.length > 0 ? (
             paymentItems.map((item, index) => (
               <div key={index} className="payment-item">
                 <img
                   src={item.poster_path}
                   alt={item.movieNm}
-                  style={{
-                    width: "100px",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
                 />
-                <p> 영화: {item.movieNm}</p>
-                <p> 상영 날짜: {item.screeningDate}</p>
-                <p> 상영 시간: {item.screeningTime}</p>
-                <p> 상영관: {item.theaterName}</p>
-                <p> 좌석 번호: {item.seatNumber}</p>
-                <p> 가격: {item.price.toLocaleString()} 원</p>
-                <p> 영화관: {item.cinemaName}</p>
+                <div className="movieDetail">
+                  <span> 영화: {item.movieNm}</span>
+                  <span> 상영 날짜: {item.screeningDate}</span>
+                  <span> 상영 시간: {item.screeningTime}</span>
+                  <span> 상영관: {item.theaterName}</span>
+                  <span> 좌석 번호: {item.seatNumber}</span>
+                  <span> 가격: {item.price.toLocaleString()} 원</span>
+                  <span> 영화관: {item.cinemaName}</span>
+                </div>
               </div>
             ))
           ) : (
@@ -187,191 +184,121 @@ const Payment = () => {
         </div>
 
         <div className="payment-selection">
-          <div className="payment-method-top">
-            <h5>결제수단</h5>
-          </div>
-          <div className="payment-method">
-            <button
-              className={paymentMethod === "credit_card" ? "selected" : ""}
-              onClick={() => setPaymentMethod("credit_card")}
-            >
-              신용카드
-            </button>
+          <h3>결제수단</h3>
+          <div className="payment-method-con">
+            <div className="payment-method">
+              <button
+                className={paymentMethod === "credit_card" ? "selected" : ""}
+                onClick={() => setPaymentMethod("credit_card")}
+              >
+                신용카드
+              </button>
 
-            <button
-              className={paymentMethod === "kakaoPay" ? "selected" : ""}
-              onClick={() => setPaymentMethod("kakaoPay")}
-            >
-              카카오페이
-            </button>
+              <button
+                className={paymentMethod === "kakaoPay" ? "selected" : ""}
+                onClick={() => setPaymentMethod("kakaoPay")}
+              >
+                카카오페이
+              </button>
 
-            <button
-              className={paymentMethod === "tossPay" ? "selected" : ""}
-              onClick={() => setPaymentMethod("tossPay")}
-            >
-              토스페이
-            </button>
+              <button
+                className={paymentMethod === "tossPay" ? "selected" : ""}
+                onClick={() => setPaymentMethod("tossPay")}
+              >
+                토스페이
+              </button>
 
-            <button
-              className={paymentMethod === "mobile" ? "selected" : ""}
-              onClick={() => setPaymentMethod("mobile")}
-            >
-              휴대폰
-            </button>
-          </div>
-          <div className="payment-motion">
-            {paymentMethod === "credit_card" && (
-              <div className="credit-card-motion">
-                <div className="credit-card-inner">
-                  <div className="credit-card-front">
-                    <div className="front-chip">
+              <button
+                className={paymentMethod === "mobile" ? "selected" : ""}
+                onClick={() => setPaymentMethod("mobile")}
+              >
+                휴대폰
+              </button>
+            </div>
+            <div className="payment-motion">
+              {paymentMethod === "credit_card" && (
+                <div className="credit-card-motion">
+                  <div className="credit-card-inner">
+                    <div className="credit-card-front">
+                      <div className="front-chip">
+                        <img
+                          src="./../image/chip.png"
+                          alt="chip"
+                          className="chip"
+                        />
+                      </div>
+                    </div>
+                    <div className="credit-card-back">
+                      <div className="credit-card-back-inner"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {paymentMethod === "kakaoPay" && (
+                <div className="kakaoPay-motion">
+                  <div className="kakaoPay-inner">
+                    <div className="kakaoPay-front">
                       <img
-                        src="./../image/chip.png"
-                        alt="chip"
-                        className="chip"
+                        src="./../image/kakaoPayCard.png"
+                        alt="card"
+                        className="card"
+                      />
+                    </div>
+                    <div className="kakaoPay-back">
+                      <div className="kakaoPay-back-inner"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {paymentMethod === "tossPay" && (
+                <div className="tossPay-motion">
+                  <div className="tossPay-inner">
+                    <div className="tossPay-front">
+                      <video
+                        autoPlay
+                        loop
+                        muted
+                        className="tossPay-video"
+                        src="./../video/tossMotion_dark.mp4"
+                      />
+                    </div>
+                    <div className="tossPay-back">
+                      <video
+                        autoPlay
+                        loop
+                        muted
+                        className="tossPay-video"
+                        src="./../video/tossMotion_light.mp4"
                       />
                     </div>
                   </div>
-                  <div className="credit-card-back">
-                    <div className="credit-card-back-inner"></div>
-                  </div>
                 </div>
-              </div>
-            )}
-            {paymentMethod === "kakaoPay" && (
-              <div className="kakaoPay-motion">
-                <div className="kakaoPay-inner">
-                  <div className="kakaoPay-front">
-                    <img
-                      src="./../image/kakaoPayCard.png"
-                      alt="card"
-                      className="card"
-                    />
-                  </div>
-                  <div className="kakaoPay-back">
-                    <div className="kakaoPay-back-inner"></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {paymentMethod === "tossPay" && (
-              <div className="tossPay-motion">
-                <div className="tossPay-inner">
-                  <div className="tossPay-front">
-                    <video
-                      autoPlay
-                      loop
-                      muted
-                      className="tossPay-video"
-                      src="./../video/tossMotion_dark.mp4"
-                    />
-                  </div>
-                  <div className="tossPay-back">
-                    <video
-                      autoPlay
-                      loop
-                      muted
-                      className="tossPay-video"
-                      src="./../video/tossMotion_light.mp4"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            {paymentMethod === "mobile" && (
-              <div className="mobile-motion">
-                <div className="mobile-inner">
-                  <div className="mobile-face mobile-front">
-                    <div className="mobile-front-inner">
-                      <div className="notch"></div>
+              )}
+              {paymentMethod === "mobile" && (
+                <div className="mobile-motion">
+                  <div className="mobile-inner">
+                    <div className="mobile-front">
+                      <div className="mobile-front-inner">
+                        <div className="notch"></div>
+                      </div>
+                    </div>
+                    <div className="mobile-back">
+                      <div className="mobile-back-camera"></div>
                     </div>
                   </div>
-                  <div className="mobile-face mobile-back"></div>
-                  <div className="mobile-face mobile-top"></div>
-                  <div className="mobile-face mobile-bottom"></div>
-                  <div className="mobile-face mobile-left"></div>
-                  <div className="mobile-face mobile-right"></div>
-
-                  <div className="mobile-corner mobile-corner-tl">
-                    <div className="mobile-piece mobile-piece-1"></div>
-                    <div className="mobile-piece mobile-piece-2"></div>
-                    <div className="mobile-piece mobile-piece-3"></div>
-                    <div className="mobile-piece mobile-piece-4"></div>
-                  </div>
-
-                  <div className="mobile-corner mobile-corner-tr">
-                    <div className="mobile-piece mobile-piece-5"></div>
-                    <div className="mobile-piece mobile-piece-6"></div>
-                    <div className="mobile-piece mobile-piece-7"></div>
-                    <div className="mobile-piece mobile-piece-8"></div>
-                  </div>
-
-                  <div className="mobile-corner mobile-corner-bl">
-                    <div className="mobile-piece mobile-piece-9"></div>
-                    <div className="mobile-piece mobile-piece-10"></div>
-                    <div className="mobile-piece mobile-piece-11"></div>
-                    <div className="mobile-piece mobile-piece-12"></div>
-                  </div>
-
-                  <div className="mobile-corner mobile-corner-br">
-                    <div className="mobile-piece mobile-piece-13"></div>
-                    <div className="mobile-piece mobile-piece-14"></div>
-                    <div className="mobile-piece mobile-piece-15"></div>
-                    <div className="mobile-piece mobile-piece-16"></div>
-                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-
-          <div class="camera">
-    <div class="object">
-      <div class="front-face"></div>
-      <div class="back-face"></div>
-      <div class="top-face"></div>
-      <div class="bottom-face"></div>
-      <div class="left-face"></div>
-      <div class="right-face"></div>
-
-      <div class="tr-corner">
-        <div class="piece-1"></div>
-        <div class="piece-2"></div>
-        <div class="piece-3"></div>
-        <div class="piece-4"></div>
-      </div>
-
-      <div class="tl-corner">
-        <div class="piece-5"></div>
-        <div class="piece-6"></div>
-        <div class="piece-7"></div>
-        <div class="piece-8"></div>
-      </div>
-
-      <div class="bl-corner">
-        <div class="piece-9"></div>
-        <div class="piece-10"></div>
-        <div class="piece-11"></div>
-        <div class="piece-12"></div>
-      </div>
-
-      <div class="br-corner">
-        <div class="piece-13"></div>
-        <div class="piece-14"></div>
-        <div class="piece-15"></div>
-        <div class="piece-16"></div>
-      </div>
-    </div>
-  </div>
-
         </div>
+
         <div className="payment-go">
           <div className="payment-go-top">
-            <h5>결제하기</h5>
           </div>
-          <div className="total-price">
+          <div className="payment-footer">
             <h2>결제 금액: {totalPrice.toLocaleString()} 원</h2>
+            <button onClick={paymentGo}>결제하기</button>
           </div>
-          <button onClick={paymentGo}>결제하기</button>
         </div>
       </div>
     </div>

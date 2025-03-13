@@ -64,9 +64,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
 
   // 최신순 정렬
   const sortByLatest = (data) => {
-    return data.sort(
-      (a, b) => new Date(b.createTime) - new Date(a.createTime)
-    );
+    return data.sort((a, b) => new Date(b.createTime) - new Date(a.createTime));
   };
 
   // 공감(좋아요) 순 정렬 (동일 공감수일 경우 최신순)
@@ -105,7 +103,6 @@ const ReviewSection = ({ movieInfo, loginState }) => {
       setRating(0);
       // 작성 후 최신 정렬로 다시 불러오기
       fetchReviews(isSortedByLike ? "like" : "latest");
-      
     } catch (err) {
       alert("리뷰 작성 실패");
       console.error("Error submitting review:", err);
@@ -197,55 +194,21 @@ const ReviewSection = ({ movieInfo, loginState }) => {
 
   return (
     <div className="movieDetailReview-content">
-      {loginState.email ? (
-        !hasWrittenReview ? (
-          <div className="movieReviewInsert">
-            <span>리뷰작성</span>
-            <textarea
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              placeholder="리뷰를 작성해주세요"
-            />
-            {/* 별점 선택 */}
-            <div className="rating">
-              {[1, 2, 3, 4, 5].map((rate) => (
-                <span
-                  key={rate}
-                  className={`star ${rate <= rating ? "selected" : ""}`}
-                  onClick={() => setRating(rate)}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
-            <button onClick={handleReviewSubmit}>리뷰 작성</button>
-          </div>
-        ) : (
-          <p>이미 리뷰를 작성하셨습니다.</p>
-        )
-      ) : (
-        <p>
-          <Link to="/member/login">로그인 하러가기</Link>
-        </p>
-      )}
-      <div style={{ marginTop: "1rem" }}>
-        <button
-          onClick={handleSortByLike}
-          style={{
-            backgroundColor: isSortedByLike ? "lightblue" : "transparent",
-            marginRight: "0.5rem",
+      <div className="review_align">
+        <select
+          value={isSortedByLike ? "like" : "latest"} // 현재 선택된 정렬 방식에 따라 값을 설정
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value === "like") {
+              handleSortByLike(); // 공감순 정렬
+            } else {
+              handleSortByLatest(); // 최신순 정렬
+            }
           }}
         >
-          공감순
-        </button>
-        <button
-          onClick={handleSortByLatest}
-          style={{
-            backgroundColor: isSortedByLatest ? "lightblue" : "transparent",
-          }}
-        >
-          최신순
-        </button>
+        <option value="latest">최신순</option>
+          <option value="like">공감순</option>
+        </select>
       </div>
       <div className="review-list">
         {reviews.length === 0 ? (
@@ -262,7 +225,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
             <ul>
               {currentReviews.map((review) => (
                 <li key={review.id} className="review-item">
-                  <p>작성자: {review.email}</p>
+                  <p>작성자: {review.nickname}</p>
                   <p>내용: {review.reviewText}</p>
                   <p>평점: {review.rating}점</p>
                   <p>공감: {review.likeCount}개</p>
@@ -337,6 +300,38 @@ const ReviewSection = ({ movieInfo, loginState }) => {
             </div>
           </>
         )}
+        {loginState.email ? (
+        !hasWrittenReview ? (
+          <div className="movieReviewInsert">
+            <div className="rating">
+              {[1, 2, 3, 4, 5].map((rate) => (
+                <span
+                  key={rate}
+                  className={`star ${rate <= rating ? "selected" : ""}`}
+                  onClick={() => setRating(rate)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            <textarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="리뷰를 작성해주세요"
+            />
+            {/* 별점 선택 */}
+            <button onClick={handleReviewSubmit} className="review_write">
+              리뷰 작성
+            </button>
+          </div>
+        ) : (
+          <p>이미 리뷰를 작성하셨습니다.</p>
+        )
+      ) : (
+        <p>
+          <Link to="/member/login">로그인 하러가기</Link>
+        </p>
+      )}
       </div>
     </div>
   );
@@ -374,7 +369,7 @@ const MovieDetail = () => {
       const filteredTrailers = trailerData.filter(
         (trailer) => trailer.movieEntity.movieCd.toString() === movieCd
       );
-  
+
       let movieData = filteredTrailers[0]?.movieEntity;
       if (movieData && movieData.movieNm) {
         setMovieInfo(movieData);
@@ -431,7 +426,9 @@ const MovieDetail = () => {
       objectType: "feed",
       content: {
         title: movieInfo.movieNm || "영화 정보",
-        description: `개봉일: ${movieInfo.openDt || "미정"} | 장르: ${movieInfo.genres || "정보 없음"}`,
+        description: `개봉일: ${movieInfo.openDt || "미정"} | 장르: ${
+          movieInfo.genres || "정보 없음"
+        }`,
         imageUrl: imageUrl,
         link: {
           mobileWebUrl: `http://localhost:3000/movie/detail/${movieCd}`,

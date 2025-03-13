@@ -12,8 +12,8 @@ const Modal = ({ message, onClose, onConfirm }) => {
       <div className="modal">
         <p style={{ color: 'black' }}>{message}</p>
         <div className="modal-buttons">
-          <button onClick={onConfirm} className="modal-confirm-button">예</button>
           <button onClick={onClose} className="modal-cancel-button">아니오</button>
+          <button onClick={onConfirm} className="modal-confirm-button">예</button>
         </div>
       </div>
     </div>
