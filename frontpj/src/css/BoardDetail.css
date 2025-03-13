@@ -34,12 +34,18 @@
   }
   
   .modal-confirm-button {
-    background-color: #28a745;
-    color: #fff;
+    background-color: var(--color-dark-1);
+    color: var(--color-dark-main-text);
     margin-right: 10px;
+  }
+
+  body.light .modal-confirm-button {
+    background-color: var(--color-light-1);
+    color: var(--color-light-main-text);
   }
   
   .modal-cancel-button {
-    background-color: #dc3545;
-    color: #fff;
+
+    background-color: var(--color-main-point);
+    color: var(--color-dark-main-text);
   }

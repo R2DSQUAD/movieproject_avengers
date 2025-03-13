@@ -12,7 +12,7 @@ const Modal = ({ onClose, onConfirm, message }) => {
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <p style={{ color: "black" }}>{message}</p>
+        <span className="modal-message">{message}</span>
         <div className="modal-buttons">
           <button onClick={onClose} className="modal-cancel-button">
             취소
@@ -189,7 +189,20 @@ const ReviewSection = ({ movieInfo, loginState }) => {
     const day = String(date.getDate()).padStart(2, "0");
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}년-${month}월-${day}일 ${hours}시:${minutes}분`;
+    return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+  };
+
+  const Rating = ({ rating }) => {
+    // 별을 표시할 수 있도록 배열을 만듭니다.
+    const fullStars = "★".repeat(rating); // 별의 개수만큼 '★' 생성
+    const emptyStars = "☆".repeat(5 - rating); // 5개에서 rating만큼을 제외한 빈 별 생성
+
+    return (
+      <span className="review_rating">
+        {fullStars}
+        {emptyStars} {/* 별과 빈 별을 합쳐서 표시 */}
+      </span>
+    );
   };
 
   return (
@@ -206,7 +219,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
             }
           }}
         >
-        <option value="latest">최신순</option>
+          <option value="latest">최신순</option>
           <option value="like">공감순</option>
         </select>
       </div>
@@ -225,40 +238,40 @@ const ReviewSection = ({ movieInfo, loginState }) => {
             <ul>
               {currentReviews.map((review) => (
                 <li key={review.id} className="review-item">
-                  <p>작성자: {review.nickname}</p>
-                  <p>내용: {review.reviewText}</p>
-                  <p>평점: {review.rating}점</p>
-                  <p>공감: {review.likeCount}개</p>
-                  <p>작성일: {formatDate(review.createTime)}</p>
-                  <button
-                    onClick={() => handleLike(review.id)}
-                    style={{
-                      backgroundColor: review.movieReviewLikeEntities?.some(
-                        (like) => like.email === loginState.email
-                      )
-                        ? "blue"
-                        : "gray",
-                      color: "white",
-                      marginRight: "0.5rem",
-                    }}
-                  >
-                    {review.movieReviewLikeEntities?.some(
+                  <div className="review_title">
+                    <span className="review_nickname">{review.nickname}</span>
+                    <Rating rating={review.rating}></Rating>
+                  </div>
+                  <span className="review_date">
+                    {formatDate(review.createTime)}
+                  </span>
+                  <span className="review_content">{review.reviewText}</span>
+                  <div className="review_footer">
+                  <div className="review_like_count">
+                    <span
+                      onClick={() => handleLike(review.id)}
+                      className="review_like"
+                    >
+                      {review.movieReviewLikeEntities?.some(
                       (like) => like.email === loginState.email
                     )
-                      ? "공감 취소"
-                      : "공감"}
-                  </button>
+                      ? "❤"
+                      : "♡"}
+                    </span>
+                    <span>{review.likeCount}</span>
+                  </div>
                   {(loginState.email === review.email ||
                     loginState.roleNames?.includes("ADMIN")) && (
-                    <button
+                    <span
                       onClick={() => {
                         setSelectedReviewId(review.id);
                         setIsModalOpen(true);
                       }}
                     >
-                      리뷰 삭제
-                    </button>
+                      삭제
+                    </span>
                   )}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -301,37 +314,37 @@ const ReviewSection = ({ movieInfo, loginState }) => {
           </>
         )}
         {loginState.email ? (
-        !hasWrittenReview ? (
-          <div className="movieReviewInsert">
-            <div className="rating">
-              {[1, 2, 3, 4, 5].map((rate) => (
-                <span
-                  key={rate}
-                  className={`star ${rate <= rating ? "selected" : ""}`}
-                  onClick={() => setRating(rate)}
-                >
-                  ★
-                </span>
-              ))}
+          !hasWrittenReview ? (
+            <div className="movieReviewInsert">
+              <div className="rating">
+                {[1, 2, 3, 4, 5].map((rate) => (
+                  <span
+                    key={rate}
+                    className={`star ${rate <= rating ? "selected" : ""}`}
+                    onClick={() => setRating(rate)}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <textarea
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                placeholder="리뷰를 작성해주세요"
+              />
+              {/* 별점 선택 */}
+              <button onClick={handleReviewSubmit} className="review_write">
+                리뷰 작성
+              </button>
             </div>
-            <textarea
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              placeholder="리뷰를 작성해주세요"
-            />
-            {/* 별점 선택 */}
-            <button onClick={handleReviewSubmit} className="review_write">
-              리뷰 작성
-            </button>
-          </div>
+          ) : (
+            <span className="review-message">이미 리뷰를 작성하셨습니다.</span>
+          )
         ) : (
-          <p>이미 리뷰를 작성하셨습니다.</p>
-        )
-      ) : (
-        <p>
-          <Link to="/member/login">로그인 하러가기</Link>
-        </p>
-      )}
+          <span className="review-message">
+            <Link to="/member/login">로그인 하러가기</Link>
+          </span>
+        )}
       </div>
     </div>
   );
