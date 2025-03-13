@@ -24,7 +24,7 @@ public class CinemaController {
 
     @GetMapping("/nearby")
     public List<CinemaEntity> getNearbyCinemas(@RequestParam double lat, @RequestParam double lon) {
-        double radius = 5.0; // 5km 반경
+        double radius = 10.0; // 10km 반경
         return cinemaRepository.findNearbyCinemas(lat, lon, radius);
     }
 }
