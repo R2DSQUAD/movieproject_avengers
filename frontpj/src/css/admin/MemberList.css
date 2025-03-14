@@ -128,7 +128,7 @@ body.light .member-list-container tr {
   color: red;
 }
 
-.member-modal {
+.modal-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -141,16 +141,13 @@ body.light .member-list-container tr {
   z-index: 1000;
 }
 
-.member-modal-content h3 {
-  color: black;
+.modal-content form > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.member-modal-content label {
-  display: block;
-  margin-top: 10px;
-}
-
-.member-modal-content {
+.modal-content {
   background: #fff;
   padding: 20px;
   width: 400px;
