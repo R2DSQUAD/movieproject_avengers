@@ -141,10 +141,20 @@ body.light .member-list-container tr {
   z-index: 1000;
 }
 
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .modal-content form > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.modal-content form > div > span {
+  font-size: 10px;
 }
 
 .modal-content {
@@ -169,11 +179,16 @@ body.light .modal-content {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  filter: var(100);
+  filter: invert(1);
 }
 
 body.light .modal-close-btn {
-  filter: var(0);
+  filter: invert(100);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
 }
 
 .modal-actions > button {
