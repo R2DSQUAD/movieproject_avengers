@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from "react-router-dom";
 import '../../css/ChatRoom.css'; // CSS 파일 import
 import axios from 'axios'; // axios 사용 (선택 사항, fetch도 가능합니다)
 
@@ -30,7 +29,7 @@ const ChatRoom = () => {
     // 서버로부터 메시지 수신
     webSocket.current.onmessage = (event) => {
       console.log('서버에서 받은 메시지:', event.data);
-      const currentTime = new Date().toLocaleTimeString(); // 현재 시간 얻기
+      const currentTime = getTime(); // 현재 시간 얻기
       const sender = event.data.split(':')[0]; // 메시지의 발신자 추출
 
       // 이미 받은 메시지가 사용자의 메시지라면, 중복 처리
@@ -67,7 +66,7 @@ const ChatRoom = () => {
   // 메시지 보내기 핸들러
   const handleSendMessage = async () => {
     if (webSocket.current && webSocket.current.readyState === WebSocket.OPEN) {
-      const currentTime = new Date().toLocaleTimeString(); // 현재 시간 얻기
+      const currentTime = getTime(); // 현재 시간 얻기
       const formattedMessage = `${loginState.email}: ${message}`;
 
       // WebSocket을 통해 메시지 전송
@@ -137,9 +136,18 @@ const ChatRoom = () => {
     console.log('로컬 스토리지에 저장된 메시지가 삭제되었습니다.');
   };
 
+  const getTime = (date) => {
+    const now = date || new Date();
+    let hours = now.getHours();
+    const ampm = hours >= 12 ? "오후" : "오전";
+    hours = hours % 12 || 12;
+    const minutes = now.getMinutes();
+    return `${ampm} ${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
+  };
+
   return (
-    <>
-      <div className="chatContainer">
+    <div className='chatContainer'>
+      <div className="chatContent">
         <h1 style={{ color: 'black' }}>ChatRoom</h1>
         <div className="chatBox" ref={chatBoxRef}>
           {messages
@@ -181,10 +189,7 @@ const ChatRoom = () => {
           </button>
         )}
       </div>
-      <div>
-        <Link to="/Komoran">Komoran</Link>
-      </div>
-    </>
+    </div>
   );
 };
 

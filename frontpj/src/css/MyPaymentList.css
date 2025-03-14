@@ -51,6 +51,10 @@ body.light .paymentHeader {
   background-color:  var(--color-dark-2);
 }
 
+.paymentCinema-title {
+  
+}
+
 .totalAmount {
   font-weight: bold;
   color: #e44d26;
@@ -80,8 +84,8 @@ body.light .paymentHeader {
 
 /* 포스터 스타일 */
 .paymentItem > .poster {
-  width: 80px;
-  height: 100px;
+  width: 100px;
+  height: 100%;
   margin-right: 15px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
