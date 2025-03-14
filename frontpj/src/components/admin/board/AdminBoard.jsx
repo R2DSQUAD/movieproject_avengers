@@ -49,12 +49,15 @@ const AdminBoard = () => {
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const seconds = String(date.getSeconds()).padStart(2, "0");
-
+    if(year<2000) {
+      return null;
+    }
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
   // 카테고리 버튼 클릭 시 카테고리 필터링
   const handleCategoryFilter = (category) => {
+    console.log("선택된 카테고리:", category); // 카테고리 값 출력
     setSelectedCategory(category);
     let filtered = [];
     if (category === "all") {
@@ -65,6 +68,7 @@ const AdminBoard = () => {
     setFilteredBoardList(filtered);
     setCurrentPage(1); // 카테고리 필터링 후 첫 페이지로 이동
   };
+  
 
   // 검색 버튼 클릭 시 필터링된 게시글 리스트 설정
   const handleSearch = () => {
@@ -170,21 +174,20 @@ const AdminBoard = () => {
     formDataToSend.append("id", formData.id);
     formDataToSend.append("title", formData.title);
     formDataToSend.append("content", formData.content);
-    formDataToSend.append("category", formData.category);
-    formDataToSend.append("category", formData.nickname);
+    formDataToSend.append("category", formData.category);  // 카테고리만 추가
     formDataToSend.append("email", formData.email);
-
+  
     // 파일이 있으면 함께 추가
     if (formData.itemFile) {
       formDataToSend.append("itemFile", formData.itemFile);
     }
-
+  
     try {
       await jwtAxios.post(
         `http://localhost:8090/admin/board/update`,
         formDataToSend
       );
-
+  
       // 업데이트 후 게시글 리스트를 새로고침
       const response = await axios.get("http://localhost:8090/board/List");
       setBoardList(response.data);
@@ -194,6 +197,9 @@ const AdminBoard = () => {
       console.error("게시글 업데이트 실패:", error);
     }
   };
+  
+
+
   const handleEditClick = (board) => {
     // 선택된 게시글 데이터를 폼에 채워 넣기
     setFormData({
@@ -375,7 +381,6 @@ const AdminBoard = () => {
                 onChange={handleInputChange}
                 name="category"
               >
-                <option value="">카테고리 선택</option>
                 <option value="영화게시판">영화게시판</option>
                 <option value="자유게시판">자유게시판</option>
                 <option value="문의게시판">문의게시판</option>
