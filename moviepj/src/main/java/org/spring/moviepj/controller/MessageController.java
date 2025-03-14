@@ -26,17 +26,15 @@ public class MessageController {
         MemberEntity member = memberRepository.findByEmail(messageRequest.getSender())
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 
-        
-
         // 메시지 엔티티 생성
         ChatMessageEntity chatmessageEntity = ChatMessageEntity.builder()
                 .memberEntity(member) // 외래키로 MemberEntity 설정
                 .content(messageRequest.getMessage()) // 메시지 본문
+                .nickname(member.getNickname()) // 닉네임 설정 (이메일에 맞는 닉네임)
                 .build();
 
         // 메시지 저장
         chatmessageRepository.save(chatmessageEntity);
-
 
         return ResponseEntity.ok("Message received and saved.");
     }
@@ -63,3 +61,4 @@ public class MessageController {
         }
     }
 }
+
