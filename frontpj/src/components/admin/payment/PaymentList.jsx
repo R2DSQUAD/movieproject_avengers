@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import jwtAxios from "../../../util/jwtUtil";
+import "../../../css/admin/PaymentList.css";
 
 const PaymentList = () => {
     const [groupedPayments, setGroupedPayments] = useState([]);
@@ -59,12 +60,25 @@ const PaymentList = () => {
         setGroupedPayments(Object.values(grouped));
     };
 
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+          setPage(newPage);
+        }
+      };
+    
+      const startPage = Math.max(0, page - 2);
+      const endPage = Math.min(totalPages - 1, page + 2);
+      const pageNumbers = [];
+      for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+      }
+
     return (
-        <div>
+        <div className='payment-list'>
             <h2>결제 리스트</h2>
 
             {/* 검색 입력 필드 */}
-            <form onSubmit={handleSearch} style={{ marginBottom: "20px" }}>
+            <form onSubmit={handleSearch} className='search-form'>
                 <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
                     <option value="email">이메일</option>
                     <option value="paymentMethod">결제 방법</option>
@@ -123,11 +137,31 @@ const PaymentList = () => {
             </table>
 
             {/* 페이지네이션 */}
-            <div>
-                <button disabled={page === 0} onClick={() => setPage(page - 1)}>이전</button>
-                <span> {page + 1} / {totalPages} 페이지 </span>
-                <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>다음</button>
-            </div>
+            <div className="pagination">
+        <button onClick={() => handlePageChange(0)} disabled={page === 0}>
+          처음
+        </button>
+        <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
+          이전
+        </button>
+
+        {pageNumbers.map((pageNum) => (
+          <button
+            key={pageNum}
+            onClick={() => handlePageChange(pageNum)}
+            className={page === pageNum ? "active" : ""}
+          >
+            {pageNum + 1}
+          </button>
+        ))}
+
+        <button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>
+          다음
+        </button>
+        <button onClick={() => handlePageChange(totalPages - 1)} disabled={page === totalPages - 1}>
+          마지막
+        </button>
+      </div>
         </div>
     );
 };
