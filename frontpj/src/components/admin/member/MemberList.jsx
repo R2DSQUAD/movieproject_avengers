@@ -3,24 +3,22 @@ import jwtAxios from "../../../util/jwtUtil";
 import "../../../css/admin/MemberList.css";
 
 const MemberList = () => {
-  // 검색, 페이지네이션 관련 상태
   const [members, setMembers] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const size = 10;
 
-  const [searchType, setSearchType] = useState("email"); // email 또는 nickname
+  const [searchType, setSearchType] = useState("email");
   const [searchValue, setSearchValue] = useState("");
 
-  // 수정/삭제 모달 및 폼 데이터
   const [selectedMember, setSelectedMember] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     pw: "",
     nickname: "",
-    social: false, // 수정 불가
-    roleNames: []  // 예: ["ADMIN"], ["MANAGER"], ["USER"]
+    social: false,
+    roleNames: [],
   });
 
   // 검색 및 페이지네이션 적용하여 회원 목록 조회
@@ -57,7 +55,6 @@ const MemberList = () => {
     fetchMembers();
   };
 
-  // 입력값 변경 핸들러
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -66,20 +63,18 @@ const MemberList = () => {
     }));
   };
 
-  // 수정/삭제 모달 열기
   const openEditModal = (member) => {
     setSelectedMember(member);
     setFormData({
       email: member.email,
       pw: "",
       nickname: member.nickname,
-      social: member.social, // 수정 불가
-      roleNames: member.roleNames && member.roleNames.length > 0 ? [member.roleNames[0]] : []
+      social: member.social,
+      roleNames: member.roleNames && member.roleNames.length > 0 ? [member.roleNames[0]] : [],
     });
     setShowModal(true);
   };
 
-  // 회원 수정 API 호출
   const handleUpdateMember = async () => {
     try {
       await jwtAxios.put(
@@ -96,7 +91,6 @@ const MemberList = () => {
     }
   };
 
-  // 회원 삭제 API 호출
   const handleDeleteMember = async () => {
     if (window.confirm("정말로 이 회원을 삭제하시겠습니까?")) {
       try {
@@ -111,9 +105,12 @@ const MemberList = () => {
     }
   };
 
-  // 페이지네이션 컨트롤
-  const handleFirstPage = () => setPage(0);
-  const handleLastPage = () => setPage(totalPages - 1);
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+    }
+  };
+
   const startPage = Math.max(0, page - 2);
   const endPage = Math.min(totalPages - 1, page + 2);
   const pageNumbers = [];
@@ -125,13 +122,11 @@ const MemberList = () => {
     <div className="member-list-container">
       <h2>회원 관리</h2>
       {/* 검색 폼 */}
-      <form onSubmit={handleSearchSubmit}>
-        <label>
+      <form onSubmit={handleSearchSubmit} className="search-form">
           <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
             <option value="email">이메일</option>
             <option value="nickname">닉네임</option>
           </select>
-        </label>
         <input
           type="text"
           value={searchValue}
@@ -160,7 +155,7 @@ const MemberList = () => {
               <td>{member.social ? "예" : "아니오"}</td>
               <td>{member.roleNames && member.roleNames.join(", ")}</td>
               <td>
-                <button onClick={() => openEditModal(member)}>수정</button>
+                <span onClick={() => openEditModal(member)}>수정</span>
               </td>
             </tr>
           ))}
@@ -169,16 +164,28 @@ const MemberList = () => {
 
       {/* 페이지네이션 */}
       <div className="pagination">
-        <button onClick={handleFirstPage} disabled={page === 0}>
-          &lt;&lt;
+        <button onClick={() => handlePageChange(0)} disabled={page === 0}>
+          처음
         </button>
-        {pageNumbers.map((num) => (
-          <button key={num} onClick={() => setPage(num)} disabled={num === page}>
-            {num + 1}
+        <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
+          이전
+        </button>
+
+        {pageNumbers.map((pageNum) => (
+          <button
+            key={pageNum}
+            onClick={() => handlePageChange(pageNum)}
+            className={page === pageNum ? "active" : ""}
+          >
+            {pageNum + 1}
           </button>
         ))}
-        <button onClick={handleLastPage} disabled={page === totalPages - 1}>
-          &gt;&gt;
+
+        <button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>
+          다음
+        </button>
+        <button onClick={() => handlePageChange(totalPages - 1)} disabled={page === totalPages - 1}>
+          마지막
         </button>
       </div>
 
@@ -237,12 +244,10 @@ const MemberList = () => {
               <button onClick={handleDeleteMember}>회원 삭제</button>
               <button onClick={handleUpdateMember}>수정 완료</button>
               <button className="modal-close-btn" onClick={() => setShowModal(false)}>✖</button>
-
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 };

@@ -12,36 +12,36 @@ const Cinemas = () => {
     cinemaName: "",
     lat: "",
     lon: "",
-    address: ""
+    address: "",
   });
 
-  
-  const [searchType, setSearchType] = useState("cinemaName"); 
-  const [searchValue, setSearchValue] = useState(""); 
+  const [searchType, setSearchType] = useState("cinemaName");
+  const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const size = 10; 
+  const size = 10;
 
   useEffect(() => {
     fetchCinemas();
   }, [page, searchType, searchValue]); // 페이지, 검색 기준, 검색어에 따라 영화관 데이터 재조회
 
-  
   const fetchCinemas = async () => {
     try {
-      const response = await jwtAxios.get("http://localhost:8090/admin/cinemas/search", {
-        params: {
-          page: page,
-          size: size,
-          [searchType]: searchValue,  
-        },
-      });
-    
+      const response = await jwtAxios.get(
+        "http://localhost:8090/admin/cinemas/search",
+        {
+          params: {
+            page: page,
+            size: size,
+            [searchType]: searchValue,
+          },
+        }
+      );
+
       if (response.data && response.data.content) {
         setCinemas(response.data.content);
         setTotalPages(response.data.totalPages);
       } else {
-      
         setCinemas([]);
         setTotalPages(0);
       }
@@ -51,7 +51,6 @@ const Cinemas = () => {
       setCinemas([]);
     }
   };
-  
 
   // 검색 폼 핸들러
   const handleSearchSubmit = (e) => {
@@ -68,7 +67,7 @@ const Cinemas = () => {
       cinemaName: cinema.cinemaName || "null",
       lat: cinema.lat !== null ? cinema.lat : "null",
       lon: cinema.lon !== null ? cinema.lon : "null",
-      address: cinema.address || "null"
+      address: cinema.address || "null",
     });
     setShowModal(true);
   };
@@ -85,9 +84,12 @@ const Cinemas = () => {
       const updatedData = {
         ...formData,
         lat: formData.lat === "null" ? null : parseFloat(formData.lat),
-        lon: formData.lon === "null" ? null : parseFloat(formData.lon)
+        lon: formData.lon === "null" ? null : parseFloat(formData.lon),
       };
-      await jwtAxios.post(`http://localhost:8090/admin/update/${selectedCinema.id}`, updatedData);
+      await jwtAxios.post(
+        `http://localhost:8090/admin/update/${selectedCinema.id}`,
+        updatedData
+      );
       fetchCinemas();
       setShowModal(false);
     } catch (error) {
@@ -98,7 +100,9 @@ const Cinemas = () => {
   // 삭제 API 호출
   const handleDelete = async () => {
     try {
-      await jwtAxios.delete(`http://localhost:8090/admin/delete/${selectedCinema.id}`);
+      await jwtAxios.delete(
+        `http://localhost:8090/admin/delete/${selectedCinema.id}`
+      );
       fetchCinemas();
       setShowModal(false);
     } catch (error) {
@@ -124,18 +128,25 @@ const Cinemas = () => {
     pageNumbers.push(i);
   }
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+    }
+  };
+
   return (
     <div className="cinema-management">
       <h2>영화관 관리</h2>
 
       {/* 검색 폼 */}
-      <form onSubmit={handleSearchSubmit}>
-        <label>
-          <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-            <option value="cinemaName">영화관 이름</option>
-            <option value="region">지역</option>
-          </select>
-        </label>
+      <form onSubmit={handleSearchSubmit} className="search-form">
+        <select
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)}
+        >
+          <option value="cinemaName">영화관 이름</option>
+          <option value="region">지역</option>
+        </select>
         <input
           type="text"
           value={searchValue}
@@ -168,7 +179,7 @@ const Cinemas = () => {
               <td>{cinema.lon !== null ? cinema.lon : "null"}</td>
               <td>{cinema.address || "null"}</td>
               <td>
-                <button onClick={() => handleEditClick(cinema)}>수정</button>
+                <span onClick={() => handleEditClick(cinema)}>수정</span>
               </td>
             </tr>
           ))}
@@ -177,20 +188,37 @@ const Cinemas = () => {
 
       {/* 페이징 컨트롤 */}
       <div className="pagination">
-        <button onClick={handleFirstPage} disabled={page === 0}>
-          &lt;&lt;
+        <button onClick={() => handlePageChange(0)} disabled={page === 0}>
+          처음
         </button>
-        {pageNumbers.map((pageNumber) => (
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 0}
+        >
+          이전
+        </button>
+
+        {pageNumbers.map((pageNum) => (
           <button
-            key={pageNumber}
-            onClick={() => setPage(pageNumber)}
-            disabled={pageNumber === page}
+            key={pageNum}
+            onClick={() => handlePageChange(pageNum)}
+            className={page === pageNum ? "active" : ""}
           >
-            {pageNumber + 1}
+            {pageNum + 1}
           </button>
         ))}
-        <button onClick={handleLastPage} disabled={page === totalPages - 1}>
-          &gt;&gt;
+
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page === totalPages - 1}
+        >
+          다음
+        </button>
+        <button
+          onClick={() => handlePageChange(totalPages - 1)}
+          disabled={page === totalPages - 1}
+        >
+          마지막
         </button>
       </div>
 
@@ -245,10 +273,14 @@ const Cinemas = () => {
               />
             </label>
             <div className="modal-actions">
-            <button onClick={handleDelete}>영화관 삭제</button>
-              <button onClick={handleUpdate}>수정 완료</button>  
-              <button className="modal-close-btn" onClick={() => setShowModal(false)}>✖</button>
-
+              <button onClick={handleDelete}>영화관 삭제</button>
+              <button onClick={handleUpdate}>수정 완료</button>
+              <button
+                className="modal-close-btn"
+                onClick={() => setShowModal(false)}
+              >
+                ✖
+              </button>
             </div>
           </div>
         </div>
