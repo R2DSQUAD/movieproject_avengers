@@ -18,6 +18,7 @@ const AdminBoard = () => {
   const loginState = useSelector((state) => state.loginSlice);
   const [showModal, setShowModal] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState(null);
+  const [page, setPage] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -155,6 +156,13 @@ const AdminBoard = () => {
       console.error("삭제 실패:", error);
     }
   };
+
+  const startPage = Math.max(0, page - 2);
+  const endPage = Math.min(totalPages - 1, page + 2);
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
 
   const handleUpdate = async () => {
     const formDataToSend = new FormData();
@@ -302,27 +310,28 @@ const AdminBoard = () => {
       </table>
       {/* 페이징 처리 */}
       <div className="pagination">
-        <button
-          onClick={() => handlePageChange(1)}
-          disabled={currentPage === 1}
-        >
-          &lt;&lt;
+        <button onClick={() => handlePageChange(0)} disabled={page === 0}>
+          처음
         </button>
-        {[...Array(rangeEnd - rangeStart + 1)].map((_, index) => (
+        <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
+          이전
+        </button>
+
+        {pageNumbers.map((pageNum) => (
           <button
-            key={index}
-            onClick={() => handlePageChange(rangeStart + index)}
-            className={currentPage === rangeStart + index ? "active" : ""}
+            key={pageNum}
+            onClick={() => handlePageChange(pageNum)}
+            className={page === pageNum ? "active" : ""}
           >
-            {rangeStart + index}
+            {pageNum + 1}
           </button>
         ))}
 
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          &gt;&gt;
+        <button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>
+          다음
+        </button>
+        <button onClick={() => handlePageChange(totalPages - 1)} disabled={page === totalPages - 1}>
+          마지막
         </button>
       </div>
       {showModal && (
