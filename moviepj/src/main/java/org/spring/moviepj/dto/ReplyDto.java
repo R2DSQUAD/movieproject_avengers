@@ -25,7 +25,7 @@ public class ReplyDto extends BasicTime {
 
     private Long id;
 
-
+    private String nickname;
 
     private String replyContent;
     private MemberEntity memberEntity;
@@ -49,6 +49,7 @@ public class ReplyDto extends BasicTime {
     replyDto.setCreateTime(replyEntity.getCreateTime());
     replyDto.setUpdateTime(replyEntity.getUpdateTime() != null ? replyEntity.getUpdateTime() : null);
     replyDto.setLikeCount(replyEntity.getReplyLikeEntities().size());
+    replyDto.setNickname(replyEntity.getMemberEntity().getNickname());
     // ReplyLikeEntity 리스트에서 필요한 정보만 추출
     List<ReplyLikeDto> replyLikeDtos = replyEntity.getReplyLikeEntities().stream()
             .map(replyLikeEntity -> {
