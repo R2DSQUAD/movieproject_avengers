@@ -77,9 +77,7 @@ const AdminBoard = () => {
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
         case "email":
-          return board.email
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
+          return board.email.toLowerCase().includes(searchQuery.toLowerCase());
         default:
           return true;
       }
@@ -137,7 +135,10 @@ const AdminBoard = () => {
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "itemFile") {
-      setFormData((prev) => ({ ...prev, itemFile: files[0] })); // 파일 업데이트
+      setFormData((prev) => ({ ...prev, itemFile: files[0] }));
+    } else if (name === "nickname") {
+      // nickname 처리
+      setFormData((prev) => ({ ...prev, nickname: value }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -315,7 +316,10 @@ const AdminBoard = () => {
         <button onClick={() => handlePageChange(0)} disabled={page === 0}>
           처음
         </button>
-        <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 0}
+        >
           이전
         </button>
 
@@ -329,10 +333,16 @@ const AdminBoard = () => {
           </button>
         ))}
 
-        <button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page === totalPages - 1}
+        >
           다음
         </button>
-        <button onClick={() => handlePageChange(totalPages - 1)} disabled={page === totalPages - 1}>
+        <button
+          onClick={() => handlePageChange(totalPages - 1)}
+          disabled={page === totalPages - 1}
+        >
           마지막
         </button>
       </div>
@@ -344,8 +354,8 @@ const AdminBoard = () => {
               <span>작성자</span>
               <input
                 type="text"
-                name="nickname" // email -> nickname으로 수정
-                value={formData.nickname} // formData.email -> formData.nickname으로 수정
+                name="nickname" // nickname 처리
+                value={formData.nickname}
                 onChange={handleInputChange}
               />
             </div>
@@ -353,6 +363,7 @@ const AdminBoard = () => {
               <span>제목</span>
               <input
                 type="text"
+                name="title"
                 value={formData.title}
                 onChange={handleInputChange}
               />
@@ -410,7 +421,9 @@ const AdminBoard = () => {
               <span
                 className="modal-close-btn"
                 onClick={() => setShowModal(false)}
-              >×</span>
+              >
+                ×
+              </span>
             </div>
           </div>
         </div>
