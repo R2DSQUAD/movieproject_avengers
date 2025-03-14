@@ -247,30 +247,30 @@ const ReviewSection = ({ movieInfo, loginState }) => {
                   </span>
                   <span className="review_content">{review.reviewText}</span>
                   <div className="review_footer">
-                  <div className="review_like_count">
-                    <span
-                      onClick={() => handleLike(review.id)}
-                      className="review_like"
-                    >
-                      {review.movieReviewLikeEntities?.some(
-                      (like) => like.email === loginState.email
-                    )
-                      ? "❤"
-                      : "♡"}
-                    </span>
-                    <span>{review.likeCount}</span>
-                  </div>
-                  {(loginState.email === review.email ||
-                    loginState.roleNames?.includes("ADMIN")) && (
-                    <span
-                      onClick={() => {
-                        setSelectedReviewId(review.id);
-                        setIsModalOpen(true);
-                      }}
-                    >
-                      삭제
-                    </span>
-                  )}
+                    <div className="review_like_count">
+                      <span
+                        onClick={() => handleLike(review.id)}
+                        className="review_like"
+                      >
+                        {review.movieReviewLikeEntities?.some(
+                          (like) => like.email === loginState.email
+                        )
+                          ? "❤"
+                          : "♡"}
+                      </span>
+                      <span>{review.likeCount}</span>
+                    </div>
+                    {(loginState.email === review.email ||
+                      loginState.roleNames?.includes("ADMIN")) && (
+                      <span
+                        onClick={() => {
+                          setSelectedReviewId(review.id);
+                          setIsModalOpen(true);
+                        }}
+                      >
+                        삭제
+                      </span>
+                    )}
                   </div>
                 </li>
               ))}
@@ -281,7 +281,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1}
               >
-                맨 처음
+                처음
               </button>
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -308,7 +308,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
                 onClick={() => handlePageChange(totalPages)}
                 disabled={currentPage === totalPages}
               >
-                맨 끝
+                마지막
               </button>
             </div>
           </>

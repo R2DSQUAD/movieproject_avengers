@@ -1,6 +1,7 @@
 /* global kakao */
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "../../css/map.css"
 
 const Map = () => {
   const [map, setMap] = useState(null);
@@ -79,13 +80,13 @@ const Map = () => {
     }
   }, [userLocation]);
 
-  // 지도 zoom 레벨 변화에 따라 오버레이 표시 제어
+  // 지도 zoom 레벨 변화에 따라 오버레이 표시 제어 (zoom level 10 이하일 때만 오버레이 표시)
   useEffect(() => {
     if (!map) return;
     const zoomListener = () => {
       const level = map.getLevel();
       overlays.forEach((overlay) => {
-        overlay.setMap(level <= 5 ? map : null);
+        overlay.setMap(level <= 10 ? map : null);
       });
     };
     kakao.maps.event.addListener(map, "zoom_changed", zoomListener);
@@ -238,7 +239,7 @@ const Map = () => {
         yAnchor: 1.5,
       });
       // 현재 zoom 레벨이 5 이하일 때만 오버레이 표시
-      if (map.getLevel() <= 5) {
+      if (map.getLevel() <= 10) {
         customOverlay.setMap(map);
       }
       newOverlays.push(customOverlay);
@@ -267,44 +268,45 @@ const Map = () => {
     }
   };
 
+  // 사용자 위치가 있을 경우, 전체 영화관 목록을 내 위치 기준 가까운 순으로 정렬
+  const sortedCinemas = userLocation
+    ? [...allCinemas].sort(
+        (a, b) =>
+          calculateDistance(userLocation.latitude, userLocation.longitude, a.lat, a.lon) -
+          calculateDistance(userLocation.latitude, userLocation.longitude, b.lat, b.lon)
+      )
+    : allCinemas;
+
   return (
-    <div>
+    <div className="map-container">
+      <div className="map-buttons">
       <button onClick={findNearbyCinemas} disabled={loading}>
-        내 주변 영화관 찾기
+        내 주변 영화관 찾기 🎞
       </button>
       <button onClick={findMyLocation} disabled={loading}>
-        내 위치 찾기
+        내 위치 찾기 📍
       </button>
+      </div>
 
       {loading && <div>Loading...</div>}
 
-      <div id="map" style={{ width: "100%", height: "500px", marginTop: "10px" }}></div>
+      <div id="map" style={{ width: "100%", height: "400px", marginTop: "10px" }}></div>
 
-      {/* 전체 영화관 목록 (거리 표시 포함) */}
-      {allCinemas.length > 0 && (
+      {/* 전체 영화관 목록 (거리 표시 포함 및 내 위치 기준 가까운 순 정렬) */}
+      {sortedCinemas.length > 0 && (
         <div
-          style={{
-            marginTop: "20px",
-            padding: "16px",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            background: "#f9f9f9",
-            maxWidth: "600px",
-          }}
+          className="map-list"
         >
-          <h3 style={{ fontSize: "18px", marginBottom: "8px" }}>
-            🗺️ 전체 영화관 목록
+          <h3>🗺️ 전체 영화관 목록
           </h3>
-          <ul style={{ paddingLeft: "20px", fontSize: "14px", color: "#555" }}>
-            {allCinemas.map((cinema, index) => (
+          <ul>
+            {sortedCinemas.map((cinema, index) => (
               <li
                 key={index}
-                style={{ marginBottom: "8px", cursor: "pointer" }}
                 onClick={() => handleCinemaClick(cinema.lat, cinema.lon)}
               >
-                <strong>{cinema.cinemaName}</strong>
-                <br />
-                📍 {cinema.address}
+                <strong>{cinema.cinemaName} Frame In</strong>
+                <span>📍 {cinema.address}</span>
                 {userLocation && (
                   <div style={{ fontSize: "12px", color: "#888" }}>
                     {calculateDistance(
@@ -313,7 +315,7 @@ const Map = () => {
                       cinema.lat,
                       cinema.lon
                     ).toFixed(2)}{" "}
-                    km away
+                    km
                   </div>
                 )}
               </li>
