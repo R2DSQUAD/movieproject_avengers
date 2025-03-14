@@ -70,16 +70,10 @@ const MyPaymentList = () => {
                         />
                         <div className="paymentInfo">
                           <div>
-                            <span>영화명:</span> <span>{payment.movieNm}</span>
+                            <span>{payment.movieNm}</span>
                           </div>
                           <div>
-                            <span>영화관:</span> <span>{payment.cinemaName}</span>
-                          </div>
-                          <div>
-                            <span>상영관:</span> <span>{payment.theaterName}</span>
-                          </div>
-                          <div>
-                            <span>좌석:</span> <span>{payment.seatNumber}</span>
+                            <span className="paymentCinema-title">{payment.cinemaName} Frame In</span> <span>{payment.theaterName}</span> <span>{payment.seatNumber}</span>
                           </div>
                           <div>
                             <span>상영일:</span> <span>{payment.screeningDate}{" "}</span>
