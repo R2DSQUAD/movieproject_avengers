@@ -347,7 +347,7 @@ body.light .board-list tr:nth-child(even) {
   top: 10px;
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 50px;
   cursor: pointer;
 }
 
@@ -430,8 +430,4 @@ body.light .pagination button:disabled {
 .pagination button:hover:not(:disabled) {
   /* 비활성화되지 않은 버튼에만 hover 적용 */
   background-color: var(--color-sub-point);
-}
-
-.modal-close-btn {
-  font-weight: bold;
 }
