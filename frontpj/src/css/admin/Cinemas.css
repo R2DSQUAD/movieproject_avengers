@@ -148,13 +148,17 @@ body.light .cinema-management tr {
 }
 
 .modal-content {
-  background: var(--color-light-2);
+  background: var(--color-dark-2);
   padding: 20px;
   width: 400px;
   border-radius: 5px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease-in-out;
   position: relative;
+}
+
+body.light .modal-content {
+  background: var(--color-light-2);
 }
 
 .modal-close-btn {
@@ -165,13 +169,22 @@ body.light .cinema-management tr {
   border: none;
   font-size: 20px;
   cursor: pointer;
+  filter: var(100);
 }
 
+body.light .modal-close-btn {
+  filter: var(0);
+}
 
-.modal-actions {
-  margin-top: 15px;
-  display: flex;
-  justify-content: space-between;
+.modal-actions > button {
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {

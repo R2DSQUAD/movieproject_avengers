@@ -219,7 +219,7 @@ const MemberList = () => {
                 />
               </div>
               <div>
-                권한
+                <span>권한</span>
                 <select
                   name="roleNames"
                   value={formData.roleNames[0] || ""}
@@ -236,7 +236,7 @@ const MemberList = () => {
                 </select>
               </div>
               <div>
-                소셜 로그인:
+                <span>소셜 로그인</span>
                 <input type="checkbox" name="social" checked={formData.social} disabled />
               </div>
             </form>
