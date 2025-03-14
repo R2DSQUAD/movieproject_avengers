@@ -1,17 +1,35 @@
 .admin-container {
     display: flex;
-    height: 100%;
+    width: 100%;
   }
-  
+
   .admin-left {
-    width: 250px;
-    background-color: rgb(80, 80, 80);
-  }
-  
-  .admin-content {
-    flex: 1;
+    width: 150px;
+    height: calc(100vh - 60px - 90px - 20px);
+    border-right: 2px solid var(--color-dark-2);
+    color: var(--color-dark-main-text);
     padding: 20px;
-    overflow-y: auto;
-    background-color: #f4f4f4;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
   }
-  
+
+  body.light .admin-left {
+    border-right: 2px solid var(--color-light-2);
+    color: var(--color-light-main-text);
+  }
+
+  .admin-content {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 150px);
+    height: calc(100vh - 60px - 90px - 20px);
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .admin-content > div {
+    display: flex;
+    flex-direction: column;
+  }
