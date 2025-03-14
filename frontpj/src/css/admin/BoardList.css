@@ -216,7 +216,7 @@ body.light .board-upload > input {
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--color-light-2);
   padding: 20px;
   width: 400px;
   border-radius: 5px;
@@ -224,17 +224,6 @@ body.light .board-upload > input {
   animation: fadeIn 0.3s ease-in-out;
   position: relative;
 }
-
-.modal-close-btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
 
 .modal-actions {
   margin-top: 15px;
@@ -348,15 +337,6 @@ body.light .board-list tr:nth-child(even) {
   z-index: 1000;
 }
 
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  width: 60%;
-  height: calc(100vh - 60px - 90px - 20px);
-}
-
 .modal-content > .board-title,
 .modal-content > .board-content,
 .modal-content > .board-upload,
@@ -396,14 +376,7 @@ body.light .board-list tr:nth-child(even) {
   cursor: pointer;
 }
 
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-}
-
 .modal-actions > button {
-  width: 80px;
-  height: 30px;
   border-radius: 10px;
   outline: none;
   border: none;

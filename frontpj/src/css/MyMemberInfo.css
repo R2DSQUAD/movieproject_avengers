@@ -64,7 +64,7 @@
 }
 
 .modal-content {
-  background: var(--color-dark-3);
+  background: var(--color-light-2);
   padding: 50px;
   width: 400px;
   border-radius: 8px;
@@ -94,10 +94,6 @@ body.light .modal-content .modal-close img {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-body.light .modal-content {
-  background: var(--color-light-3);
 }
 
 .modal-content h2 {

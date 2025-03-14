@@ -148,7 +148,7 @@ body.light .member-list-container tr {
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--color-light-2);
   padding: 20px;
   width: 400px;
   border-radius: 5px;
