@@ -23,7 +23,7 @@ const AdminBoard = () => {
     title: "",
     content: "",
     category: "",
-    memberNickName: "",
+    email: "",
     itemFile: null, // 파일 상태 추가
   });
 
@@ -76,8 +76,8 @@ const AdminBoard = () => {
           return board.content
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
-        case "memberNickName":
-          return board.memberNickName
+        case "email":
+          return board.email
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
         default:
@@ -170,7 +170,8 @@ const AdminBoard = () => {
     formDataToSend.append("title", formData.title);
     formDataToSend.append("content", formData.content);
     formDataToSend.append("category", formData.category);
-    formDataToSend.append("memberNickName", formData.memberNickName);
+    formDataToSend.append("category", formData.nickname);
+    formDataToSend.append("email", formData.email);
 
     // 파일이 있으면 함께 추가
     if (formData.itemFile) {
@@ -199,7 +200,8 @@ const AdminBoard = () => {
       title: board.title,
       content: board.content,
       category: board.category,
-      memberNickName: board.memberNickName,
+      email: board.email,
+      nickname: board.memberNickName,
       itemFile: null, // 파일을 초기화. 파일 수정이 아니라면 null로 설정
     });
     setSelectedBoard(board); // 선택된 게시글 정보 저장
@@ -252,7 +254,7 @@ const AdminBoard = () => {
         >
           <option value="title">제목</option>
           <option value="content">내용</option>
-          <option value="memberNickName">글쓴이</option>
+          <option value="email">글쓴이</option>
         </select>
         <input
           type="text"
@@ -342,8 +344,8 @@ const AdminBoard = () => {
               <span>작성자</span>
               <input
                 type="text"
-                name="memberNickName"
-                value={formData.memberNickName}
+                name="nickname" // email -> nickname으로 수정
+                value={formData.nickname} // formData.email -> formData.nickname으로 수정
                 onChange={handleInputChange}
               />
             </div>
