@@ -169,11 +169,11 @@ body.light .modal-content {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  filter: var(100);
+  filter: invert(1);
 }
 
 body.light .modal-close-btn {
-  filter: var(0);
+  filter: invert(100);
 }
 
 .modal-actions > button {
