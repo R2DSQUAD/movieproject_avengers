@@ -1,9 +1,7 @@
 package org.spring.moviepj.entity;
 
 import org.spring.moviepj.common.BasicTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "chat_message_tb")
-public class ChatMessageEntity extends BasicTime{
+public class ChatMessageEntity extends BasicTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +27,9 @@ public class ChatMessageEntity extends BasicTime{
 
     @Column(nullable = false)
     private String content; // 메시지 내용
+
+    @Column(nullable = false)
+    private String nickname; // 메시지를 보낸 회원의 닉네임 추가
 
     // 생성자와 메서드를 추가할 수 있습니다.
 }
