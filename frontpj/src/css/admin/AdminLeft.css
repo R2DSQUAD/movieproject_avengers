@@ -1,11 +1,4 @@
-.admin-left {
-    width: 250px;
-    height: 100%;
-    background-color: rgb(80, 80, 80);
-    color: white;
-    padding: 20px;
-    box-sizing: border-box;
-  }
+
   
   .admin-title {
     font-size: 20px;
@@ -22,14 +15,10 @@
     margin-bottom: 15px;
   }
   
-  .admin-menu li a {
-    color: white;
+  .admin-menu li span {
     text-decoration: none;
     font-size: 16px;
     transition: color 0.3s;
-  }
-  
-  .admin-menu li a:hover {
-    color: #ddd;
+    cursor: pointer;
   }
   

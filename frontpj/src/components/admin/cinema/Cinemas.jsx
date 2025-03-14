@@ -131,7 +131,6 @@ const Cinemas = () => {
       {/* 검색 폼 */}
       <form onSubmit={handleSearchSubmit}>
         <label>
-          검색 기준:
           <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
             <option value="cinemaName">영화관 이름</option>
             <option value="region">지역</option>
