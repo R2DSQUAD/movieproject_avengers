@@ -217,9 +217,11 @@ const ChatRoom = () => {
 
         {/* 로그인된 사용자가 ADMIN일 경우만 버튼 표시 */}
         {loginState.roleNames.includes("ADMIN") && (
-          <button onClick={clearChatMessages} className="clearButton">
-            저장된 메시지 지우기
-          </button>
+          <div className="adminButton">
+            <button onClick={clearChatMessages} className="clearButton">
+              저장된 메시지 지우기
+            </button>
+          </div>
         )}
       </div>
     </div>

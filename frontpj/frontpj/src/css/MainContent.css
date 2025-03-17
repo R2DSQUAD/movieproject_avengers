@@ -1,0 +1,95 @@
+.content {
+  display: flex;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.content .main {
+  display: flex;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px var(--color-shadow);
+  /* 바닥 그림자 */
+  transition: all 0.3s ease;
+  /* 그림자 효과에 부드러운 전환 */
+  border-radius: 20px;
+}
+
+body.dark .content .main { 
+  background-color: var(--color-dark-2);
+}
+
+body.light .content .main { 
+  background-color: var(--color-light-2);
+}
+
+.content .main .main-con {
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px var(--color-shadow);
+  /* 바닥 그림자 */
+  transition: box-shadow 0.3s ease;
+  /* 그림자 효과에 부드러운 전환 */
+  border-radius: 20px 0 0 20px;
+}
+
+body.dark .content .main .main-con {
+  background-color: var(--color-dark-3);
+}
+
+body.light .content .main .main-con {
+  background-color: var(--color-light-3);
+}
+
+.content .main .main-con .leftBar {
+  flex: 1 0 150px; /* 사이드바의 최소 너비 설정 */
+  display: flex;
+  width: 25%;
+  box-sizing: border-box;
+  max-width: 300px;
+}
+
+.content .main .main-con .leftBar .leftBar-con {
+  display: flex;
+  flex-direction: column;
+}
+
+.content .main .main-con .leftBar .leftBar-con img.poster {
+  display: block;
+  width: 100%;
+  border-radius: 20px 0 0 0;
+}
+
+
+.content .main .main-con .leftBar .leftBar-con button {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bolder;
+  cursor: pointer;
+  box-sizing: border-box;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background-color: var(--color-main-point);
+  color: var(--color-light-text);
+  transition: all 0.5s ease;
+}
+
+.content .main .main-con .leftBar .leftBar-con button:hover { 
+  filter: opacity(80%);
+}
+
+.content .main .main-con .leftBar .leftBar-con .movie-info {
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}

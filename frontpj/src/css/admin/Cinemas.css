@@ -104,6 +104,10 @@ td {
   color: white;
 }
 
+.cinema-management td {
+  text-align: center;
+}
+
 .cinema-management tr:nth-child(even) {
   background-color: #0f0f0f;
 }
@@ -128,7 +132,7 @@ body.light .cinema-management tr {
   color: red;
 }
 
-.modal {
+.admin-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -141,13 +145,31 @@ body.light .cinema-management tr {
   z-index: 1000;
 }
 
-.modal-content form > div {
+.admin-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-modal-content > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.modal-content {
+.admin-modal-content > div > input {
+  border: none;
+  outline: none;
+  width: 200px;
+  height: 30px; /* height를 증가시켜줍니다 */
+  border-radius: 10px;
+  padding: 5px 10px; /* 패딩을 적절히 조정 */
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 14px; /* 폰트 크기를 설정하여 가독성을 높임 */
+}
+
+.admin-modal-content {
   background: var(--color-dark-2);
   padding: 20px;
   width: 400px;
@@ -157,7 +179,7 @@ body.light .cinema-management tr {
   position: relative;
 }
 
-body.light .modal-content {
+body.light .admin-modal-content {
   background: var(--color-light-2);
 }
 
@@ -169,11 +191,7 @@ body.light .modal-content {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  filter: invert(1);
-}
-
-body.light .modal-close-btn {
-  filter: invert(100);
+  z-index: 10;
 }
 
 .modal-actions > button {

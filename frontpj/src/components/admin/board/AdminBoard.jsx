@@ -353,8 +353,8 @@ const AdminBoard = () => {
         </button>
       </div>
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="admin-modal">
+          <div className="admin-modal-content">
             <h3>게시글 수정</h3>
             <div className="board-memberNickName">
               <span>작성자</span>
@@ -427,7 +427,7 @@ const AdminBoard = () => {
                 className="modal-close-btn"
                 onClick={() => setShowModal(false)}
               >
-                ×
+                ✖
               </span>
             </div>
           </div>

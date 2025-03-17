@@ -120,6 +120,10 @@ body.light .member-list-container tr {
   color: var(--color-light-main-text);
 }
 
+.member-list-container td {
+  text-align: center;
+}
+
 .loading,
 .error {
   text-align: center;
@@ -128,7 +132,7 @@ body.light .member-list-container tr {
   color: red;
 }
 
-.modal {
+.admin-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -141,23 +145,44 @@ body.light .member-list-container tr {
   z-index: 1000;
 }
 
-.modal-content form {
+.admin-modal-content form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.modal-content form > div {
+.admin-modal-content form>div {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
-.modal-content form > div > span {
+.admin-modal-content form>div>span {
   font-size: 10px;
 }
 
-.modal-content {
+.admin-modal-content form > div > input,
+.admin-modal-content form > div > select {
+  border: none;
+  outline: none;
+  width: 200px;
+  height: 30px; /* height를 증가시켜줍니다 */
+  border-radius: 10px;
+  padding: 5px 10px; /* 패딩을 적절히 조정 */
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 14px; /* 폰트 크기를 설정하여 가독성을 높임 */
+}
+
+.admin-modal-content form > div > select {
+  -webkit-appearance: none; /* Safari에서 기본 스타일 제거 */
+  -moz-appearance: none; /* Firefox에서 기본 스타일 제거 */
+  appearance: none; /* 기본 스타일 제거 */
+}
+
+.admin-modal-content {
   background: var(--color-dark-2);
   padding: 20px;
   width: 400px;
@@ -167,7 +192,7 @@ body.light .member-list-container tr {
   position: relative;
 }
 
-body.light .modal-content {
+body.light .admin-modal-content {
   background: var(--color-light-2);
 }
 
@@ -179,11 +204,7 @@ body.light .modal-content {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  filter: invert(1);
-}
-
-body.light .modal-close-btn {
-  filter: invert(100);
+  z-index: 10;
 }
 
 .modal-actions {
@@ -191,7 +212,7 @@ body.light .modal-close-btn {
   justify-content: space-between;
 }
 
-.modal-actions > button {
+.modal-actions>button {
   border-radius: 10px;
   outline: none;
   border: none;
