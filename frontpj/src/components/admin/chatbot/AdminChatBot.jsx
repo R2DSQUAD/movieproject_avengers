@@ -133,7 +133,7 @@ const AdminChatBot = () => {
                 ✖
               </span>
               <button onClick={handleDelete} className="delete-btn">삭제</button>
-              <button onClick={handleUpdate} className="update-btn">수정 완료</button>
+              <button onClick={handleUpdate} className="update-btn">수정</button>
             </div>
           </div>
         </div>

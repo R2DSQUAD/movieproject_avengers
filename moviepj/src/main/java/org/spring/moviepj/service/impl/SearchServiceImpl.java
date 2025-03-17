@@ -21,6 +21,7 @@ import org.spring.moviepj.repository.SearchRepository;
 import org.spring.moviepj.repository.SearchTrailerRepository;
 import org.spring.moviepj.service.SearchService;
 import org.spring.moviepj.util.HangulUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -40,19 +41,26 @@ import org.slf4j.LoggerFactory;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SearchServiceImpl implements SearchService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SearchServiceImpl.class);
+    @Value("${KOBIS_API_KEY}")
+    String KOBIS_API_KEY;
+
+    @Value("${TMDB_API_KEY}")
+    String TMDB_API_KEY;
+
+    private final Logger logger = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     private final MovieRepository movieRepository;
     private final SearchRepository searchRepository;
     private final SearchTrailerRepository searchTrailerRepository;
     private final RestTemplate restTemplate;
+    
+    private final String KOBIS_MOVIE_LIST_API = "https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key="+KOBIS_API_KEY+"&movieNm=%s";
+    private final String KOBIS_MOVIE_INFO_API = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key="+KOBIS_API_KEY+"&movieCd=%s";
 
-    private static final String KOBIS_MOVIE_LIST_API = "https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key=1d713276de7baae34e9d5c43f2f0c4b3&movieNm=%s";
-    private static final String KOBIS_MOVIE_INFO_API = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=1d713276de7baae34e9d5c43f2f0c4b3&movieCd=%s";
-    private static final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=3faa3953bb1d0746b8d7294bd106d787&language=ko-KR";
-    private static final String TMDB_DETAIL_URL = "https://api.themoviedb.org/3/movie/%d?api_key=3faa3953bb1d0746b8d7294bd106d787&language=ko-KR&append_to_response=credits";
-    private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
-    private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=3faa3953bb1d0746b8d7294bd106d787&language=ko-KR";
+    private final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key="+TMDB_API_KEY+"&language=ko-KR";
+    private final String TMDB_DETAIL_URL = "https://api.themoviedb.org/3/movie/%d?api_key="+TMDB_API_KEY+"&language=ko-KR&append_to_response=credits";
+    private final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
+    private final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key="+TMDB_API_KEY+"&language=ko-KR";
 
     @Async
     public void searchAndSaveMoviesAsync(String query) {

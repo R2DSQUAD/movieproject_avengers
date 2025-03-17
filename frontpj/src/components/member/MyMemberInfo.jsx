@@ -291,7 +291,7 @@ const MyMemberInfo = () => {
                   )}
                 </div>
                 <div className="modal-actions">
-                  <button onClick={handleUpdateMember}>수정 완료</button>
+                  <button onClick={handleUpdateMember}>수정</button>
                 </div>
               </div>
             )}

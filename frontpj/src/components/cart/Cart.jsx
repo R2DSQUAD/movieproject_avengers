@@ -147,7 +147,7 @@ const Cart = () => {
             <div className="cart-footer">
               <h2>총 가격: {totalPrice.toLocaleString()}원</h2>
               <div className="button-container">
-                <button onClick={handleDelete}>선택 삭제</button>
+                <button onClick={handleDelete}>삭제</button>
                 <button onClick={paymentFn}>결제하기</button>
               </div>
             </div>

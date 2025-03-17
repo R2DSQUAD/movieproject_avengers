@@ -241,8 +241,8 @@ const MemberList = () => {
               </div>
             </form>
             <div className="modal-actions">
-              <button onClick={handleDeleteMember}>회원 삭제</button>
-              <button onClick={handleUpdateMember}>수정 완료</button>
+              <button onClick={handleDeleteMember}>삭제</button>
+              <button onClick={handleUpdateMember}>수정</button>
               <span className="modal-close-btn" onClick={() => setShowModal(false)}>✖</span>
             </div>
           </div>

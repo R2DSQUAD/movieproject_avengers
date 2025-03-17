@@ -14,6 +14,7 @@ import org.spring.moviepj.repository.CartItemRepository;
 import org.spring.moviepj.repository.MemberRepository;
 import org.spring.moviepj.repository.PaymentRepository;
 import org.spring.moviepj.service.PaymentService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -37,8 +38,11 @@ public class PaymentServiceImpl implements PaymentService {
     private final CartItemRepository cartItemRepository;
     private final PaymentRepository paymentRepository;
 
-    private final String PORTONE_API_KEY = "6104657212702542";
-    private final String PORTONE_SECRET_KEY = "Muuu9oRioX9YCELxtnpXGrkgWkcfuqXwXI4CNWuA4gzCTpF3jAqj7mukic9CEb05rzKF0HTQBAvveR5I";
+    @Value("${PORTONE_API_KEY}")
+    String PORTONE_API_KEY;
+
+    @Value("${PORTONE_SECRET_KEY}")
+    String PORTONE_SECRET_KEY;
 
     private String getAccessToken() {
         String url = "https://api.iamport.kr/users/getToken";

@@ -22,6 +22,7 @@ import org.spring.moviepj.service.MovieService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,15 +38,17 @@ public class MovieServiceImpl implements MovieService {
     private final TrailerRepository trailerRepository;
     private final RestTemplate restTemplate;
 
-    private static final String KOBIS_API_KEY = "1d713276de7baae34e9d5c43f2f0c4b3";
-    private static final String KOBIS_API_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json";
-    private static final String KOBIS_MOVIE_INFO_API = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=1d713276de7baae34e9d5c43f2f0c4b3&movieCd=%s";
+    @Value("${KOBIS_API_KEY}")
+    String KOBIS_API_KEY;
+    private final String KOBIS_API_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json";
+    private final String KOBIS_MOVIE_INFO_API = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=1d713276de7baae34e9d5c43f2f0c4b3&movieCd=%s";
 
-    private static final String TMDB_API_KEY = "3faa3953bb1d0746b8d7294bd106d787";
-    private static final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=%s&language=ko-KR";
-    private static final String TMDB_DETAIL_URL = "https://api.themoviedb.org/3/movie/%d?api_key=%s&language=ko-KR&append_to_response=credits";
-    private static final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
-    private static final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
+    @Value("${TMDB_API_KEY}")
+    String TMDB_API_KEY;
+    private final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=%s&language=ko-KR";
+    private final String TMDB_DETAIL_URL = "https://api.themoviedb.org/3/movie/%d?api_key=%s&language=ko-KR&append_to_response=credits";
+    private final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
+    private final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
     @Scheduled(cron = "50 56 12 * * WED")
     public void fetchAndSaveWeeklyBoxOffice() {
