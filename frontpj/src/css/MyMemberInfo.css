@@ -64,13 +64,18 @@
 }
 
 .modal-content {
-  background: var(--color-light-2);
+  background: var(--color-dark-2);
   padding: 50px;
   width: 400px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   position: absolute;
 }
+
+body.light .modal-content {
+  background: var(--color-light-2);
+}
+
 
 .modal-content .modal-close {
   position: absolute;
@@ -113,10 +118,6 @@ body.light .modal-content .modal-close img {
   outline: none;
 }
 
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-}
 
 .modal-actions > button {
   width: 80px;
@@ -127,6 +128,9 @@ body.light .modal-content .modal-close img {
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .updateForm {
@@ -135,7 +139,7 @@ body.light .modal-content .modal-close img {
   gap: 10px;
 }
 
-.modal-actions {
+.memberInfo .modal-actions {
   display: flex;
   justify-content: flex-end;
 }

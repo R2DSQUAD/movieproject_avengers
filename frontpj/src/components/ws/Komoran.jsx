@@ -118,7 +118,7 @@ const Komoran = () => {
       return;
     }
     const script = document.createElement("script");
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=190b60adafceaaa9f23691a7db8a0b39&autoload=false&libraries=services`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_API_KEY_3}&autoload=false&libraries=services`;
     script.async = true;
     script.onload = () => {
       window.kakao.maps.load(() => {

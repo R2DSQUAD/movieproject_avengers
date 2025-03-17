@@ -12,7 +12,7 @@ const fetchHolidayEvents = async () => {
   try {
     const res = await axios.get(
       "https://www.googleapis.com/calendar/v3/calendars/ko.south_korea%23holiday%40group.v.calendar.google.com/events",
-      { params: { key: "AIzaSyBzigrNvoSwaxwi7n58sudW3l1h_FStoy0" } }
+      { params: { key: "process.env.REACT_APP_GOOGLE_API_KEY" } }
     );
     return res.data.items.map((item) => ({
       id: `holiday-${item.id}`, // ID 추가 (중복 방지)

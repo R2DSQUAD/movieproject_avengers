@@ -7,6 +7,7 @@ import org.jsoup.select.Elements;
 import org.spring.moviepj.entity.CinemaEntity;
 import org.spring.moviepj.repository.CinemaRepository;
 import org.spring.moviepj.service.CinemaService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -31,7 +32,9 @@ import java.util.Map;
 public class CinemaServiceImpl implements CinemaService {
 
     private final CinemaRepository cinemaRepository;
-    private final String KAKAO_API_KEY = "8523756c5dd763794f96e865862528dc";
+
+    @Value("${KAKAO_API_KEY}")
+    String KAKAO_API_KEY;
 
     // 각 지역별 최대 저장 개수
     private static final Map<String, Integer> REGION_MAX_COUNT = new HashMap<>() {
