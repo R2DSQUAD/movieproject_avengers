@@ -1,0 +1,80 @@
+.map-container {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.map-buttons {
+  display: flex;          /* 버튼들을 가로로 정렬 */
+  justify-content: center; /* 버튼들을 가로 중앙 정렬 */
+  align-items: center;    /* 버튼들을 세로 중앙 정렬 */
+  gap: 20px;           /* 버튼 사이의 간격 설정 */
+  margin-top: 20px;        /* 상단 마진 추가 */
+  margin-bottom: 20px;     /* 하단 마진 추가 */
+}
+
+.map-buttons > button {
+  background-color: var(--color-dark-3); /* 버튼 배경색 (다크 모드) */
+  color: var(--color-dark-main-text);    /* 버튼 글자색 (다크 모드) */
+  border: none;                          /* 버튼 테두리 제거 */
+  border-radius: 20px;                   /* 버튼 모서리 둥글게 */
+  padding: 10px 20px;                   /* 버튼 내부 여백 설정 */
+  font-weight: bold;                     /* 글자 굵게 */
+  font-size: 14px;                        /* 글자 크기 */
+  cursor: pointer;                       /* 마우스 커서 변경 */
+  transition: background-color 0.3s ease; /* 배경색 변경 시 부드러운 트랜지션 */
+}
+
+body.light .map-buttons > button {
+  background-color: var(--color-light-3); /* 버튼 배경색 (라이트 모드) */
+  color: var(--color-light-main-text);    /* 버튼 글자색 (라이트 모드) */
+}
+
+/* 버튼 호버(마우스 오버) 스타일 */
+.map-buttons > button:hover {
+  background-color: var(--color-sub-point); /* 호버 시 배경색 변경 */
+}
+
+/* 버튼 비활성화 스타일 */
+.map-buttons > button:disabled {
+  background-color: #cccccc; /* 비활성화 시 배경색 */
+  color: #666666;            /* 비활성화 시 글자색 */
+  cursor: not-allowed;      /* 마우스 커서 변경 */
+}
+.map-list {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--color-dark-3);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body.light .map-list {
+  background: var(--color-light-3);
+}
+
+.map-list > h3,
+.map-list li > * {
+  color: var(--color-dark-main-text);
+}
+
+body.light .map-list > h3,
+body.light .map-list li > * {
+  color: var(--color-light-main-text);
+}
+
+.map-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  height: 300px;
+  scroll-behavior:smooth;
+}
+
+.map-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

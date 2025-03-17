@@ -1,0 +1,92 @@
+.cart {
+    width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+
+.cart h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+
+.cart-con {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.select-all {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-container {
+    padding: 15px;
+    border: 2px solid var(--color-dark-3);
+    border-radius: 8px;
+    display: flex;
+    transition: transform all 0.5s ;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+body.light .cart-container {
+    border: 2px solid var(--color-light-3);
+}
+
+.cart-container.active,
+body.light .cart-container.active{
+    border: 2px solid var(--color-main-point);
+}
+
+
+.cart-container .cart-item{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.cart-container .cart-item .cart-item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+
+
+div[style="color: var(--color-red)"] {
+    text-align: center;
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+.cart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-footer .button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+.cart-footer .button-container > button {
+    width: 150px;
+    height: 40px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    background-color: var(--color-main-point);
+    font-weight: bold;
+    font-size: 14px;
+}

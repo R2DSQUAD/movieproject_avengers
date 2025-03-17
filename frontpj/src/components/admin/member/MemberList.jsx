@@ -191,8 +191,8 @@ const MemberList = () => {
 
       {/* 수정/삭제 모달 */}
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="admin-modal">
+          <div className="admin-modal-content">
             <h3>회원 수정/삭제</h3>
             <form>
               <div>
@@ -243,7 +243,7 @@ const MemberList = () => {
             <div className="modal-actions">
               <button onClick={handleDeleteMember}>회원 삭제</button>
               <button onClick={handleUpdateMember}>수정 완료</button>
-              <button className="modal-close-btn" onClick={() => setShowModal(false)}>✖</button>
+              <span className="modal-close-btn" onClick={() => setShowModal(false)}>✖</span>
             </div>
           </div>
         </div>

@@ -1,0 +1,224 @@
+@import url('//fonts.googleapis.com/earlyaccess/notosanskr.css');
+
+:root {
+	font-family: 'Noto Sans KR', sans-serif;
+	--color-shadow: #00000033;
+	--color-dark-1: #121212;	
+	--color-dark-2: #222222;
+	--color-dark-3: #333333;
+	--color-dark-main-text: #ffffff;
+	--color-dark-text: #ffffff80;
+	--color-light-1: #F5F5F5;
+	--color-light-2: #E0E0E0;
+	--color-light-3: #CCCCCC;
+	--color-light-main-text: #121212;
+	--color-light-text: #12121280;
+	--color-main-point: #FFC107;
+	--color-sub-point: #FFB300;
+	--color-point: #fff3ce;
+	--color-red: #F44336;
+	--color-green: #4CAF50;
+
+	/* 드래그 방지 */
+	-webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+	scroll-behavior: smooth;
+}
+
+/* 스크롤바 전체 */
+::-webkit-scrollbar {
+	width: 10px; /* 스크롤바의 너비 */
+	height: 10px; /* 가로 스크롤바의 높이 */
+}
+
+/* 스크롤바 트랙 */
+::-webkit-scrollbar-track {
+	background: var(--color-point); /* 트랙의 배경색 */
+}
+
+/* 스크롤바 핸들 */
+::-webkit-scrollbar-thumb {
+	background: var(--color-main-point); /* 핸들의 배경색 */
+	border-radius: 50px; /* 핸들의 모서리 둥글게 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-sub-point); /* 핸들의 배경색 */
+	border-radius: 50px; /* 핸들의 모서리 둥글게 */
+}
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+#root > .container{
+	min-height: calc(100vh - 60px - 90px - 20px);
+	box-sizing: border-box;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 15px;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+	display: block;
+}
+
+body {
+	line-height: 1;
+	transition: all 0.5s ease;
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+blockquote,
+q {
+	quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body a {
+	text-decoration: none;
+}
+
+body.dark {
+	background-color: var(--color-dark-1);
+}
+
+body.light {
+	background-color: var(--color-light-1);
+}
+
+
+body.dark a,
+body.dark p,
+body.dark span,
+body.dark h1, 
+body.dark h2, 
+body.dark h3, 
+body.dark h4, 
+body.dark h5, 
+body.dark h6{
+	color: var(--color-dark-text);
+}
+
+body.light a,
+body.light p,
+body.light span,
+body.light h1, 
+body.light h2, 
+body.light h3, 
+body.light h4, 
+body.light h5, 
+body.light h6{
+	color: var(--color-light-text);
+}
+

@@ -1,0 +1,17 @@
+/* 푸터 고정 스타일 */
+.footer {
+    transition: all 0.5s ease;
+    width: 100%; /* 화면 가로폭에 맞게 */
+    background-color: var(--color-light-2);
+    color: var(--color-light-text);
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    z-index: 1000; /* 다른 요소들 위에 표시 */
+    box-sizing: border-box;
+    height: 90px;
+}
+
+body.dark .footer {
+    background-color: var(--color-dark-2);
+}

@@ -1,0 +1,116 @@
+.paymentHistoryContainer {
+  width: 100%;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.paymentHistory {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+/* 제목 스타일 */
+.paymentHistory h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* 결제 리스트 스타일 */
+.paymentList {
+}
+
+
+/* 결제 그룹 스타일 */
+.paymentGroup {
+  margin-bottom: 20px;
+}
+.paymentGroup:last-child {
+  border: none;
+}
+
+/* 결제 헤더 스타일 */
+.paymentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: var(--color-dark-3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+body.light .paymentHeader {
+  background-color:  var(--color-light-3);
+}
+
+.paymentHeader:hover {
+  background-color:  var(--color-dark-2);
+}
+
+.paymentCinema-title {
+  
+}
+
+.totalAmount {
+  font-weight: bold;
+  color: #e44d26;
+}
+
+.paymentHeader span:first-child {
+  font-weight: bold;
+}
+
+/* 결제 상세 내역 스타일 */
+.paymentDetails {
+  padding: 15px;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+/* 결제 아이템 스타일 */
+.paymentItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.paymentItem:first-child{
+    border: none;
+}
+
+/* 포스터 스타일 */
+.paymentItem > .poster {
+  width: 100px;
+  height: 100%;
+  margin-right: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 결제 정보 스타일 */
+.paymentInfo {
+  flex-grow: 1;
+}
+
+.paymentInfo > div {
+  margin-bottom: 5px;
+}
+
+.paymentInfo strong {
+  margin-right: 5px;
+  color: #555;
+}
+
+/* 빈 결제 내역 메시지 스타일 */
+.paymentHistory > span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #777;
+  margin: 20px 0;
+}

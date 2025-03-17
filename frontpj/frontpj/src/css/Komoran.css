@@ -1,0 +1,315 @@
+/* Komoran.css */
+.komoran-container {
+  position: fixed;
+  bottom: -480px;
+  right: 20px;
+  width: 400px;
+  height: 600px;
+  background-color: var(--color-dark-2);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.komoran-container.closed {
+  bottom: -480px;
+}
+
+.komoran-container.open {
+  bottom: 90px;
+}
+
+.komoran-header {
+  padding: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+body.dark .komoran-header {
+  background-color: var(--color-dark-3);
+  color: var(--color-dark-main-text);
+}
+
+body.light .komoran-header {
+  background-color: var(--color-light-3);
+  color: var(--color-light-main-text);
+}
+
+.komoran-header .chat-header-logo {
+  background-color: var(--color-light-3);
+  box-sizing: border-box;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  padding: 5px;  
+}
+
+body.light .komoran-header .chat-header-logo {
+  background-color: var(--color-dark-3);
+}
+
+.komoran-header .chat-header-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+.header-title {
+  font-weight: bold;
+}
+
+.header-buttons {
+  display: flex;
+  justify-content: center;  
+  align-items: center;
+}
+
+.header-buttons button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+body.dark .header-buttons button {
+  background-color: var(--color-dark-3);
+  color: var(--color-dark-main-text);
+}
+
+body.light .header-buttons button {
+  background-color: var(--color-light-3);
+  color: var(--color-light-main-text);
+}
+
+.clear-button {
+    font-size: 12px;
+}
+
+.close-button {
+  font-size: 30px;
+}
+
+.komoran-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 30px 0 10px;
+}
+
+body.light .komoran-body {
+  background-color: var(--color-light-2);
+  color: var(--color-light-main-text);
+}
+
+#default{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 30px 0;
+  box-sizing: border-box;
+}
+
+#default .default-img {
+  background-color: var(--color-light-3);
+  width: 80px;
+  height: 80px;
+  padding: 15px;
+  box-sizing: border-box;
+  border-radius: 20px;
+}
+
+body.light #default .default-img {
+  background-color: var(--color-dark-3);
+}
+
+#default .default-img img{
+  width: 100%;
+  height: 100%; 
+}
+
+#chat-content {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.time-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.time-display p {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.movie-poster {
+  width: 100%;
+    object-fit: cover;
+    box-sizing: border-box;
+}
+
+#map {
+  width: 90%;
+  height: 300px;
+  border-radius: 6px;
+}
+
+.message-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+body.dark .message-list {
+  background-color: var(--color-dark-2);
+  color: var(--color-dark-main-text);
+}
+
+body.light .message-list {
+  background-color: var(--color-light-2);
+  color: var(--color-light-main-text);
+}
+
+.user-chat:first-child{
+  display: none; 
+}
+
+.message {
+  padding: 8px 12px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.user-chat .message .part {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bot-chat .message .part {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.bot-chat .part:not(:has(.chat-body-logo)) {
+  padding-left: 35px;
+}
+
+.message .part {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+}
+
+.message .part .chat-body-logo {
+  background-color: var(--color-light-3);
+  box-sizing: border-box;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+}
+
+body.light .message .part .chat-body-logo {
+  background-color: var(--color-dark-3);
+}
+
+
+.message .part > p {
+  background-color: var(--color-light-1);
+  color: var(--color-light-main-text);
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  font-size: 14px;
+  word-wrap: break-word;
+  max-width: 300px;
+}
+
+body.light .message .part > p {
+  background-color: var(--color-dark-2);
+  color: var(--color-dark-main-text);
+}
+
+
+.message .part .chat-body-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+.message-input {
+  display: flex;
+  padding: 10px;
+  background-color: var(--color-dark-3);
+  border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+body.light .message-input {
+  background-color: var(--color-light-3);
+}
+
+.message-input input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.message-input button {
+  padding: 8px 16px;
+  background-color: var(--color-light-3);
+  color: var(--color-light-main-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+body.light .message-input button {
+  background-color: var(--color-dark-3);
+  color: var(--color-dark-main-text);
+}
+
+.chat-float-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--color-main-point);
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000; /* 다른 요소보다 위에 표시 */
+  box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.1) 0px 4px 6px, rgba(0, 0, 0, 0.15) 0px; 
+  transition: background-color 0.3s ease;
+}
+
+.chat-float-button:hover {
+  background-color: var(--color-sub-point);
+}
+

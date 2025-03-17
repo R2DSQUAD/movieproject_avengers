@@ -224,63 +224,63 @@ const Cinemas = () => {
 
       {/* 수정/삭제 모달 */}
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="admin-modal">
+          <div className="admin-modal-content">
             <h3>영화관 수정</h3>
-            <label>
-              지역:
+            <div>
+              <span>지역</span>
               <input
                 type="text"
                 name="region"
                 value={formData.region}
                 onChange={handleInputChange}
               />
-            </label>
-            <label>
-              이름:
+            </div>
+            <div>
+              <span>이름</span>
               <input
                 type="text"
                 name="cinemaName"
                 value={formData.cinemaName}
                 onChange={handleInputChange}
               />
-            </label>
-            <label>
-              위도:
+            </div>
+            <div>
+              <span>위도</span>
               <input
                 type="text"
                 name="lat"
                 value={formData.lat}
                 onChange={handleInputChange}
               />
-            </label>
-            <label>
-              경도:
+            </div>
+            <div>
+              <span>경도</span>
               <input
                 type="text"
                 name="lon"
                 value={formData.lon}
                 onChange={handleInputChange}
               />
-            </label>
-            <label>
-              주소:
+            </div>
+            <div>
+              <span>주소</span>
               <input
                 type="text"
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
               />
-            </label>
+            </div>
             <div className="modal-actions">
               <button onClick={handleDelete}>영화관 삭제</button>
               <button onClick={handleUpdate}>수정 완료</button>
-              <button
+              <span
                 className="modal-close-btn"
                 onClick={() => setShowModal(false)}
               >
                 ✖
-              </button>
+              </span>
             </div>
           </div>
         </div>

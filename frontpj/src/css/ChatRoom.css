@@ -153,7 +153,6 @@ body.light .button:hover {
 
 
 .clearButton {
-  margin-top: 20px;
   padding: 10px 15px;
   border: none;
   background-color: #e74c3c; /* 삭제 버튼 색상 변경 */
@@ -162,6 +161,14 @@ body.light .button:hover {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease; /* hover 효과를 위한 transition 추가 */
+}
+
+.adminButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 10px;
 }
 
 .clearButton:hover {

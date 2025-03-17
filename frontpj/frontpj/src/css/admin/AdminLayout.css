@@ -1,0 +1,35 @@
+.admin-container {
+    display: flex;
+    width: 100%;
+  }
+
+  .admin-left {
+    width: 150px;
+    height: calc(100vh - 60px - 90px - 20px);
+    border-right: 2px solid var(--color-dark-2);
+    color: var(--color-dark-main-text);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+  }
+
+  body.light .admin-left {
+    border-right: 2px solid var(--color-light-2);
+    color: var(--color-light-main-text);
+  }
+
+  .admin-content {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 150px);
+    height: calc(100vh - 60px - 90px - 20px);
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .admin-content > div {
+    display: flex;
+    flex-direction: column;
+  }
