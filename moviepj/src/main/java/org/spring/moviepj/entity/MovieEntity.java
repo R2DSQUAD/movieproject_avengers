@@ -86,5 +86,4 @@ public class MovieEntity extends BasicTime {
     @OneToMany(mappedBy = "movieEntity", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<MovieReviewEntity> movieReviewEntities;
 
-
 }
