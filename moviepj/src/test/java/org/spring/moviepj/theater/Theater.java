@@ -11,10 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Commit; // 추가
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class Theater {
 
     @MockBean
@@ -26,8 +29,9 @@ public class Theater {
     @Autowired
     CinemaRepository cinemaRepository;
 
-    @Transactional
-    @Commit // 추가
+    @Commit // 트랜잭션이 롤백되지 않도록 설정
+    @Transactional // 필요하면 유지
+    @Rollback(false) // 롤백 방지
     @Test
     void insertTheaterWithCinema() {
         // cinema_tb에 있는 모든 CinemaEntity를 가져옵니다.
