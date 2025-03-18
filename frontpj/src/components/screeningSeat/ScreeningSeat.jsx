@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../../css/ScreeningSeat.css";
 import jwtAxios from "../../util/jwtUtil";
 import { getCookie } from "../../util/cookieUtil";
 
 const ScreeningSeat = () => {
+  const [scale, setScale] = useState(1);
   const location = useLocation();
   const [movieEntity, setMovieEntity] = useState(
     location.state?.movieEntity || null
@@ -17,6 +18,8 @@ const ScreeningSeat = () => {
   const [screening, setScreening] = useState();
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [disabledSeats, setDisabledSeats] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
+  const seatContainerRef = useRef(null);
 
   useEffect(() => {
     const memberInfo = getCookie("member");
@@ -28,6 +31,12 @@ const ScreeningSeat = () => {
     fetchScreeningInfo();
     fetchDisabledSeats();
   }, [screeningId, navigate]);
+
+  useEffect(() => {
+    if (isMobile && seatContainerRef.current) {
+      seatContainerRef.current.scrollLeft = 0; // 초기 스크롤 위치를 0으로 설정
+    }
+  }, [isMobile]);
 
   const fetchScreeningInfo = async () => {
     try {
@@ -106,8 +115,12 @@ const ScreeningSeat = () => {
         <div className="main-con">
           <div className="leftBar">
             <div className="leftBar-con">
-              <img src={movieEntity.poster_path} alt={movieEntity.movieNm} className="poster"/>
-              
+              <img
+                src={movieEntity.poster_path}
+                alt={movieEntity.movieNm}
+                className="poster"
+              />
+
               <div className="movie-info">
                 <div>
                   <h3>제목</h3>
@@ -140,51 +153,87 @@ const ScreeningSeat = () => {
             <div className="movie-title">
               <h1>{movieEntity.movieNm}</h1>
             </div>
-            <div className="seat-selection-con">
-              <h1 className="seat-title">
-                좌석 선택 (영화관: {screening?.theaterEntity?.cinemaEntity?.cinemaName} /
-                상영관: {screening?.theaterEntity?.name}) /
-                상영 날짜/시간: {screening?.screeningDate} {screening?.screeningTime}
-              </h1>
 
-
-              <div className="screen">SCREEN</div>
-              <div className="seat-container">
-                {rows.map((row) => (
-                  <div className="row">
-                    <span>{row}</span>
-                    <div key={row} className="seat-row">
-                      {cols.map((col) => {
-                        const seatNumber = `${row}${col}`;
-                        return (
-                          <>
-                            <div
-                              key={seatNumber}
-                              className={getSeatClass(seatNumber)}
-                              onClick={() => toggleSeat(seatNumber)}
-                            >
-                              {col}
-                            </div>
-                          </>
-                        );
-                      })}
+            {!isMobile && (
+              <div className="seat-selection-con">
+                <h1 className="seat-title">
+                  좌석 선택 (영화관:{" "}
+                  {screening?.theaterEntity?.cinemaEntity?.cinemaName} / 상영관:{" "}
+                  {screening?.theaterEntity?.name}) / 상영 날짜/시간:{" "}
+                  {screening?.screeningDate} {screening?.screeningTime}
+                </h1>
+                <div className="screen">SCREEN</div>
+                <div className="seat-container" ref={seatContainerRef}>
+                  {rows.map((row) => (
+                    <div className="row">
+                      <span>{row}</span>
+                      <div key={row} className="seat-row">
+                        {cols.map((col) => {
+                          const seatNumber = `${row}${col}`;
+                          return (
+                            <>
+                              <div
+                                key={seatNumber}
+                                className={getSeatClass(seatNumber)}
+                                onClick={() => toggleSeat(seatNumber)}
+                              >
+                                {col}
+                              </div>
+                            </>
+                          );
+                        })}
+                      </div>
+                      <span>{row}</span>
                     </div>
-                    <span>{row}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {isMobile && (
+                <div
+                  className="seat-selection-con"
+                >
+                  <h1 className="seat-title">
+                    좌석 선택 (영화관:{" "}
+                    {screening?.theaterEntity?.cinemaEntity?.cinemaName} /
+                    상영관: {screening?.theaterEntity?.name}) / 상영 날짜/시간:{" "}
+                    {screening?.screeningDate} {screening?.screeningTime}
+                  </h1>
+                  <div className="screen">SCREEN</div>
+                  <div className="seat-container" ref={seatContainerRef}>
+                    {rows.map((row) => (
+                      <div className="row">
+                        <div key={row} className="seat-row">
+                          {cols.map((col) => {
+                            const seatNumber = `${row}${col}`;
+                            return (
+                              <>
+                                <div
+                                  key={seatNumber}
+                                  className={getSeatClass(seatNumber)}
+                                  onClick={() => toggleSeat(seatNumber)}
+                                >
+                                  {col}
+                                </div>
+                              </>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-
-              <div className="selected-seats">
-                <h2>선택된 좌석</h2>
-                {selectedSeats.length > 0 ? (
-                  <p>{selectedSeats.join(", ")}</p>
-                ) : (
-                  <p>선택된 좌석이 없습니다.</p>
-                )}
-              </div>
-              <div className="cart-go">
-                <button onClick={cartFn}>장바구니</button>
-              </div>
+                </div>
+            )}
+            <div className="selected-seats">
+              <h2>선택된 좌석</h2>
+              {selectedSeats.length > 0 ? (
+                <p>{selectedSeats.join(", ")}</p>
+              ) : (
+                <p>선택된 좌석이 없습니다.</p>
+              )}
+            </div>
+            <div className="cart-go">
+              <button onClick={cartFn}>장바구니</button>
             </div>
           </div>
         </div>

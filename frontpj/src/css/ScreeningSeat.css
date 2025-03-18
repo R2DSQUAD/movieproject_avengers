@@ -199,3 +199,57 @@ body.dark .seat.available {
     box-sizing: border-box;
     font-weight: bolder;
 }
+
+@media (max-width: 1023px) {
+
+    .screening-content {
+      width: 100%;
+      border-radius: 20px;
+      gap: 4px;
+    }
+
+    .screening-content .movie-title {
+        font-size: 14px;
+    }
+
+    .screening-content .seat-selection-con > .seat-title{
+        font-size: 12px;
+    }
+
+    .screening-content .seat-container {
+        gap: 8px;
+        overflow-y: hidden;
+        overflow-x: auto;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .screening-content .seat-container .row {
+
+    }
+
+    
+    .seat-row {
+        gap: 2px;
+    }
+
+    .seat {
+        width: 5px;
+        height: 5px;
+        padding: 6px;
+        border-radius: 3px;
+        font-size: 8px;
+    }
+  }
+
+  @media (max-width: 484px) {
+    .screening-content .seat-container .row {
+        margin-left: 70%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+}

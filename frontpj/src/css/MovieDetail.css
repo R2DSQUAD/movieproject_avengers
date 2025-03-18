@@ -14,6 +14,7 @@
   background-color: white;
   padding: 5px;
   box-sizing: border-box;
+  border-radius: 5px;
  }
 
 .movieDetail-content {
@@ -359,5 +360,20 @@ body.light .pagination button:disabled {
   align-items: center;
 }
 
+@media (max-width: 1023px) {
+  .movieDetail-content {
+    width: 100%;
+    border-radius: 20px;
+  }
+
+  .movieDetail-content>ul>li>img {
+    max-width: 200px;
+    min-width: 150px;
+  }
+
+  .pagination > button {
+    font-size: 10px;
+  }
+}
 
 

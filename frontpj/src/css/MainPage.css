@@ -274,7 +274,7 @@ body.light .movie-info > h6 {
 /* 반응형 스타일 */
 @media (max-width: 1023px) {
   .index .index-con {
-    margin-top: auto;
+    margin-top: -20px;
   }
 
     .index .index-con .title {
@@ -287,6 +287,16 @@ body.light .movie-info > h6 {
 
     .index .index-con .title .title-con {
         padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .index .index-con .title .title-con h4.movie-plot {
+      display: -webkit-box; /* Flexbox처럼 동작하게 설정 */
+      -webkit-line-clamp: 2; /* 텍스트가 두 줄까지만 표시되게 설정 */
+      -webkit-box-orient: vertical; /* 세로로 텍스트 정렬 */
+      overflow: hidden; /* 넘치는 텍스트 숨기기 */
+      text-overflow: ellipsis; /* 넘치는 텍스트를 "..."으로 표시 */
+      white-space: normal; /* 텍스트 줄 바꿈 허용 */
     }
 
     .index .index-con .title .title-con .movieBtn button {
@@ -298,5 +308,6 @@ body.light .movie-info > h6 {
     .index .index-con .main-content .popular-movie {
         gap: 15px;
         padding: 30px 0;
+        box-sizing: border-box;
     }
 }
