@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
@@ -41,26 +42,25 @@ import org.slf4j.LoggerFactory;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SearchServiceImpl implements SearchService {
 
-    @Value("${KOBIS_API_KEY}")
-    String KOBIS_API_KEY;
-
-    @Value("${TMDB_API_KEY}")
-    String TMDB_API_KEY;
-
-    private final Logger logger = LoggerFactory.getLogger(SearchServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     private final MovieRepository movieRepository;
     private final SearchRepository searchRepository;
     private final SearchTrailerRepository searchTrailerRepository;
     private final RestTemplate restTemplate;
-    
-    private final String KOBIS_MOVIE_LIST_API = "https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key="+KOBIS_API_KEY+"&movieNm=%s";
-    private final String KOBIS_MOVIE_INFO_API = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key="+KOBIS_API_KEY+"&movieCd=%s";
 
-    private final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key="+TMDB_API_KEY+"&language=ko-KR";
-    private final String TMDB_DETAIL_URL = "https://api.themoviedb.org/3/movie/%d?api_key="+TMDB_API_KEY+"&language=ko-KR&append_to_response=credits";
+    @Value("${KOBIS_API_KEY}")
+    private String KOBIS_API_KEY;
+
+    @Value("${TMDB_API_KEY}")
+    private String TMDB_API_KEY;
+
+    private final String KOBIS_MOVIE_LIST_API = "https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key=%s&movieNm=%s";
+    private final String KOBIS_MOVIE_INFO_API = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=%s&movieCd=%s";
+    private final String TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie?query=%s&api_key=%s&language=ko-KR";
+    private final String TMDB_DETAIL_URL = "https://api.themoviedb.org/3/movie/%d?api_key=%s&language=ko-KR&append_to_response=credits";
     private final String TMDB_IMAGE_URL = "https://image.tmdb.org/t/p";
-    private final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key="+TMDB_API_KEY+"&language=ko-KR";
+    private final String TMDB_VIDEO_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=%s&language=ko-KR";
 
     @Async
     public void searchAndSaveMoviesAsync(String query) {
@@ -69,29 +69,35 @@ public class SearchServiceImpl implements SearchService {
 
     public void searchAndSaveMovies(String query) {
         try {
-            String apiUrl = String.format(KOBIS_MOVIE_LIST_API, query);
+            String apiUrl = String.format(KOBIS_MOVIE_LIST_API, KOBIS_API_KEY, query);
             ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 JSONObject jsonResponse = new JSONObject(response.getBody());
                 JSONArray movies = jsonResponse.getJSONObject("movieListResult").getJSONArray("movieList");
 
-                List<SearchEntity> searchEntities = new ArrayList<>();
+                List<CompletableFuture<SearchEntity>> futures = movies.toList().parallelStream()
+                        .map(movieObj -> CompletableFuture.supplyAsync(() -> {
+                            JSONObject movie = new JSONObject((java.util.Map) movieObj);
+                            String movieCd = movie.getString("movieCd");
 
-                movies.toList().parallelStream().forEach(movieObj -> {
-                    JSONObject movie = new JSONObject((java.util.Map) movieObj);
-                    String movieCd = movie.getString("movieCd");
+                            String openDt = movie.optString("openDt", "");
+                            if (!isAfter2000(openDt) || searchRepository.existsByMovieCd(movieCd)) {
+                                return null;
+                            }
 
-                    String openDt = movie.optString("openDt", "");
-                    if (!isAfter2000(openDt) || searchRepository.existsByMovieCd(movieCd)) {
-                        return;
-                    }
+                            return fetchMovieDetails(movieCd, movie);
+                        })).collect(Collectors.toList());
 
-                    SearchEntity searchEntity = fetchMovieDetails(movieCd, movie);
-                    if (searchEntity != null) {
-                        searchEntities.add(searchEntity);
-                    }
-                });
+                // 모든 CompletableFuture가 완료될 때까지 기다림
+                CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+                allOf.join();
+
+                // 완료된 CompletableFuture의 결과를 수집
+                List<SearchEntity> searchEntities = futures.stream()
+                        .map(CompletableFuture::join)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
 
                 searchRepository.saveAll(searchEntities); // 벌크 저장 적용
                 updateChosungForExistingData();
@@ -102,7 +108,6 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
-    // movieNmChosung이 비어있을경우 값을 추가해주는 로직
     @Transactional
     public void updateChosungForExistingData() {
         List<SearchEntity> entitiesToUpdate = searchRepository.findByMovieNmChosungIsNull(); // 비어있을경우
@@ -114,7 +119,7 @@ public class SearchServiceImpl implements SearchService {
 
     private SearchEntity fetchMovieDetails(String movieCd, JSONObject movie) {
         try {
-            String movieInfoUrl = String.format(KOBIS_MOVIE_INFO_API, movieCd);
+            String movieInfoUrl = String.format(KOBIS_MOVIE_INFO_API, KOBIS_API_KEY, movieCd);
             ResponseEntity<String> response = restTemplate.getForEntity(movieInfoUrl, String.class);
 
             String watchGradeNm = null;
@@ -157,31 +162,27 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
-    // 영화 제목 정규화 메서드 (SearchServiceImpl 내부에 추가)
-    public static String normalizeMovieTitle(String title) {
-        if (title == null) return "";
-    
-        // 소괄호 포함 내용 제거
+    public String normalizeMovieTitle(String title) {
+        if (title == null)
+            return "";
+
         title = title.replaceAll("[^a-zA-Z0-9가-힣\\s]", "");
         title = title.replaceAll("\\(.*?\\)", "");
-    
-        // 대표적인 불필요 단어 제거
+
         title = title.replaceAll("(?i)\\b극장판\\b", "");
         title = title.replaceAll("(?i)\\b더 무비\\b", "");
         title = title.replaceAll("(?i)\\b더무비\\b", "");
         title = title.replaceAll("(?i)\\bthe movie\\b", "");
-    
-        // 다른 패턴도 가능
+
         title = title.replaceAll("(?i)\\bmovie\\b", "");
-    
-        // 양쪽 공백 정리
+
         return title.replaceAll("\\s+", " ").trim();
     }
 
     private SearchEntity fetchTMDbDetails(SearchEntity searchEntity) {
         try {
             String encodedQuery = URLEncoder.encode(searchEntity.getMovieNm(), StandardCharsets.UTF_8);
-            String apiUrl = String.format(TMDB_SEARCH_URL, encodedQuery);
+            String apiUrl = String.format(TMDB_SEARCH_URL, encodedQuery, TMDB_API_KEY);
             ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
@@ -189,9 +190,8 @@ public class SearchServiceImpl implements SearchService {
                 JSONArray results = jsonResponse.getJSONArray("results");
 
                 if (!results.isEmpty()) {
-                    String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt()); // 개봉일 변환
+                    String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
 
-                    // TMDb 검색 결과 중에서 개봉일이 일치하는 영화 찾기
                     JSONObject selectedMovie = null;
                     String normalizedKobisTitle = normalizeMovieTitle(searchEntity.getMovieNm());
 
@@ -209,7 +209,6 @@ public class SearchServiceImpl implements SearchService {
                         }
                     }
 
-                    // 개봉일이 일치하는 영화가 없으면 첫 번째 결과 사용 (이전 방식)
                     if (selectedMovie == null) {
                         selectedMovie = results.getJSONObject(0);
                     }
@@ -220,7 +219,6 @@ public class SearchServiceImpl implements SearchService {
                     searchEntity.setBackdrop_path(
                             TMDB_IMAGE_URL + "/w1920_and_h800_multi_faces/" + selectedMovie.optString("backdrop_path"));
 
-                    // 영화 러닝타임 및 예고편 정보 추가
                     searchEntity = fetchMovieRuntime(searchEntity, tmdbId);
                     fetchAndSaveTrailers(searchEntity, tmdbId);
                 }
@@ -234,7 +232,7 @@ public class SearchServiceImpl implements SearchService {
 
     private SearchEntity fetchMovieRuntime(SearchEntity searchEntity, int tmdbId) {
         try {
-            String url = String.format(TMDB_DETAIL_URL, tmdbId);
+            String url = String.format(TMDB_DETAIL_URL, tmdbId, TMDB_API_KEY);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 JSONObject jsonResponse = new JSONObject(response.getBody());
@@ -249,7 +247,7 @@ public class SearchServiceImpl implements SearchService {
 
     private void fetchAndSaveTrailers(SearchEntity searchEntity, int tmdbId) {
         try {
-            String url = String.format(TMDB_VIDEO_URL, tmdbId);
+            String url = String.format(TMDB_VIDEO_URL, tmdbId, TMDB_API_KEY);
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 JSONObject jsonResponse = new JSONObject(response.getBody());
@@ -278,9 +276,8 @@ public class SearchServiceImpl implements SearchService {
     public Page<SearchDto> searchMovieList(String query, String searchType, Pageable pageable) {
         searchAndSaveMovies(query);
 
-        // 검색어 정규화 (띄어쓰기 및 특수문자 제거)
         String normalizedQuery = query.replaceAll("[^a-zA-Z0-9가-힣]", "").trim();
-        String chosungQuery = HangulUtils.getChosung(query).replaceAll("[^ㄱ-ㅎ]", "").trim(); // 초성에서 공백 제거
+        String chosungQuery = HangulUtils.getChosung(query).replaceAll("[^ㄱ-ㅎ]", "").trim();
 
         Page<SearchEntity> searchEntities;
 
@@ -313,7 +310,7 @@ public class SearchServiceImpl implements SearchService {
                                 .build();
                     } else {
                         if (searchEntity.getPoster_path() == null || searchEntity.getPoster_path().isEmpty()) {
-                            return null; // 포스터 이미지가 없으면 제외
+                            return null;
                         }
                         return SearchDto.builder()
                                 .movieCd(searchEntity.getMovieCd())
@@ -329,19 +326,15 @@ public class SearchServiceImpl implements SearchService {
                                 .build();
                     }
                 })
-                .filter(Objects::nonNull) // null 값 제외
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(filteredResults, pageable, filteredResults.size());
     }
 
-    /**
-     * openDt 변환 메서드
-     * - 20250228 → 2025-02-28 형식으로 변환
-     */
     private String formatOpenDt(String openDt) {
         if (openDt == null || openDt.length() != 8) {
-            return openDt; // 변환 불가능하면 원본 반환
+            return openDt;
         }
         return LocalDate.parse(openDt, DateTimeFormatter.ofPattern("yyyyMMdd"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -349,27 +342,24 @@ public class SearchServiceImpl implements SearchService {
 
     private boolean isAfter2000(String openDt) {
         if (openDt == null || openDt.length() != 8) {
-            return false; // openDt가 없거나 형식이 맞지 않으면 false 반환
+            return false;
         }
-        int year = Integer.parseInt(openDt.substring(0, 4)); // openDt에서 연도만 추출
+        int year = Integer.parseInt(openDt.substring(0, 4));
         return year >= 2000;
     }
 
     @Override
     public Page<SearchDto> searchAllList(Pageable pageable) {
-        // `poster_path`가 있는 데이터만 가져오도록 변경
         Page<SearchEntity> searchEntities = searchRepository.findAllByPosterPathIsNotNull(pageable);
 
         List<SearchDto> resultList = searchEntities.getContent().stream()
                 .map(searchEntity -> {
                     String formattedOpenDt = formatOpenDt(searchEntity.getOpenDt());
 
-                    // 최신 `MovieEntity` 조회
                     List<MovieEntity> movieEntities = movieRepository
                             .findAllByMovieNmAndOpenDtOrderByCreateTimeDesc(searchEntity.getMovieNm(), formattedOpenDt);
 
                     if (!movieEntities.isEmpty()) {
-                        // 가장 최신 MovieEntity 데이터 사용
                         MovieEntity latestMovie = movieEntities.get(0);
                         return SearchDto.builder()
                                 .movieCd(latestMovie.getMovieCd())
@@ -384,7 +374,6 @@ public class SearchServiceImpl implements SearchService {
                                 .backdrop_path(latestMovie.getBackdrop_path())
                                 .build();
                     } else {
-                        // MovieEntity에 데이터가 없으면 SearchEntity 사용
                         return SearchDto.builder()
                                 .movieCd(searchEntity.getMovieCd())
                                 .movieNm(searchEntity.getMovieNm())
@@ -399,7 +388,7 @@ public class SearchServiceImpl implements SearchService {
                                 .build();
                     }
                 })
-                .collect(Collectors.toList()); // Null 필터링 필요 없음
+                .collect(Collectors.toList());
 
         return new PageImpl<>(resultList, pageable, searchEntities.getTotalElements());
     }
@@ -422,5 +411,4 @@ public class SearchServiceImpl implements SearchService {
                 .backdrop_path(searchEntity.getBackdrop_path())
                 .build();
     }
-
 }

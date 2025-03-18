@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.spring.moviepj.MemberTest.MemberInsert" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-03-18T04:08:06" hostname="602-4" time="0.189">
+  <properties/>
+  <testcase name="insertMember()" classname="org.spring.moviepj.MemberTest.MemberInsert" time="0.189"/>
+  <system-out><![CDATA[13:07:57.816 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.spring.moviepj.MemberTest.MemberInsert]: MemberInsert does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:07:57.942 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.spring.moviepj.MoviepjApplication for test class org.spring.moviepj.MemberTest.MemberInsert
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.8)
+
+2025-03-18T13:07:58.317+09:00  WARN 9872 --- [    Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/Administrator/.gradle/caches/modules-2/files-2.1/org.json/json/20250107/a1b5f0b5a1ce018b93a691c57ffc7d141b3a10f1/json-20250107.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/Administrator/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2025-03-18T13:07:58.317+09:00  INFO 9872 --- [    Test worker] o.s.moviepj.MemberTest.MemberInsert      : Starting MemberInsert using Java 17.0.12 with PID 9872 (started by Administrator in E:\Avengers_secondProject\movieproject_avengers\moviepj)
+2025-03-18T13:07:58.317+09:00  INFO 9872 --- [    Test worker] o.s.moviepj.MemberTest.MemberInsert      : The following 2 profiles are active: "api", "test"
+2025-03-18T13:07:59.076+09:00  INFO 9872 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-18T13:07:59.201+09:00  INFO 9872 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 126 ms. Found 22 JPA repository interfaces.
+2025-03-18T13:08:00.929+09:00  INFO 9872 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-18T13:08:00.991+09:00  INFO 9872 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2025-03-18T13:08:01.038+09:00  INFO 9872 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-18T13:08:01.117+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration boolean -> org.hibernate.type.BasicTypeReference@7f8f5d37
+2025-03-18T13:08:01.117+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration boolean -> org.hibernate.type.BasicTypeReference@7f8f5d37
+2025-03-18T13:08:01.117+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Boolean -> org.hibernate.type.BasicTypeReference@7f8f5d37
+2025-03-18T13:08:01.117+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration numeric_boolean -> org.hibernate.type.BasicTypeReference@f9cd1e6
+2025-03-18T13:08:01.117+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration org.hibernate.type.NumericBooleanConverter -> org.hibernate.type.BasicTypeReference@f9cd1e6
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration true_false -> org.hibernate.type.BasicTypeReference@3ff53704
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration org.hibernate.type.TrueFalseConverter -> org.hibernate.type.BasicTypeReference@3ff53704
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration yes_no -> org.hibernate.type.BasicTypeReference@34d11c92
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration org.hibernate.type.YesNoConverter -> org.hibernate.type.BasicTypeReference@34d11c92
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration byte -> org.hibernate.type.BasicTypeReference@31b289da
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration byte -> org.hibernate.type.BasicTypeReference@31b289da
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Byte -> org.hibernate.type.BasicTypeReference@31b289da
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration binary -> org.hibernate.type.BasicTypeReference@58486deb
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration byte[] -> org.hibernate.type.BasicTypeReference@58486deb
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration [B -> org.hibernate.type.BasicTypeReference@58486deb
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration binary_wrapper -> org.hibernate.type.BasicTypeReference@574327ed
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration wrapper-binary -> org.hibernate.type.BasicTypeReference@574327ed
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration image -> org.hibernate.type.BasicTypeReference@4c7f2fdb
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration blob -> org.hibernate.type.BasicTypeReference@1b5cf611
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.sql.Blob -> org.hibernate.type.BasicTypeReference@1b5cf611
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_blob -> org.hibernate.type.BasicTypeReference@3d01ea33
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_blob_wrapper -> org.hibernate.type.BasicTypeReference@73b3ce31
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration short -> org.hibernate.type.BasicTypeReference@4687366b
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration short -> org.hibernate.type.BasicTypeReference@4687366b
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Short -> org.hibernate.type.BasicTypeReference@4687366b
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration integer -> org.hibernate.type.BasicTypeReference@3a17acd4
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration int -> org.hibernate.type.BasicTypeReference@3a17acd4
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Integer -> org.hibernate.type.BasicTypeReference@3a17acd4
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration long -> org.hibernate.type.BasicTypeReference@8f589d7
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration long -> org.hibernate.type.BasicTypeReference@8f589d7
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Long -> org.hibernate.type.BasicTypeReference@8f589d7
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration float -> org.hibernate.type.BasicTypeReference@65da1cbe
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration float -> org.hibernate.type.BasicTypeReference@65da1cbe
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Float -> org.hibernate.type.BasicTypeReference@65da1cbe
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration double -> org.hibernate.type.BasicTypeReference@1a914a00
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration double -> org.hibernate.type.BasicTypeReference@1a914a00
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Double -> org.hibernate.type.BasicTypeReference@1a914a00
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration big_integer -> org.hibernate.type.BasicTypeReference@1d67348a
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.math.BigInteger -> org.hibernate.type.BasicTypeReference@1d67348a
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration big_decimal -> org.hibernate.type.BasicTypeReference@39f8adc0
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.math.BigDecimal -> org.hibernate.type.BasicTypeReference@39f8adc0
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration character -> org.hibernate.type.BasicTypeReference@c7269ad
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration char -> org.hibernate.type.BasicTypeReference@c7269ad
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Character -> org.hibernate.type.BasicTypeReference@c7269ad
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration character_nchar -> org.hibernate.type.BasicTypeReference@1c23e369
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration string -> org.hibernate.type.BasicTypeReference@38445703
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.String -> org.hibernate.type.BasicTypeReference@38445703
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration nstring -> org.hibernate.type.BasicTypeReference@44ae6b66
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration characters -> org.hibernate.type.BasicTypeReference@5b0e5d5f
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration char[] -> org.hibernate.type.BasicTypeReference@5b0e5d5f
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration [C -> org.hibernate.type.BasicTypeReference@5b0e5d5f
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration wrapper-characters -> org.hibernate.type.BasicTypeReference@58b5d5fc
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration text -> org.hibernate.type.BasicTypeReference@42536da6
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration ntext -> org.hibernate.type.BasicTypeReference@7591cbd1
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration clob -> org.hibernate.type.BasicTypeReference@5cdc8499
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.sql.Clob -> org.hibernate.type.BasicTypeReference@5cdc8499
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration nclob -> org.hibernate.type.BasicTypeReference@2a30b0cb
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.sql.NClob -> org.hibernate.type.BasicTypeReference@2a30b0cb
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_clob -> org.hibernate.type.BasicTypeReference@73d7d676
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_clob_char_array -> org.hibernate.type.BasicTypeReference@8e3449e
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_clob_character_array -> org.hibernate.type.BasicTypeReference@3023f157
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_nclob -> org.hibernate.type.BasicTypeReference@1f3aa970
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_nclob_character_array -> org.hibernate.type.BasicTypeReference@5213b887
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration materialized_nclob_char_array -> org.hibernate.type.BasicTypeReference@40c6d1ef
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration Duration -> org.hibernate.type.BasicTypeReference@6f4029e9
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.Duration -> org.hibernate.type.BasicTypeReference@6f4029e9
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration LocalDateTime -> org.hibernate.type.BasicTypeReference@257b6c58
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.LocalDateTime -> org.hibernate.type.BasicTypeReference@257b6c58
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration LocalDate -> org.hibernate.type.BasicTypeReference@6ae32ff0
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.LocalDate -> org.hibernate.type.BasicTypeReference@6ae32ff0
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration LocalTime -> org.hibernate.type.BasicTypeReference@1c5cd2ea
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.LocalTime -> org.hibernate.type.BasicTypeReference@1c5cd2ea
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetDateTime -> org.hibernate.type.BasicTypeReference@72bdbfe9
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.OffsetDateTime -> org.hibernate.type.BasicTypeReference@72bdbfe9
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@cda144a
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@7fb5368e
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetTime -> org.hibernate.type.BasicTypeReference@5847010
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.OffsetTime -> org.hibernate.type.BasicTypeReference@5847010
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetTimeUtc -> org.hibernate.type.BasicTypeReference@1ad9d5be
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetTimeWithTimezone -> org.hibernate.type.BasicTypeReference@46fdfaeb
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@102aa5fc
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration ZonedDateTime -> org.hibernate.type.BasicTypeReference@36885319
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.ZonedDateTime -> org.hibernate.type.BasicTypeReference@36885319
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration ZonedDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@62a81453
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration ZonedDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@4bab804f
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration date -> org.hibernate.type.BasicTypeReference@eebd983
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.sql.Date -> org.hibernate.type.BasicTypeReference@eebd983
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration time -> org.hibernate.type.BasicTypeReference@7a0f43dc
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.sql.Time -> org.hibernate.type.BasicTypeReference@7a0f43dc
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration timestamp -> org.hibernate.type.BasicTypeReference@58a7ca42
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.sql.Timestamp -> org.hibernate.type.BasicTypeReference@58a7ca42
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.util.Date -> org.hibernate.type.BasicTypeReference@58a7ca42
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration calendar -> org.hibernate.type.BasicTypeReference@4f9980e1
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.util.Calendar -> org.hibernate.type.BasicTypeReference@4f9980e1
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.util.GregorianCalendar -> org.hibernate.type.BasicTypeReference@4f9980e1
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration calendar_date -> org.hibernate.type.BasicTypeReference@1f6e6f50
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration calendar_time -> org.hibernate.type.BasicTypeReference@1f7fcec2
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration instant -> org.hibernate.type.BasicTypeReference@796cf2b5
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.Instant -> org.hibernate.type.BasicTypeReference@796cf2b5
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration uuid -> org.hibernate.type.BasicTypeReference@7a71ebf1
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.util.UUID -> org.hibernate.type.BasicTypeReference@7a71ebf1
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration pg-uuid -> org.hibernate.type.BasicTypeReference@7a71ebf1
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration uuid-binary -> org.hibernate.type.BasicTypeReference@16890f00
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration uuid-char -> org.hibernate.type.BasicTypeReference@77e1dacd
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration class -> org.hibernate.type.BasicTypeReference@690677de
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Class -> org.hibernate.type.BasicTypeReference@690677de
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration currency -> org.hibernate.type.BasicTypeReference@1c5d376c
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration Currency -> org.hibernate.type.BasicTypeReference@1c5d376c
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.util.Currency -> org.hibernate.type.BasicTypeReference@1c5d376c
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration locale -> org.hibernate.type.BasicTypeReference@42f2cae8
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.util.Locale -> org.hibernate.type.BasicTypeReference@42f2cae8
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration serializable -> org.hibernate.type.BasicTypeReference@3bbc47c9
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.io.Serializable -> org.hibernate.type.BasicTypeReference@3bbc47c9
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration timezone -> org.hibernate.type.BasicTypeReference@615e7fe7
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.util.TimeZone -> org.hibernate.type.BasicTypeReference@615e7fe7
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration ZoneOffset -> org.hibernate.type.BasicTypeReference@144dc2f7
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.ZoneOffset -> org.hibernate.type.BasicTypeReference@144dc2f7
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration url -> org.hibernate.type.BasicTypeReference@403cff1c
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.net.URL -> org.hibernate.type.BasicTypeReference@403cff1c
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration vector -> org.hibernate.type.BasicTypeReference@19677add
+2025-03-18T13:08:01.133+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration row_version -> org.hibernate.type.BasicTypeReference@b548f51
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration object -> org.hibernate.type.JavaObjectType@301770d9
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@301770d9
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration null -> org.hibernate.type.NullType@2626aa35
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_date -> org.hibernate.type.BasicTypeReference@5ca8c904
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_time -> org.hibernate.type.BasicTypeReference@4c614d8c
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_timestamp -> org.hibernate.type.BasicTypeReference@2ae4c424
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_calendar -> org.hibernate.type.BasicTypeReference@3980b44f
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_calendar_date -> org.hibernate.type.BasicTypeReference@237aba92
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_calendar_time -> org.hibernate.type.BasicTypeReference@65b19e5c
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_binary -> org.hibernate.type.BasicTypeReference@6978a32a
+2025-03-18T13:08:01.149+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration imm_serializable -> org.hibernate.type.BasicTypeReference@55665086
+2025-03-18T13:08:01.211+09:00  INFO 9872 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-18T13:08:01.251+09:00  INFO 9872 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-18T13:08:01.559+09:00  INFO 9872 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@31aa9b01
+2025-03-18T13:08:01.561+09:00  INFO 9872 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(12, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2b9615cb) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@1aea759d)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-9, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2eb03908) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@5ead245)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-3, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@1e49a77e) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@57466fb7)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4003, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@7891742e) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@2bbaf983)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4001, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@781bd9dd) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@1cc42abe)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4002, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@6f071d0c) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@138d978e)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2004, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@357e7113) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@8d23cd8)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2005, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@5feaafb3) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@20a46227)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2011, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@669469c9) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@7f39ad3f)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.jdbc.spi.JdbcTypeRegistry        : addDescriptor(NCharTypeDescriptor) replaced previous registration(CharTypeDescriptor)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.jdbc.spi.JdbcTypeRegistry        : addDescriptor(NVarcharTypeDescriptor) replaced previous registration(VarcharTypeDescriptor)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.jdbc.spi.JdbcTypeRegistry        : addDescriptor(LongNVarcharTypeDescriptor) replaced previous registration(LongVarcharTypeDescriptor)
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.jdbc.spi.JdbcTypeRegistry        : addDescriptor(NClobTypeDescriptor(DEFAULT)) replaced previous registration(ClobTypeDescriptor(DEFAULT))
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] o.h.t.d.jdbc.spi.JdbcTypeRegistry        : addDescriptor(2005, ClobTypeDescriptor(STREAM_BINDING)) replaced previous registration(ClobTypeDescriptor(DEFAULT))
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration null -> org.hibernate.type.NullType@42095996
+2025-03-18T13:08:01.637+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Type registration key [null] overrode previous entry : `org.hibernate.type.NullType@2626aa35`
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration org.hibernate.type.DurationType -> basicType@1(java.time.Duration,3015)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration Duration -> basicType@1(java.time.Duration,3015)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.Duration -> basicType@1(java.time.Duration,3015)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration org.hibernate.type.OffsetDateTimeType -> basicType@2(java.time.OffsetDateTime,3003)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration org.hibernate.type.ZonedDateTimeType -> basicType@3(java.time.ZonedDateTime,3003)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration org.hibernate.type.OffsetTimeType -> basicType@4(java.time.OffsetTime,3007)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.type.BasicTypeRegistry     : Adding type registration java.time.OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2025-03-18T13:08:01.653+09:00 DEBUG 9872 --- [    Test worker] o.h.type.spi.TypeConfiguration$Scope     : Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@682d8dad] to MetadataBuildingContext [org.hibernate.boot.internal.MetadataBuildingContextRootImpl@1aebe759]
+2025-03-18T13:08:02.920+09:00  INFO 9872 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-18T13:08:02.920+09:00 DEBUG 9872 --- [    Test worker] o.h.type.spi.TypeConfiguration$Scope     : Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@682d8dad] to SessionFactoryImplementor [org.hibernate.internal.SessionFactoryImpl@4eda5325]
+2025-03-18T13:08:02.972+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table movie_tb 
+       modify column overview TEXT
+Hibernate: 
+    alter table movie_tb 
+       modify column overview TEXT
+2025-03-18T13:08:02.997+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table search_tb 
+       modify column overview TEXT
+Hibernate: 
+    alter table search_tb 
+       modify column overview TEXT
+2025-03-18T13:08:03.215+09:00 TRACE 9872 --- [    Test worker] o.h.type.spi.TypeConfiguration$Scope     : Handling #sessionFactoryCreated from [org.hibernate.internal.SessionFactoryImpl@4eda5325] for TypeConfiguration
+2025-03-18T13:08:03.216+09:00  INFO 9872 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-18T13:08:03.538+09:00  INFO 9872 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-03-18T13:08:04.268+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        me1_0.movie_id,
+        me1_0.audi_acc,
+        me1_0.backdrop_path,
+        me1_0.create_time,
+        me1_0.director,
+        me1_0.genres,
+        me1_0.movie_cd,
+        me1_0.movie_nm,
+        me1_0.open_dt,
+        me1_0.overview,
+        me1_0.poster_path,
+        me1_0.movie_rank,
+        me1_0.run_time,
+        me1_0.update_time,
+        me1_0.watch_grade_nm 
+    from
+        movie_tb me1_0
+Hibernate: 
+    select
+        me1_0.movie_id,
+        me1_0.audi_acc,
+        me1_0.backdrop_path,
+        me1_0.create_time,
+        me1_0.director,
+        me1_0.genres,
+        me1_0.movie_cd,
+        me1_0.movie_nm,
+        me1_0.open_dt,
+        me1_0.overview,
+        me1_0.poster_path,
+        me1_0.movie_rank,
+        me1_0.run_time,
+        me1_0.update_time,
+        me1_0.watch_grade_nm 
+    from
+        movie_tb me1_0
+2025-03-18T13:08:04.303+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ce1_0.cinema_id,
+        ce1_0.address,
+        ce1_0.cinema_name,
+        ce1_0.create_time,
+        ce1_0.lat,
+        ce1_0.lon,
+        ce1_0.region,
+        ce1_0.update_time 
+    from
+        cinema_tb ce1_0
+Hibernate: 
+    select
+        ce1_0.cinema_id,
+        ce1_0.address,
+        ce1_0.cinema_name,
+        ce1_0.create_time,
+        ce1_0.lat,
+        ce1_0.lon,
+        ce1_0.region,
+        ce1_0.update_time 
+    from
+        cinema_tb ce1_0
+2025-03-18T13:08:04.321+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        hme1_0.id,
+        hme1_0.message 
+    from
+        help_message hme1_0
+Hibernate: 
+    select
+        hme1_0.id,
+        hme1_0.message 
+    from
+        help_message hme1_0
+占싯댐옙
+占쏙옙 占쏙옙占쏙옙, 占쎌리占쏙옙 占쏙옙占쏙옙占쌩댐옙 占쌀놂옙
+占쌜듸옙
+占쏙옙營뵀몌옙茄占??
+조회
+占시뤄옙占싱븝옙 '占쎈쉬' 占쏙옙 占시네몌옙
+?뜑 遺??떚?겕 紐⑸룞?쁽??諛깊솕?젏
+紐⑸줉
+?占쏙옙 占????占쏙옙?占쏙옙 紐⑸룞?占쏙옙??諛깊솕?占쏙옙
+占쏙옙占쎈문
+?끉?궛
+愿묒＜?긽臾?
+순천
+?占쏙옙占???
+援э옙?占쎄컯?占쏙옙
+남춘천
+?占쏙옙?占쏙옙占??? 議고쉶
+광주하남
+더 부티크 목동현대백화점
+愿묐챸?냼?븯
+?占쏙옙異섏쿇
+괜찮아 괜찮아 괜찮아! 
+?룞??臾?
+?占쏙옙醫낇븯?占쏙옙?占쏙옙?占쏙옙
+占쏙옙占쏙옙占쏙옙占쏙옙
+占싻듸옙占쏙옙: 占쏙옙占?? 占쏙옙占쏙옙!
+그 시절, 우리가 좋아했던 소녀
+군자
+?占쏙옙占?????
+而댄뵆由ы듃 ?占쏙옙?占쏙옙?占쏙옙
+媛뺣궓
+?占쏙옙?占쏙옙?占쏙옙
+?占쏙옙占???????
+힘내라 대한민국
+異섏쿇?占쏙옙?占쏙옙
+占쏙옙占시몌옙트 占쏙옙占쏙옙
+寃쎈턿?占쏙옙占???
+占??????占쏙옙
+김천
+占쏙옙占쏙옙耉占?
+愿묐챸AK?占쏙옙?占쏙옙?占쏙옙
+占쏙옙占쏙옙占쏙옙 占쌤쇽옙트 占쏙옙占쏙옙: 占쏙옙占??? 占쏙옙占쏙옙 占쏙옙占쏙옙
+?쁺醫?
+괜찮아
+罹≫떞 ?븘硫붾━移?: 釉뚮젅?씠釉? ?돱 ?썡?뱶
+怨좎뼇?占쏙옙???占쏙옙?占쏙옙
+송도
+占쏙옙占??????
+占쏙옙占쏙옙耉占?????
+紐⑺룷?븯?떦(?룷瑜대え)
+?눜留덈줉
+광명소하
+?占쏙옙?占쏙옙占?? 議고쉶
+?쁺?솕愿??쓣 寃??깋?븯?떆?젮硫? '?쁺?솕愿? [?쁺?솕愿? ?씠由?] '?씪怨? ?엯?젰?빐二쇱꽭?슂.
+???占쏙옙
+광주상무
+占쏙옙占쌍아띰옙
+愿묒＜?占쏙옙占??
+영화
+영화관 조회
+占쏙옙占쏙옙占쏙옙占?????
+강동
+?占쏙옙?占쏙옙?占쏙옙占??? '???占쏙옙' ?占쏙옙 ?占쏙옙?占쏙옙占???
+?쁺?솕愿? ?쐞移?
+占쏙옙 占쏙옙티크 占쏙옙占쏙옙占쏙옙占싫?占쏙옙
+?占쏙옙?占쏙옙占??? 占????占쏙옙?占쏙옙?占쏙옙?占쏙옙占??? '?占쏙옙?占쏙옙 [?占쏙옙?占쏙옙 ?占쏙옙占???] '?占쏙옙占??? ?占쏙옙?占쏙옙?占쏙옙二쇱꽭?占쏙옙.
+?궓異섏쿇
+검단
+?쁺?솕
+占쏙옙화占쏙옙 占쏙옙회
+占쏙옙占쏙옙占싹놂옙
+怨듭＜
+占쏙옙占쏙옙占쏙옙
+援곗옄
+占???占쏙옙
+?옒?궡?씪
+占쏙옙占쏙옙占쏙옙占?
+占쏙옙占쏙옙占쏙옙占???
+?썝二쇳쁺?떊
+占쏙옙占쏙옙占쏙옙占??
+占쏙옙占쏙옙占싹늘듸옙占쏙옙
+고양스타필드
+占쏙옙천占쏙옙占쏙옙
+?젣二쇱꽌洹??룷
+洹? ?떆?젅, ?슦由ш? 醫뗭븘?뻽?뜕 ?냼??
+논산
+?占쏙옙二쇳쁺?占쏙옙
+콘클라베
+愿묐챸?占쏙옙?占쏙옙
+?占쏙옙占??
+?占쏙옙?占쏙옙?占쏙옙: ?占쏙옙猷⑥뿉 占??????占쏙옙!
+占????占쏙옙
+?닚泥?
+占쏙옙화占쏙옙 占싯삼옙占싹시뤄옙占쏙옙 '占쏙옙화 [占쏙옙화 占쏙옙占쏙옙] '占쏙옙占??? 占쌉뤄옙占쏙옙占쌍쇽옙占쏙옙.
+미키 17
+공주
+?占쏙옙 占???????占쏙옙?占쏙옙 紐⑸룞?占쏙옙??諛깊솕?占쏙옙
+寃??떒
+?占쏙옙?占쏙옙占????占쏙옙 占????占쏙옙?占쏙옙?占쏙옙?占쏙옙占??? '?占쏙옙?占쏙옙占??? [?占쏙옙?占쏙옙占??? ?占쏙옙占???] '?占쏙옙占??? ?占쏙옙?占쏙옙?占쏙옙二쇱꽭?占쏙옙.
+占쏙옙溝占시?
+?뵆?젅?씠釉? '???돩' ?씤 ?떆?꽕留?
+占쏙옙占쌍쇽옙占쏙옙占쏙옙
+광명AK플라자
+영종
+?룄??留?
+춘천석사
+肄섑겢?씪踰?
+占싻듸옙占쏙옙: 占쏙옙占?????? 占쏙옙占쏙옙!
+愿묒＜?占쏙옙占?????
+목록
+占쏙옙占쏙옙耉占???
+占쏙옙占쏙옙AK占시띰옙占쏙옙
+占쏙옙화 占쏙옙회
+源?泥?
+占쏙옙화占쏙옙 占쏙옙치
+占쏙옙溝占쏙옙?
+?占쏙옙?占쏙옙 議고쉶
+愿쒖갖?占쏙옙 愿쒖갖?占쏙옙 愿쒖갖?占쏙옙! 
+?占쏙옙?占쏙옙占?????
+占쏙옙화占쏙옙 占싯삼옙占싹시뤄옙占쏙옙 '占쏙옙화 [占쏙옙화 占쏙옙占쏙옙] '占쏙옙占? 占쌉뤄옙占쏙옙占쌍쇽옙占쏙옙.
+?占쏙옙?占쏙옙占????? 議고쉶
+?占쏙옙?占쏙옙占?? ?占쏙옙占??
+援щ?멸컯?룞
+첫 占쏙옙째 키占쏙옙
+?넚?룄
+占싣놂옙占??
+?쁺?솕 議고쉶
+占??占??
+?냽珥?
+구미강동
+占쏙옙키 17
+대전신세계 아트앤사이언스
+?占쏙옙?占쏙옙占???
+?옒?궡?씪 ???븳誘쇨뎅
+占쏙옙占쏙옙占신쇽옙占쏙옙 占쏙옙트占쌔삼옙占싱억옙
+영종하늘도시
+?占쏙옙二쇱꽌占????占쏙옙
+占쏙옙占쏙옙占쏙옙 占쌤쇽옙트 占쏙옙占쏙옙: 占쏙옙占???? 占쏙옙占쏙옙 占쏙옙占쏙옙
+?占쏙옙 占??????占쏙옙?占쏙옙 紐⑸룞?占쏙옙??諛깊솕?占쏙옙
+?쁺醫낇븯?뒛?룄?떆
+占쏙옙클占쏙옙
+占싻듸옙占쏙옙: 占쏙옙占????? 占쏙옙占쏙옙!
+占쏙옙占쏙옙耉占???????
+愿묒＜?占쏙옙占???
+플레이브 '대쉬' 인 시네마
+占쏙옙천
+속초
+占쏙옙占썹스타占십듸옙
+占??? ?占쏙옙?占쏙옙, ?占쏙옙由э옙? 醫뗭븘?占쏙옙?占쏙옙 ?占쏙옙??
+영화관을 검색하시려면 '영화관 [영화관 이름] '라고 입력해주세요.
+占쏙옙회
+대전
+誘명궎 17
+패딩턴: 페루에 가다!
+안녕
+占쏙옙占싱곤옙占쏙옙
+?占쏙옙?占쏙옙?占쏙옙 ???占쏙옙誘쇨뎅
+제주아라
+?占쏙옙 占???占쏙옙?占쏙옙 紐⑸룞?占쏙옙??諛깊솕?占쏙옙
+媛뺣룞
+?젣二쇱궪?솕
+강남
+議고쉶
+占쏙옙占쏙옙耉占????
+愿묒＜?占쏙옙占??????
+영화 조회
+?占쏙옙?占쏙옙占??????? 議고쉶
+?쁺?솕瑜? 寃??깋?븯?떆?젮硫? '?쁺?솕 [?쁺?솕 ?젣紐?] '?씪怨? ?엯?젰?빐二쇱꽭?슂.
+???占쏙옙?占쏙옙?占쏙옙占????? ?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙
+?占쏙옙二쇱궪?占쏙옙
+=======
+?占쏙옙??占?????
+占싻듸옙占쏙옙: 占쏙옙占??? 占쏙옙占쏙옙!
+愿쒖갖?占쏙옙
+???쟾?떊?꽭怨? ?븘?듃?븻?궗?씠?뼵?뒪
+금정AK플라자
+占쏙옙화占쏙옙占쏙옙 占싯삼옙占싹시뤄옙占쏙옙 '占쏙옙화占쏙옙 [占쏙옙화占쏙옙 占싱몌옙] '占쏙옙占??? 占쌉뤄옙占쏙옙占쌍쇽옙占쏙옙.
+占쏙옙占쏙옙
+원주혁신
+占쏙옙營뵀몌옙茄占?
+罹≫떞 ?占쏙옙硫붾━占?????: 釉뚮젅?占쏙옙占????? ?占쏙옙 ?占쏙옙?占쏙옙
+?占쏙옙二쇱븘?占쏙옙
+>>>>>>> Stashed changes
+占쏙옙화
+占쏙옙占쌍삼옙
+占쏙옙營뵀몌옙茄占??????
+?占쏙옙?占쏙옙?占쏙옙: ?占쏙옙猷⑥뿉 占????占쏙옙!
+?占쏙옙李ъ썝 肄섏꽌?占쏙옙 李э옙?: ?占쏙옙?占쏙옙 留덉씠 李ъ뒪
+?븞?뀞
+?占쏙옙?占쏙옙占???占쏙옙 占???占쏙옙?占쏙옙?占쏙옙?占쏙옙占?? '?占쏙옙?占쏙옙占?? [?占쏙옙?占쏙옙占?? ?占쏙옙占??] '?占쏙옙占?? ?占쏙옙?占쏙옙?占쏙옙二쇱꽭?占쏙옙.
+목포하당(포르모)
+???쟾
+愿쒖갖?븘 愿쒖갖?븘 愿쒖갖?븘! 
+占???????占???????
+罹≫떞 ?占쏙옙硫붾━占???: 釉뚮젅?占쏙옙占??? ?占쏙옙 ?占쏙옙?占쏙옙
+동대문
+도움말
+占쏙옙占쌍삼옙화
+?뙣?뵫?꽩: ?럹猷⑥뿉 媛??떎!
+寃쎈턿?占쏙옙占??
+?占쏙옙?占쏙옙占??? ?占쏙옙占???
+?占쏙옙二쇱꽌占???占쏙옙
+占쏙옙占?????
+캡틴 占싣메몌옙카: 占쎄레占싱븝옙 占쏙옙 占쏙옙占쏙옙
+제주삼화
+占싫놂옙
+경산하양
+占쏙옙占?
+占쏙옙占쏙옙占쏙옙 占쏙옙占싼민깍옙
+占싣놂옙占???
+占쏙옙화占쏙옙占쏙옙 占싯삼옙占싹시뤄옙占쏙옙 '占쏙옙화占쏙옙 [占쏙옙화占쏙옙 占싱몌옙] '占쏙옙占?? 占쌉뤄옙占쏙옙占쌍쇽옙占쏙옙.
+寃쎈턿?룄泥?
+占쏙옙占쏙옙耉占????????
+占쏙옙화占쏙옙
+영화를 검색하시려면 '영화 [영화 제목] '라고 입력해주세요.
+寃쎌궛?占쏙옙?占쏙옙
+愿묒＜?占쏙옙?占쏙옙
+占쏜마뤄옙
+寃쎌궛?븯?뼇
+퇴마록
+???占쏙옙?占쏙옙?占쏙옙占?? ?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙
+영화관 위치
+愿묒＜?븯?궓
+占쏙옙占??
+?占쏙옙?占쏙옙占??
+경북도청
+아노라
+愿묐챸AK?뵆?씪?옄
+占쏙옙占쏙옙占쏙옙 占쌤쇽옙트 占쏙옙占쏙옙: 占쏙옙占?? 占쏙옙占쏙옙 占쏙옙占쏙옙
+占쏙옙營뵀몌옙茄占?????
+怨좎뼇?뒪???븘?뱶
+占쏙옙營뵀몌옙茄占???
+占쏙옙占쏙옙占싹댐옙(占쏙옙占쏙옙占쏙옙)
+?占쏙옙??占???
+肄섑겢?占쏙옙占???
+紐⑺룷?占쏙옙?占쏙옙(?占쏙옙瑜대え)
+占쏙옙營뵀몌옙茄占????????
+제주서귀포
+?占쏙옙?占쏙옙占?? 占???占쏙옙?占쏙옙?占쏙옙?占쏙옙占?? '?占쏙옙?占쏙옙 [?占쏙옙?占쏙옙 ?占쏙옙占??] '?占쏙옙占?? ?占쏙옙?占쏙옙?占쏙옙二쇱꽭?占쏙옙.
+湲덉젙AK?뵆?씪?옄
+占????? 踰덉㎏ ?占쏙옙?占쏙옙
+?쁺?솕愿? 議고쉶
+?占쏙옙留덈줉
+占쏙옙화占쏙옙占쏙옙 占싯삼옙占싹시뤄옙占쏙옙 '占쏙옙화占쏙옙 "占쏙옙화占쏙옙 占싱몌옙" '占쏙옙占????? 占쌉뤄옙占쏙옙占쌍쇽옙占쏙옙.
+占쏙옙占쏙옙천
+?占쏙옙占??????
+캡틴 아메리카: 브레이브 뉴 월드
+占쏙옙占쏙옙耉占??
+?占쏙옙?占쏙옙占????? ?占쏙옙占?????
+?븘?끂?씪
+힘내라
+占쏙옙占????
+占쏙옙화占쏙옙占쏙옙 占싯삼옙占싹시뤄옙占쏙옙 '占쏙옙화占쏙옙 [占쏙옙화占쏙옙 占싱몌옙] '占쏙옙占? 占쌉뤄옙占쏙옙占쌍쇽옙占쏙옙.
+湲덉젙AK?占쏙옙?占쏙옙?占쏙옙
+?쁺?솕愿?
+?젣二쇱븘?씪
+占쏙옙화占쏙옙 占싯삼옙占싹시뤄옙占쏙옙 '占쏙옙화 [占쏙옙화 占쏙옙占쏙옙] '占쏙옙占?? 占쌉뤄옙占쏙옙占쌍쇽옙占쏙옙.
+占쏙옙占쏙옙占쏙옙 占쌤쇽옙트 占쏙옙占쏙옙: 占쏙옙占????? 占쏙옙占쏙옙 占쏙옙占쏙옙
+영화관
+占쏙옙占???
+異섏쿇?꽍?궗
+占쏙옙 占쏙옙티크 占쏙옙占쏙옙占쏙옙占쏙옙?占쏙옙
+占???占???
+占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙! 
+占쏙옙占쏙옙占쏙옙 占쌤쇽옙트 占쏙옙占쏙옙: 占쏙옙占?????? 占쏙옙占쏙옙 占쏙옙占쏙옙
+愿쒖갖?븘
+???占쏙옙?占쏙옙?占쏙옙占??? ?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙?占쏙옙
+?占쏙옙?占쏙옙
+?占쏙옙??占??
+2025-03-18T13:08:05.283+09:00  WARN 9872 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-18T13:08:05.333+09:00  INFO 9872 --- [    Test worker] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-18T13:08:06.856+09:00  INFO 9872 --- [    Test worker] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2025-03-18T13:08:06.872+09:00  INFO 9872 --- [    Test worker] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2f071900]]
+2025-03-18T13:08:06.872+09:00  INFO 9872 --- [    Test worker] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2025-03-18T13:08:06.888+09:00  INFO 9872 --- [    Test worker] o.s.moviepj.MemberTest.MemberInsert      : Started MemberInsert in 8.821 seconds (process running for 9.971)
+2025-03-18T13:08:06.906+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        cinema_tb ce1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        cinema_tb ce1_0
+이미 CinemaEntity 데이터가 존재하여 크롤링을 실행하지 않습니다.
+ChatBotRunner 실행됨!
+2025-03-18T13:08:06.914+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0
+Hibernate: 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0
+이미 AnswerEntity 데이터가 존재하여 삽입을 실행하지 않습니다.
+2025-03-18T13:08:06.924+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ie1_0.no,
+        ie1_0.answer_no,
+        ie1_0.name,
+        ie1_0.upper_no 
+    from
+        intention ie1_0
+Hibernate: 
+    select
+        ie1_0.no,
+        ie1_0.answer_no,
+        ie1_0.name,
+        ie1_0.upper_no 
+    from
+        intention ie1_0
+2025-03-18T13:08:06.931+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+Hibernate: 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+2025-03-18T13:08:06.934+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+Hibernate: 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+2025-03-18T13:08:06.937+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+Hibernate: 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+2025-03-18T13:08:06.938+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+Hibernate: 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+2025-03-18T13:08:06.940+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+Hibernate: 
+    select
+        ae1_0.no,
+        ae1_0.content,
+        ae1_0.keyword 
+    from
+        answer ae1_0 
+    where
+        ae1_0.no=?
+이미 IntentionEntity 데이터가 존재하여 삽입을 실행하지 않습니다.
+2025-03-18T13:08:06.947+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        hme1_0.id,
+        hme1_0.message 
+    from
+        help_message hme1_0
+Hibernate: 
+    select
+        hme1_0.id,
+        hme1_0.message 
+    from
+        help_message hme1_0
+이미 HelpMessageEntity 데이터가 존재하여 삽입을 실행하지 않습니다.
+2025-03-18T13:08:07.062+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time,
+        ce1_0.member_id,
+        ce1_0.id,
+        ce1_0.content,
+        ce1_0.end,
+        ce1_0.start 
+    from
+        member_tb me1_0 
+    left join
+        calendar ce1_0 
+            on me1_0.email=ce1_0.member_id 
+    where
+        me1_0.email=?
+Hibernate: 
+    select
+        me1_0.email,
+        me1_0.create_time,
+        me1_0.nickname,
+        me1_0.pw,
+        me1_0.social,
+        me1_0.update_time,
+        ce1_0.member_id,
+        ce1_0.id,
+        ce1_0.content,
+        ce1_0.end,
+        ce1_0.start 
+    from
+        member_tb me1_0 
+    left join
+        calendar ce1_0 
+            on me1_0.email=ce1_0.member_id 
+    where
+        me1_0.email=?
+2025-03-18T13:08:07.083+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list 
+    from
+        member_entity_member_role_list mrl1_0 
+    where
+        mrl1_0.member_entity_email=?
+Hibernate: 
+    select
+        mrl1_0.member_entity_email,
+        mrl1_0.member_role_list 
+    from
+        member_entity_member_role_list mrl1_0 
+    where
+        mrl1_0.member_entity_email=?
+2025-03-18T13:08:07.123+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    update
+        member_tb 
+    set
+        nickname=?,
+        pw=?,
+        social=?,
+        update_time=? 
+    where
+        email=?
+Hibernate: 
+    update
+        member_tb 
+    set
+        nickname=?,
+        pw=?,
+        social=?,
+        update_time=? 
+    where
+        email=?
+2025-03-18T13:08:07.135+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    delete 
+    from
+        member_entity_member_role_list 
+    where
+        member_entity_email=?
+Hibernate: 
+    delete 
+    from
+        member_entity_member_role_list 
+    where
+        member_entity_email=?
+2025-03-18T13:08:07.144+09:00 DEBUG 9872 --- [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        member_entity_member_role_list
+        (member_entity_email, member_role_list) 
+    values
+        (?, ?)
+Hibernate: 
+    insert 
+    into
+        member_entity_member_role_list
+        (member_entity_email, member_role_list) 
+    values
+        (?, ?)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

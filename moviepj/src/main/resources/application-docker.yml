@@ -6,7 +6,7 @@ spring:
     password: 1234
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect  
+    database-platform: org.hibernate.dialect.MySQL8Dialect  
     hibernate:
       ddl-auto: update
     properties:
@@ -14,5 +14,4 @@ spring:
         show_sql: true
         format_sql: true
 
-server:
-  port: 8090
+

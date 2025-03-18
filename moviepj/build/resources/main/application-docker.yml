@@ -1,12 +1,12 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-container:3306/movieyyk?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://mysql:3306/movieyyk?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: root
     password: 1234
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect  
+    database-platform: org.hibernate.dialect.MySQL8Dialect  
     hibernate:
       ddl-auto: update
     properties:
@@ -14,5 +14,4 @@ spring:
         show_sql: true
         format_sql: true
 
-server:
-  port: 8090
+
