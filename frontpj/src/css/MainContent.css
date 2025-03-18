@@ -16,11 +16,11 @@
   border-radius: 20px;
 }
 
-body.dark .content .main { 
+body.dark .content .main {
   background-color: var(--color-dark-2);
 }
 
-body.light .content .main { 
+body.light .content .main {
   background-color: var(--color-light-2);
 }
 
@@ -44,7 +44,8 @@ body.light .content .main .main-con {
 }
 
 .content .main .main-con .leftBar {
-  flex: 1 0 150px; /* 사이드바의 최소 너비 설정 */
+  flex: 1 0 150px;
+  /* 사이드바의 최소 너비 설정 */
   display: flex;
   width: 25%;
   box-sizing: border-box;
@@ -80,7 +81,7 @@ body.light .content .main .main-con {
   transition: all 0.5s ease;
 }
 
-.content .main .main-con .leftBar .leftBar-con button:hover { 
+.content .main .main-con .leftBar .leftBar-con button:hover {
   filter: opacity(80%);
 }
 
@@ -92,4 +93,83 @@ body.light .content .main .main-con {
   justify-content: center;
   flex-direction: column;
   gap: 20px;
+}
+
+@media (max-width: 1023px) {
+
+  .content {
+    padding: 10px;
+  }
+
+  .content .main {
+    padding: 0;
+  }
+
+  .content .main .main-con{
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+  }
+
+  .content .main .main-con .leftBar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 1024px;
+    box-sizing: border-box;
+    flex: 0;
+  }
+
+  .content .main .main-con .leftBar .leftBar-con {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .content .main .main-con .leftBar .leftBar-con img.poster {
+    max-width: 100px;
+    max-height: 150px;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+  }
+
+  .content .main .main-con .leftBar .leftBar-con img.share-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    box-sizing: border-box;
+    top: 25px;
+    left: 95px;
+    border-radius: 5px;
+  }
+
+  .content .main .main-con .leftBar .leftBar-con .movie-info {
+    padding: 0;
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+
+  }
+
+  .content .main .main-con .leftBar .leftBar-con .movie-info > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    height: 12px;
+    width: 100%;
+  }
+
+  .content .main .main-con .leftBar .leftBar-con .movie-info > button {
+    height: 30px;
+    font-size: 12px;
+    width: 100px;
+  }
 }
