@@ -99,7 +99,7 @@ const Map = () => {
   const loadCinemas = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:8090/api/cinemas");
+      const res = await axios.get("http://43.201.20.172:8090/api/cinemas");
       const cinemaData = res.data;
       setCinemas(cinemaData);
       setAllCinemas(cinemaData);
@@ -124,7 +124,7 @@ const Map = () => {
       setUserLocation({ latitude, longitude });
 
       const res = await axios.get(
-        `http://localhost:8090/api/cinemas/nearby?lat=${latitude}&lon=${longitude}`
+        `http://43.201.20.172:8090/api/cinemas/nearby?lat=${latitude}&lon=${longitude}`
       );
       let nearbyCinemaData = res.data;
       // 사용자 위치 기준으로 가까운 순 정렬

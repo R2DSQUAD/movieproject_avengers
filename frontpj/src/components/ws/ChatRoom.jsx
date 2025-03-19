@@ -8,7 +8,7 @@ const ChatRoom = () => {
   const webSocket = useRef(null);
   const [message, setMessage] = useState(""); // 입력된 메시지 상태
   const [messages, setMessages] = useState([]); // 메시지 목록 상태
-  const url = "ws://localhost:8090/chat"; // 웹소켓 서버 URL
+  const url = "ws://43.201.20.172:8090/chat"; // 웹소켓 서버 URL
   const chatBoxRef = useRef(null); // 채팅박스 DOM을 참조
 
   // 웹소켓 연결 및 이벤트 핸들링
@@ -88,7 +88,7 @@ const ChatRoom = () => {
 
       // 메시지를 REST API로도 보내기
       try {
-        await axios.post("http://localhost:8090/api/chat/messages", {
+        await axios.post("http://43.201.20.172:8090/api/chat/messages", {
           sender: loginState.email,
           message: message,
         });

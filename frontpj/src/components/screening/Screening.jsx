@@ -52,7 +52,7 @@ const Screening = () => {
       if (!dataFetched) {
         try {
           const response = await axios.get(
-            `http://localhost:8090/api/screening/${movieId}`
+            `http://43.201.20.172:8090/api/screening/${movieId}`
           );
           const screeningData = Array.isArray(response.data)
             ? response.data

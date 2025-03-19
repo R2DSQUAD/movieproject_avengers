@@ -15,7 +15,7 @@ const Payment = () => {
     const fetchUserInfo = async () => {
       try {
         const response = await jwtAxios.get(
-          "http://localhost:8090/api/myinfo/detail",
+          "http://43.201.20.172:8090/api/myinfo/detail",
           {
             withCredentials: true,
           }
@@ -34,7 +34,7 @@ const Payment = () => {
     const fetchPaymentItems = async () => {
       try {
         const response = await jwtAxios.post(
-          "http://localhost:8090/api/payment/orderSettlement",
+          "http://43.201.20.172:8090/api/payment/orderSettlement",
           cartItemIds,
           { withCredentials: true }
         );
@@ -116,7 +116,7 @@ const Payment = () => {
           try {
             console.log(" 결제 검증 요청 시작:", response.imp_uid);
             const verifyResponse = await jwtAxios.post(
-              "http://localhost:8090/api/payment/verify",
+              "http://43.201.20.172:8090/api/payment/verify",
               {
                 imp_uid: response.imp_uid,
                 amount: totalPrice,
@@ -129,7 +129,7 @@ const Payment = () => {
             if (verifyResponse.data === "결제 검증 성공") {
               console.log(" 결제 정보 저장 요청 시작");
               const saveResponse = await jwtAxios.post(
-                "http://localhost:8090/api/payment/save",
+                "http://43.201.20.172:8090/api/payment/save",
                 {
                   cartItemIds: cartItemIds,
                   paymentMethod: paymentMethod,

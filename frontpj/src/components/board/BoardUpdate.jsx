@@ -28,7 +28,7 @@ const BoardUpdate = () => {
       const fetchBoardDetail = async () => {
         try {
           const response = await jwtAxios.get(
-            `http://localhost:8090/board/detail/${id}`
+            `http://43.201.20.172:8090/board/detail/${id}`
           );
           setTitle(response.data.title);
           setCategory(response.data.category);
@@ -84,7 +84,7 @@ const BoardUpdate = () => {
     try {
       // Send data to the server (Content-Type handled automatically by FormData)
       const response = await jwtAxios.post(
-        "http://localhost:8090/board/update",
+        "http://43.201.20.172:8090/board/update",
         formData
       );
       setMessage(response.data);

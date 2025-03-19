@@ -25,7 +25,7 @@ const Main = () => {
     const fetchData = async () => {
       try {
         const boxOfficeResponse = await axios.get(
-          "http://localhost:8090/api/boxOfficeList"
+          "http://43.201.20.172:8090/api/boxOfficeList"
         );
         const boxOfficeData = boxOfficeResponse.data;
         setBoxOfficeList(boxOfficeData);

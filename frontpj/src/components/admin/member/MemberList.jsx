@@ -24,7 +24,7 @@ const MemberList = () => {
   // 검색 및 페이지네이션 적용하여 회원 목록 조회
   const fetchMembers = async () => {
     try {
-      const response = await jwtAxios.get("http://localhost:8090/admin/members/search", {
+      const response = await jwtAxios.get("http://43.201.20.172:8090/admin/members/search", {
         params: {
           page: page,
           size: size,
@@ -78,7 +78,7 @@ const MemberList = () => {
   const handleUpdateMember = async () => {
     try {
       await jwtAxios.put(
-        `http://localhost:8090/admin/members/${selectedMember.email}`,
+        `http://43.201.20.172:8090/admin/members/${selectedMember.email}`,
         formData,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -94,7 +94,7 @@ const MemberList = () => {
   const handleDeleteMember = async () => {
     if (window.confirm("정말로 이 회원을 삭제하시겠습니까?")) {
       try {
-        await jwtAxios.delete(`http://localhost:8090/admin/members/${selectedMember.email}`);
+        await jwtAxios.delete(`http://43.201.20.172:8090/admin/members/${selectedMember.email}`);
         fetchMembers();
         setShowModal(false);
         setSelectedMember(null);

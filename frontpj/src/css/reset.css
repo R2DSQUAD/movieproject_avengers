@@ -3,7 +3,7 @@
 :root {
 	font-family: 'Noto Sans KR', sans-serif;
 	--color-shadow: #00000033;
-	--color-dark-1: #121212;	
+	--color-dark-1: #121212;
 	--color-dark-2: #222222;
 	--color-dark-3: #333333;
 	--color-dark-main-text: #ffffff;
@@ -20,33 +20,40 @@
 	--color-green: #4CAF50;
 
 	/* 드래그 방지 */
-	-webkit-user-select:none;
-  -moz-user-select:none;
-  -ms-user-select:none;
-  user-select:none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 	scroll-behavior: smooth;
 }
 
 /* 스크롤바 전체 */
 ::-webkit-scrollbar {
-	width: 10px; /* 스크롤바의 너비 */
-	height: 10px; /* 가로 스크롤바의 높이 */
+	width: 10px;
+	/* 스크롤바의 너비 */
+	height: 10px;
+	/* 가로 스크롤바의 높이 */
 }
 
 /* 스크롤바 트랙 */
 ::-webkit-scrollbar-track {
-	background: var(--color-point); /* 트랙의 배경색 */
+	background: var(--color-point);
+	/* 트랙의 배경색 */
 }
 
 /* 스크롤바 핸들 */
 ::-webkit-scrollbar-thumb {
-	background: var(--color-main-point); /* 핸들의 배경색 */
-	border-radius: 50px; /* 핸들의 모서리 둥글게 */
+	background: var(--color-main-point);
+	/* 핸들의 배경색 */
+	border-radius: 50px;
+	/* 핸들의 모서리 둥글게 */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--color-sub-point); /* 핸들의 배경색 */
-	border-radius: 50px; /* 핸들의 모서리 둥글게 */
+	background: var(--color-sub-point);
+	/* 핸들의 배경색 */
+	border-radius: 50px;
+	/* 핸들의 모서리 둥글게 */
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -54,7 +61,7 @@
    License: none (public domain)
 */
 
-#root > .container{
+#root>.container {
 	min-height: calc(100vh - 60px - 90px - 20px);
 	box-sizing: border-box;
 }
@@ -140,6 +147,7 @@ video {
 	font-size: 15px;
 	font: inherit;
 	vertical-align: baseline;
+	box-sizing: border-box;
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -201,24 +209,23 @@ body.light {
 body.dark a,
 body.dark p,
 body.dark span,
-body.dark h1, 
-body.dark h2, 
-body.dark h3, 
-body.dark h4, 
-body.dark h5, 
-body.dark h6{
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark h5,
+body.dark h6 {
 	color: var(--color-dark-text);
 }
 
 body.light a,
 body.light p,
 body.light span,
-body.light h1, 
-body.light h2, 
-body.light h3, 
-body.light h4, 
-body.light h5, 
-body.light h6{
+body.light h1,
+body.light h2,
+body.light h3,
+body.light h4,
+body.light h5,
+body.light h6 {
 	color: var(--color-light-text);
 }
-

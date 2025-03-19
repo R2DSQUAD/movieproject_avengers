@@ -16,7 +16,7 @@ const MyPaymentList = () => {
   const fetchPaymentHistory = async () => {
     try {
       const response = await jwtAxios.get(
-        "http://localhost:8090/api/payment/myPaymentList",
+        "http://43.201.20.172:8090/api/payment/myPaymentList",
         { withCredentials: true }
       );
       const payments = Array.isArray(response.data) ? response.data : [];

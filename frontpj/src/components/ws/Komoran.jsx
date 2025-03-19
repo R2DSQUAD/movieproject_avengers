@@ -183,7 +183,7 @@ const Komoran = () => {
   const sendMessageToBackend = useCallback(
     async (msg) => {
       try {
-        const response = await fetch("http://localhost:8090/botController", {
+        const response = await fetch("http://43.201.20.172:8090/botController", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

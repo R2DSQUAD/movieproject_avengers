@@ -52,7 +52,7 @@ const BoardInsert = () => {
     try {
       // 서버로 데이터 전송 (Content-Type을 명시하지 않음)
       const response = await jwtAxios.post(
-        "http://localhost:8090/board/insert",
+        "http://43.201.20.172:8090/board/insert",
         formData,
         {
           // "Content-Type"을 명시하지 않으면 브라우저가 자동으로 multipart/form-data로 설정해줌

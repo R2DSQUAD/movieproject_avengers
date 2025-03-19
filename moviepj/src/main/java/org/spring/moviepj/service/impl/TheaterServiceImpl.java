@@ -14,4 +14,8 @@ public class TheaterServiceImpl implements TheaterService {
 
     private final TheaterRepository theaterRepository;
 
+    public boolean isTheaterDataExists() {
+        return theaterRepository.count() > 0;
+    }
+
 }

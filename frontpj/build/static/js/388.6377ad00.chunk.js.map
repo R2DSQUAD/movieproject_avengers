@@ -1,0 +1,49 @@
+{
+    "version": 3,
+    "file": "static/js/388.6377ad00.chunk.js",
+    "mappings": "8LAMA,MAyBA,EAzB0BA,KACxB,MAAOC,IAAgBC,EAAAA,EAAAA,MACjBC,GAAWC,EAAAA,EAAAA,MACXC,GAAWC,EAAAA,EAAAA,MACXC,EAAWN,EAAaO,IAAI,QAalC,OAXAC,EAAAA,EAAAA,YAAU,MACRC,EAAAA,EAAAA,IAAeH,GAAUI,MAAKC,IAC5BC,QAAQC,IAAIF,IACZG,EAAAA,EAAAA,IAAyBH,GAAaD,MAAKK,IACzCb,GAASc,EAAAA,EAAAA,IAAMD,IACfX,EAAS,IAAK,CAAEa,SAAS,GAAO,GAChC,GACF,GACD,CAACX,KAIFY,EAAAA,EAAAA,KAAA,SAGM,C,mEC1BV,MAAMC,EAAe,qCAMRC,EAAoBA,IACZ,mGAAyFD,uBAIjGV,EAAiBY,UAC1B,MAKMC,EAAS,CACXC,WAAY,qBACZC,UAAWC,mCACXN,aAAcA,EACdO,KAAMpB,GAOV,aAJkBqB,EAAAA,EAAMC,KApBH,sCAoB0BN,EAZhC,CACXO,QAAS,CACL,eAAgB,wCAYAC,KAAKC,YAEX,EAGTjB,EAA2BO,gBAClBM,EAAAA,EAAMpB,IAAI,0DAA0DI,MAC3EmB,I",
+    "sources": [
+        "pages/member/KakaoRedirectPage.jsx",
+        "api/kakaoApi.js"
+    ],
+    "sourcesContent": [
+        "import React, { useEffect } from 'react'\r\nimport { data, useNavigate, useSearchParams } from 'react-router-dom'\r\nimport { getAccessToken, getMemberWithAccessToken } from '../../api/kakaoApi'\r\nimport { useDispatch } from 'react-redux'\r\nimport { login } from '../../slices/loginSlice'\r\n\r\nconst KakaoRedirectPage = () => {\r\n  const [searchParams] = useSearchParams()\r\n  const dispatch = useDispatch()\r\n  const navigate = useNavigate()\r\n  const authCode = searchParams.get(\"code\")\r\n\r\n  useEffect(() => {\r\n    getAccessToken(authCode).then(accessToken => {\r\n      console.log(accessToken)\r\n      getMemberWithAccessToken(accessToken).then(memberInfo => {\r\n        dispatch(login(memberInfo))\r\n        navigate(\"/\", { replace: true });\r\n      })\r\n    })\r\n  }, [authCode])\r\n\r\n\r\n  return (\r\n    <div>\r\n      {/* <div>Kakao Login Redirect</div> */}\r\n      {/* <div>{authCode}</div> */}\r\n    </div>\r\n  )\r\n}\r\n\r\nexport default KakaoRedirectPage",
+        "import axios from \"axios\"\r\nconst redirect_uri = `http://43.201.20.172:3000/member/kakao`\r\n\r\nconst auth_code_path = `https://kauth.kakao.com/oauth/authorize`\r\n\r\nconst access_token_url = `https://kauth.kakao.com/oauth/token`\r\n\r\nexport const getKakaoLoginLink = () => {\r\n    const kakaoURL = `${auth_code_path}?client_id=${process.env.REACT_APP_KAKAO_LOGIN_API_KEY}&redirect_uri=${redirect_uri}&response_type=code`\r\n    return kakaoURL\r\n}\r\n\r\nexport const getAccessToken = async (authCode) => {\r\n    const header = {\r\n        headers: {\r\n            \"Content-Type\": \"application/x-www-form-urlencoded\",\r\n        }\r\n    }\r\n    const params = {\r\n        grant_type: \"authorization_code\",\r\n        client_id: process.env.REACT_APP_KAKAO_LOGIN_API_KEY,\r\n        redirect_uri: redirect_uri,\r\n        code: authCode\r\n    }\r\n\r\n    const res = await axios.post(access_token_url, params, header)\r\n\r\n    const accessToken = res.data.access_token\r\n\r\n    return accessToken\r\n}\r\n\r\nexport const getMemberWithAccessToken = async (accessToken) => {\r\n    const res = await axios.get(`http://43.201.20.172:8090/api/member/kakao?accessToken=${accessToken}`)\r\n    return res.data\r\n}"
+    ],
+    "names": [
+        "KakaoRedirectPage",
+        "searchParams",
+        "useSearchParams",
+        "dispatch",
+        "useDispatch",
+        "navigate",
+        "useNavigate",
+        "authCode",
+        "get",
+        "useEffect",
+        "getAccessToken",
+        "then",
+        "accessToken",
+        "console",
+        "log",
+        "getMemberWithAccessToken",
+        "memberInfo",
+        "login",
+        "replace",
+        "_jsx",
+        "redirect_uri",
+        "getKakaoLoginLink",
+        "async",
+        "params",
+        "grant_type",
+        "client_id",
+        "process",
+        "code",
+        "axios",
+        "post",
+        "headers",
+        "data",
+        "access_token"
+    ],
+    "sourceRoot": ""
+}

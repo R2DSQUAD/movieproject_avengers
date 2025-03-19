@@ -41,7 +41,7 @@ const ScreeningSeat = () => {
   const fetchScreeningInfo = async () => {
     try {
       const response = await jwtAxios.get(
-        `http://localhost:8090/api/screening/info/${screeningId}`
+        `http://43.201.20.172:8090/api/screening/info/${screeningId}`
       );
       setScreening(response.data);
       console.log("Screening info:", response.data);
@@ -54,7 +54,7 @@ const ScreeningSeat = () => {
   const fetchDisabledSeats = async () => {
     try {
       const response = await jwtAxios.get(
-        `http://localhost:8090/api/cart/disabledSeats/${screeningId}`
+        `http://43.201.20.172:8090/api/cart/disabledSeats/${screeningId}`
       );
       const seats = Array.isArray(response.data) ? response.data : [];
       console.log("Disabled seats:", seats);
@@ -96,7 +96,7 @@ const ScreeningSeat = () => {
 
     try {
       const response = await jwtAxios.post(
-        "http://localhost:8090/api/cart/insert",
+        "http://43.201.20.172:8090/api/cart/insert",
         payload
       );
       alert(response.data);

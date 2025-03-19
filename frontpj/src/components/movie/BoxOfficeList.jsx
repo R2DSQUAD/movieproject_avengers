@@ -7,7 +7,7 @@ const BoxOfficeList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8090/movie/boxoffice")
+      .get("http://43.201.20.172:8090/movie/boxoffice")
       .then((response) => {
         const movieList = response.data.boxOfficeResult.dailyBoxOfficeList;
         setMovies(movieList);

@@ -41,7 +41,7 @@ const Join = () => {
     }
 
     try {
-      await axios.post("http://localhost:8090/api/member/join", formData, {
+      await axios.post("http://43.201.20.172:8090/api/member/join", formData, {
         headers: { "Content-Type": "application/json" },
       });
 

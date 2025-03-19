@@ -12,7 +12,7 @@ const AdminChatBot = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await jwtAxios.get("http://localhost:8090/api/helpMessage");
+      const response = await jwtAxios.get("http://43.201.20.172:8090/api/helpMessage");
       setMessages(response.data);
     } catch (error) {
       console.error("메시지 불러오기 실패:", error);
@@ -26,7 +26,7 @@ const AdminChatBot = () => {
   // Handle adding new message
   const handleAddMessage = async () => {
     try {
-      await jwtAxios.post("http://localhost:8090/api/helpMessage", { message: newMessage }, {
+      await jwtAxios.post("http://43.201.20.172:8090/api/helpMessage", { message: newMessage }, {
         headers: { "Content-Type": "application/json" },
       });
       setNewMessage("");
@@ -47,7 +47,7 @@ const AdminChatBot = () => {
   // Handle updating the message
   const handleUpdate = async () => {
     try {
-      await jwtAxios.put(`http://localhost:8090/api/helpMessage/${selectedMessage.id}`, { message: editMessage }, {
+      await jwtAxios.put(`http://43.201.20.172:8090/api/helpMessage/${selectedMessage.id}`, { message: editMessage }, {
         headers: { "Content-Type": "application/json" },
       });
       setShowEditModal(false);
@@ -61,7 +61,7 @@ const AdminChatBot = () => {
   const handleDelete = async () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
-        await jwtAxios.delete(`http://localhost:8090/api/helpMessage/${selectedMessage.id}`);
+        await jwtAxios.delete(`http://43.201.20.172:8090/api/helpMessage/${selectedMessage.id}`);
         setShowEditModal(false);
         fetchMessages();
       } catch (error) {
