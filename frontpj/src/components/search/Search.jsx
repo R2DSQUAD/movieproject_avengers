@@ -43,7 +43,7 @@ const Search = () => {
 
         if (!searchQuery) {
           response = await axios.get(
-            `http://localhost:8090/api/searchList?page=${page}&sortOption=${sortOption}`
+            `http://43.201.20.172:8090/api/searchList?page=${page}&sortOption=${sortOption}`
           );
         } else {
           let queryToUse = searchQuery.trim(); // 검색어 공백 제거
@@ -59,7 +59,7 @@ const Search = () => {
           }
 
           response = await axios.get(
-            `http://localhost:8090/api/search?query=${encodeURIComponent(
+            `http://43.201.20.172:8090/api/search?query=${encodeURIComponent(
               queryToUse
             )}&searchType=${currentSearchType}&page=${page}&sortOption=${sortOption}`
           );

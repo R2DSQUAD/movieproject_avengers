@@ -13,7 +13,7 @@ const Cart = () => {
     const fetchCartItems = async () => {
       try {
         const response = await jwtAxios.get(
-          "http://localhost:8090/api/cart/myCartList"
+          "http://43.201.20.172:8090/api/cart/myCartList"
         );
         console.log("API 응답:", response.data);
         if (Array.isArray(response.data)) {
@@ -58,7 +58,7 @@ const Cart = () => {
 
     try {
       const response = await jwtAxios.delete(
-        "http://localhost:8090/api/cart/delete",
+        "http://43.201.20.172:8090/api/cart/delete",
         {
           data: { ids: Array.from(selectedItems) },
         }

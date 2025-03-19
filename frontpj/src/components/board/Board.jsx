@@ -18,7 +18,7 @@ const BoardList = () => {
   useEffect(() => {
     const fetchBoardList = async () => {
       try {
-        const response = await axios.get("http://localhost:8090/board/List");
+        const response = await axios.get("http://43.201.20.172:8090/board/List");
         const sortedBoardList = response.data.sort((a, b) => {
           const timeA = a.updateTime || a.createTime; // updateTime이 있으면 updateTime을 사용
           const timeB = b.updateTime || b.createTime; // updateTime이 있으면 updateTime을 사용

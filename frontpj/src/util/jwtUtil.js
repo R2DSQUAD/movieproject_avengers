@@ -5,7 +5,7 @@ const jwtAxios=axios.create()
 
 const refreshJWT= async (accessToken, refreshToken)=>{
     const header= {headers: {"Authorization": `Bearer ${accessToken}`}}
-    const res = await axios.get(`http://localhost:8090/api/member/refresh?refreshToken=${refreshToken}`, header)
+    const res = await axios.get(`http://43.201.20.172:8090/api/member/refresh?refreshToken=${refreshToken}`, header)
 
     return res.data
 }

@@ -34,7 +34,7 @@ const MyMemberInfo = () => {
   const fetchMemberInfo = async () => {
     try {
       const response = await jwtAxios.get(
-        "http://localhost:8090/api/myinfo/detail"
+        "http://43.201.20.172:8090/api/myinfo/detail"
       );
       setMember(response.data);
     } catch (error) {
@@ -70,7 +70,7 @@ const MyMemberInfo = () => {
 
   const handleVerifyPassword = async () => {
     try {
-      const response = await jwtAxios.post("http://localhost:8090/api/auth/verify-password", {
+      const response = await jwtAxios.post("http://43.201.20.172:8090/api/auth/verify-password", {
         currentPassword: currentPassword,
       });
       if (response.data.verified) {
@@ -126,7 +126,7 @@ const MyMemberInfo = () => {
     };
   
     try {
-      const response = await jwtAxios.put("http://localhost:8090/api/myinfo/update", dataToUpdate);
+      const response = await jwtAxios.put("http://43.201.20.172:8090/api/myinfo/update", dataToUpdate);
       alert("정보가 업데이트되었습니다.");
       setShowUpdateModal(false);
       fetchMemberInfo();

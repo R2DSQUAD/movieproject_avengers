@@ -46,7 +46,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
       if (!movieInfo.id) return;
       try {
         const response = await axios.get(
-          `http://localhost:8090/api/review/reviewList/${movieInfo.id}`
+          `http://43.201.20.172:8090/api/review/reviewList/${movieInfo.id}`
         );
         let fetchedReviews = response.data.reviewDtos || [];
         // 정렬 적용
@@ -93,7 +93,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
   const handleReviewSubmit = async () => {
     if (!reviewText.trim()) return alert("리뷰를 입력해주세요.");
     try {
-      await jwtAxios.post("http://localhost:8090/api/review/write", {
+      await jwtAxios.post("http://43.201.20.172:8090/api/review/write", {
         movieId: movieInfo.id,
         reviewText,
         email: loginState.email,
@@ -113,7 +113,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
   const handleDeleteReview = async (reviewId) => {
     try {
       await jwtAxios.post(
-        `http://localhost:8090/api/review/delete/${reviewId}`
+        `http://43.201.20.172:8090/api/review/delete/${reviewId}`
       );
       setReviews((prev) => prev.filter((review) => review.id !== reviewId));
       setIsModalOpen(false);
@@ -132,8 +132,7 @@ const ReviewSection = ({ movieInfo, loginState }) => {
     );
     try {
       await jwtAxios.post(
-        `http://localhost:8090/api/review/${
-          alreadyLiked ? "unlike" : "like"
+        `http://43.201.20.172:8090/api/review/${alreadyLiked ? "unlike" : "like"
         }?movieReviewId=${reviewId}&email=${loginState.email}`
       );
       // 즉각적인 UI 업데이트: 좋아요 상태를 로컬에서 갱신
@@ -141,13 +140,13 @@ const ReviewSection = ({ movieInfo, loginState }) => {
         prev.map((r) =>
           r.id === reviewId
             ? {
-                ...r,
-                movieReviewLikeEntities: alreadyLiked
-                  ? r.movieReviewLikeEntities.filter(
-                      (like) => like.email !== loginState.email
-                    )
-                  : [...r.movieReviewLikeEntities, { email: loginState.email }],
-              }
+              ...r,
+              movieReviewLikeEntities: alreadyLiked
+                ? r.movieReviewLikeEntities.filter(
+                  (like) => like.email !== loginState.email
+                )
+                : [...r.movieReviewLikeEntities, { email: loginState.email }],
+            }
             : r
         )
       );
@@ -262,15 +261,15 @@ const ReviewSection = ({ movieInfo, loginState }) => {
                     </div>
                     {(loginState.email === review.email ||
                       loginState.roleNames?.includes("ADMIN")) && (
-                      <span
-                        onClick={() => {
-                          setSelectedReviewId(review.id);
-                          setIsModalOpen(true);
-                        }}
-                      >
-                        삭제
-                      </span>
-                    )}
+                        <span
+                          onClick={() => {
+                            setSelectedReviewId(review.id);
+                            setIsModalOpen(true);
+                          }}
+                        >
+                          삭제
+                        </span>
+                      )}
                   </div>
                 </li>
               ))}
@@ -376,7 +375,7 @@ const MovieDetail = () => {
     setError(null);
     try {
       const trailerResponse = await axios.get(
-        "http://localhost:8090/api/trailerList"
+        "http://43.201.20.172:8090/api/trailerList"
       );
       const trailerData = trailerResponse.data;
       const filteredTrailers = trailerData.filter(
@@ -402,7 +401,7 @@ const MovieDetail = () => {
         // movieData가 부족할 경우 boxOfficeList API 호출
         try {
           const boxOfficeResponse = await axios.get(
-            "http://localhost:8090/api/boxOfficeList"
+            "http://43.201.20.172:8090/api/boxOfficeList"
           );
           const boxOfficeData = boxOfficeResponse.data;
           const matchedItem = boxOfficeData.find(
@@ -439,21 +438,20 @@ const MovieDetail = () => {
       objectType: "feed",
       content: {
         title: movieInfo.movieNm || "영화 정보",
-        description: `개봉일: ${movieInfo.openDt || "미정"} | 장르: ${
-          movieInfo.genres || "정보 없음"
-        }`,
+        description: `개봉일: ${movieInfo.openDt || "미정"} | 장르: ${movieInfo.genres || "정보 없음"
+          }`,
         imageUrl: imageUrl,
         link: {
-          mobileWebUrl: `http://localhost:3000/movie/detail/${movieCd}`,
-          webUrl: `http://localhost:3000/movie/detail/${movieCd}`,
+          mobileWebUrl: `http://43.201.20.172:3000/movie/detail/${movieCd}`,
+          webUrl: `http://43.201.20.172:3000/movie/detail/${movieCd}`,
         },
       },
       buttons: [
         {
           title: "자세히 보기",
           link: {
-            mobileWebUrl: `http://localhost:3000/movie/detail/${movieCd}`,
-            webUrl: `http://localhost:3000/movie/detail/${movieCd}`,
+            mobileWebUrl: `http://43.201.20.172:3000/movie/detail/${movieCd}`,
+            webUrl: `http://43.201.20.172:3000/movie/detail/${movieCd}`,
           },
         },
       ],

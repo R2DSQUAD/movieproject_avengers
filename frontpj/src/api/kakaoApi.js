@@ -1,5 +1,5 @@
 import axios from "axios"
-const redirect_uri = `http://localhost:3000/member/kakao`
+const redirect_uri = `http://43.201.20.172/member/kakao`
 
 const auth_code_path = `https://kauth.kakao.com/oauth/authorize`
 
@@ -13,7 +13,7 @@ export const getKakaoLoginLink = () => {
 export const getAccessToken = async (authCode) => {
     const header = {
         headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/x-www-form-urlencoded"
         }
     }
     const params = {
@@ -31,6 +31,6 @@ export const getAccessToken = async (authCode) => {
 }
 
 export const getMemberWithAccessToken = async (accessToken) => {
-    const res = await axios.get(`http://localhost:8090/api/member/kakao?accessToken=${accessToken}`)
+    const res = await axios.get(`http://43.201.20.172:8090/api/member/kakao?accessToken=${accessToken}`)
     return res.data
 }

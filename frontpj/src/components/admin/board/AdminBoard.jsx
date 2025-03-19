@@ -30,7 +30,7 @@ const AdminBoard = () => {
   useEffect(() => {
     const fetchBoardList = async () => {
       try {
-        const response = await axios.get("http://localhost:8090/board/List");
+        const response = await axios.get("http://43.201.20.172:8090/board/List");
         setBoardList(response.data); // 받아온 데이터로 상태 업데이트
         setFilteredBoardList(response.data); // 초기에는 모든 게시글을 표시
       } catch (err) {
@@ -151,9 +151,9 @@ const AdminBoard = () => {
   const handleDelete = async () => {
     try {
       await jwtAxios.delete(
-        `http://localhost:8090/admin/board/delete/${selectedBoard.id}`
+        `http://43.201.20.172:8090/admin/board/delete/${selectedBoard.id}`
       );
-      const response = await axios.get("http://localhost:8090/board/List");
+      const response = await axios.get("http://43.201.20.172:8090/board/List");
       setBoardList(response.data); // 받아온 데이터로 상태 업데이트
       setFilteredBoardList(response.data); // 초기에는 모든 게시글을 표시
       setShowModal(false);
@@ -184,12 +184,12 @@ const AdminBoard = () => {
   
     try {
       await jwtAxios.post(
-        `http://localhost:8090/admin/board/update`,
+        `http://43.201.20.172:8090/admin/board/update`,
         formDataToSend
       );
   
       // 업데이트 후 게시글 리스트를 새로고침
-      const response = await axios.get("http://localhost:8090/board/List");
+      const response = await axios.get("http://43.201.20.172:8090/board/List");
       setBoardList(response.data);
       setFilteredBoardList(response.data);
       setShowModal(false); // 모달 닫기
@@ -301,7 +301,7 @@ const AdminBoard = () => {
                 {" "}
                 {board.newImgName ? (
                   <img
-                    src={`http://localhost:8090/upload/${board.newImgName}`}
+                    src={`http://43.201.20.172:8090/upload/${board.newImgName}`}
                     alt={board.oldImgName}
                   />
                 ) : (

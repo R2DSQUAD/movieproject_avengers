@@ -12,7 +12,7 @@ const AdminLayout = () => {
     const checkPermission = async () => {
       try {
         // 관리자 권한을 확인하는 API 호출
-        const response = await jwtAxios.get("http://localhost:8090/api/test");
+        const response = await jwtAxios.get("http://43.201.20.172:8090/api/test");
         console.log(response.data);
         setData(response.data.admin); // 관리자일 경우 권한 메시지 설정
       } catch (error) {

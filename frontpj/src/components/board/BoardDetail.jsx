@@ -45,7 +45,7 @@ const BoardDetail = () => {
     const fetchBoardDetail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8090/board/detail/${id}`
+          `http://43.201.20.172:8090/board/detail/${id}`
         );
         setBoard(response.data);
         setLoading(false);
@@ -63,7 +63,7 @@ const BoardDetail = () => {
     const fetchReplyList = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8090/api/reply/replyList/${id}`
+          `http://43.201.20.172:8090/api/reply/replyList/${id}`
         );
 
         const sortedReplies = response.data.replyList || [];
@@ -82,7 +82,7 @@ const BoardDetail = () => {
 
   const handleDelete = async () => {
     try {
-      await jwtAxios.post(`http://localhost:8090/board/delete/${id}`);
+      await jwtAxios.post(`http://43.201.20.172:8090/board/delete/${id}`);
       navigate("/board");
     } catch (err) {
       console.error("게시글 삭제 실패", err);
@@ -134,10 +134,10 @@ const BoardDetail = () => {
     if (!replyToDelete) return;
     try {
       await jwtAxios.post(
-        `http://localhost:8090/api/reply/delete/${replyToDelete.id}/${id}`
+        `http://43.201.20.172:8090/api/reply/delete/${replyToDelete.id}/${id}`
       );
       const replyListResponse = await axios.get(
-        `http://localhost:8090/api/reply/replyList/${id}`
+        `http://43.201.20.172:8090/api/reply/replyList/${id}`
       );
       const sortedReplies = replyListResponse.data.replyList || [];
       sortedReplies.sort(
@@ -165,7 +165,7 @@ const BoardDetail = () => {
     ) {
       try {
         await jwtAxios.post(
-          `http://localhost:8090/api/reply/unlike?replyId=${replyId}&email=${loginState.email}`
+          `http://43.201.20.172:8090/api/reply/unlike?replyId=${replyId}&email=${loginState.email}`
         );
 
         // 서버에서 좋아요 취소 성공 후, UI 상태 업데이트
@@ -182,7 +182,7 @@ const BoardDetail = () => {
           )
         );
         const replyListResponse = await axios.get(
-          `http://localhost:8090/api/reply/replyList/${id}`
+          `http://43.201.20.172:8090/api/reply/replyList/${id}`
         );
         const sortedReplies = replyListResponse.data.replyList || [];
         sortedReplies.sort(
@@ -198,7 +198,7 @@ const BoardDetail = () => {
       // 좋아요가 눌리지 않은 상태라면, like 요청을 보냄
       try {
         await jwtAxios.post(
-          `http://localhost:8090/api/reply/like?replyId=${replyId}&email=${loginState.email}`
+          `http://43.201.20.172:8090/api/reply/like?replyId=${replyId}&email=${loginState.email}`
         );
 
         // 서버에서 좋아요 추가 성공 후, UI 상태 업데이트
@@ -217,7 +217,7 @@ const BoardDetail = () => {
         );
 
         const replyListResponse = await axios.get(
-          `http://localhost:8090/api/reply/replyList/${id}`
+          `http://43.201.20.172:8090/api/reply/replyList/${id}`
         );
         const sortedReplies = replyListResponse.data.replyList || [];
         sortedReplies.sort(
@@ -248,7 +248,7 @@ const BoardDetail = () => {
 
     try {
       const response = await jwtAxios.post(
-        "http://localhost:8090/api/reply/write",
+        "http://43.201.20.172:8090/api/reply/write",
         requestData,
         {
           headers: {
@@ -257,7 +257,7 @@ const BoardDetail = () => {
         }
       );
       const replyListResponse = await axios.get(
-        `http://localhost:8090/api/reply/replyList/${id}`
+        `http://43.201.20.172:8090/api/reply/replyList/${id}`
       );
       const sortedReplies = replyListResponse.data.replyList || [];
       sortedReplies.sort(
@@ -320,7 +320,7 @@ const BoardDetail = () => {
 
           {board.newImgName && (
             <img
-              src={`http://localhost:8090/upload/${board.newImgName}`}
+              src={`http://43.201.20.172:8090/upload/${board.newImgName}`}
               alt={board.oldImgName}
               style={{ maxWidth: "300px", maxHeight: "300px" }}
             />

@@ -25,7 +25,7 @@ const PaymentList = () => {
                 }
             }
 
-            const response = await jwtAxios.get(`http://localhost:8090/admin/payment/search`, { params });
+            const response = await jwtAxios.get(`http://43.201.20.172:8090/admin/payment/search`, { params });
 
             groupPayments(response.data.content);
             setTotalPages(response.data.totalPages); // 전체 페이지 개수 업데이트

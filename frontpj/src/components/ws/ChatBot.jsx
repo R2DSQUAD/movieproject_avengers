@@ -21,7 +21,7 @@ const ChatBot = () => {
         alert("접속");
 
         // 1. WebSocket 연결
-        const socket = new SockJS('http://localhost:8090/chatEndpoint');
+        const socket = new SockJS('http://43.201.20.172:8090/chatEndpoint');
         
         // 2. STOMP 연결
         stompClient.current = Stomp.over(socket);

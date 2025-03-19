@@ -28,7 +28,7 @@ const Cinemas = () => {
   const fetchCinemas = async () => {
     try {
       const response = await jwtAxios.get(
-        "http://localhost:8090/admin/cinemas/search",
+        "http://43.201.20.172:8090/admin/cinemas/search",
         {
           params: {
             page: page,
@@ -87,7 +87,7 @@ const Cinemas = () => {
         lon: formData.lon === "null" ? null : parseFloat(formData.lon),
       };
       await jwtAxios.post(
-        `http://localhost:8090/admin/update/${selectedCinema.id}`,
+        `http://43.201.20.172:8090/admin/update/${selectedCinema.id}`,
         updatedData
       );
       fetchCinemas();
@@ -101,7 +101,7 @@ const Cinemas = () => {
   const handleDelete = async () => {
     try {
       await jwtAxios.delete(
-        `http://localhost:8090/admin/delete/${selectedCinema.id}`
+        `http://43.201.20.172:8090/admin/delete/${selectedCinema.id}`
       );
       fetchCinemas();
       setShowModal(false);

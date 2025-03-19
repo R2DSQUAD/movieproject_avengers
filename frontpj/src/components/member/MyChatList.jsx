@@ -20,7 +20,7 @@ const MyChatList = () => {
 
     const fetchMemberInfo = async () => {
         try {
-            const response = await jwtAxios.get("http://localhost:8090/api/myinfo/detail");
+            const response = await jwtAxios.get("http://43.201.20.172:8090/api/myinfo/detail");
             const sortedMessages = response.data.chatMessageEntities || [];
 
             // createTime을 기준으로 내림차순 정렬
