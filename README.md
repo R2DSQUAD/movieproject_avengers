@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.ibb.co/6RJCVm27/logo.png" alt="Frame In Logo" />
+  <img src="https://raw.githubusercontent.com/R2DSQUAD/movieproject_avengers/refs/heads/dev/frontpj/public/image/logo.png" alt="Frame In Logo" />
 </p>
 <p align="center">
   <strong>2025.02.14 ~ 2025.03.18</strong>
