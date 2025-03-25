@@ -89,7 +89,7 @@
 
 | 분류 | 기술 스택 |
 |------|------------|
-| FrontEnd | HTML5, JavaScript, CSS, React, Redux, Redux Toolkit |
+| FrontEnd | HTML, JavaScript, CSS, React, Redux, Redux Toolkit |
 | BackEnd | Java, Spring, Spring Security, Gradle, WebSocket, JWT, KakaoPay, KakaoMap, KakaoTalk, TossPay, KGINICIS, TMDB, KOFIC, PortOne, MySQL |
 | Tools | GitHub, Git, Notion, Docker, AWS, EC2, VSCode |
 
